@@ -36,7 +36,8 @@
             <asp:DropDownList ID="ddlHoraInicio" runat="server" />
             <asp:DropDownList ID="ddlHoraFin" runat="server" />
             <br />
-
+            
+            <!-- Días de Atención
             <asp:Label runat="server" Text="Días de Atención:" />
             <asp:ListBox ID="lstDias" runat="server" SelectionMode="Multiple">
                 <asp:ListItem>Lunes</asp:ListItem>
@@ -47,11 +48,17 @@
                 <asp:ListItem>Sábados</asp:ListItem>
                 <asp:ListItem>Domingos</asp:ListItem>
             </asp:ListBox>
-            <br />
-            <br />
+            -->
 
-            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" />
+            <br />
+            <br />
+            
+            <asp:Label ID="lblMensaje" runat="server" ForeColor="Red" />    <!-- Mensajes de Error -->
+
+            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" />
+
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" />
+
         </asp:Panel>
 
     </div>

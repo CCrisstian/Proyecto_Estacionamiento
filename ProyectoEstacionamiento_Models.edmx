@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Categoria_Vehiculo">
           <Key>
             <PropertyRef Name="Categoria_id" />
@@ -22,7 +22,7 @@
           <Key>
             <PropertyRef Name="Est_id" />
           </Key>
-          <Property Name="Est_id" Type="int" Nullable="false" />
+          <Property Name="Est_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Dueño_Legajo" Type="int" />
           <Property Name="Est_nombre" Type="varchar" MaxLength="500" />
           <Property Name="Est_provincia" Type="varchar" MaxLength="100" />
@@ -117,18 +117,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Playero_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1" />
-          <End Role="Playero" Type="Self.Playero" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Estacionamiento">
-              <PropertyRef Name="Est_id" />
-            </Principal>
-            <Dependent Role="Playero">
-              <PropertyRef Name="Est_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Playero_Usuarios">
           <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
           <End Role="Playero" Type="Self.Playero" Multiplicity="0..1" />
@@ -163,17 +151,12 @@
             <End Role="Playero" EntitySet="Playero" />
             <End Role="Incidencias" EntitySet="Incidencias" />
           </AssociationSet>
-          <AssociationSet Name="FK_Playero_Estacionamiento" Association="Self.FK_Playero_Estacionamiento">
-            <End Role="Estacionamiento" EntitySet="Estacionamiento" />
-            <End Role="Playero" EntitySet="Playero" />
-          </AssociationSet>
           <AssociationSet Name="FK_Playero_Usuarios" Association="Self.FK_Playero_Usuarios">
             <End Role="Usuarios" EntitySet="Usuarios" />
             <End Role="Playero" EntitySet="Playero" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProyectoEstacionamientoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">

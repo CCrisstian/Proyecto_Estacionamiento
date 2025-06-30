@@ -30,7 +30,10 @@
             .botones input {
                 margin-right: 10px;
             }
-        .grid {}
+
+        .grid {
+            margin-right: 80px;
+        }
     </style>
 </head>
 <body>
@@ -40,10 +43,13 @@
             <asp:Button ID="btnCrear" runat="server" Text="Crear nuevo estacionamiento" OnClick="btnCrear_Click" CssClass="btn" Width="189px" />
         </div>
 
-        <asp:GridView ID="gvEstacionamientos" runat="server" AutoGenerateColumns="False" DataKeyNames="Est_id"
-            CssClass="grid" Width="800px">
+        <asp:GridView ID="gvEstacionamientos" runat="server" AutoGenerateColumns="False"
+            OnRowCommand="gvEstacionamientos_RowCommand"
+            OnRowDeleting="gvEstacionamientos_RowDeleting"
+            DataKeyNames="Est_id"
+            CssClass="grid" Width="855px" OnSelectedIndexChanged="gvEstacionamientos_SelectedIndexChanged">
             <Columns>
-                
+
                 <asp:BoundField DataField="Est_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="Est_provincia" HeaderText="Provincia" />
                 <asp:BoundField DataField="Est_localidad" HeaderText="Localidad" />
@@ -51,10 +57,20 @@
                 <asp:BoundField DataField="Est_horario" HeaderText="Horario" />
                 <asp:BoundField DataField="Est_puntaje" HeaderText="Puntaje" />
 
-                <asp:CommandField ShowEditButton="True" ShowDeleteButton="True" />
+                <%-- Botón Eliminar por defecto --%>
+                <asp:CommandField ShowDeleteButton="True" ButtonType="Button" />
+                
+                <%-- Botón Editar personalizado --%>
+                <asp:TemplateField>
+                    <ItemTemplate>
+                        <asp:Button ID="btnEditar" runat="server" Text="Editar" CommandName="EditarCustom"
+                            CommandArgument='<%# Container.DataItemIndex %>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
 
             </Columns>
         </asp:GridView>
+
     </form>
 
 </body>
