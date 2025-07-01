@@ -132,6 +132,8 @@
     <Content Include="Pages\Estacionamiento\Estacionamiento_Crear.aspx" />
     <Content Include="Pages\Estacionamiento\EstacionamientoCRUD.aspx" />
     <Content Include="Pages\Login\Login.aspx" />
+    <Content Include="Pages\Plaza\Plaza_CRUD.aspx" />
+    <Content Include="Pages\Plaza\Plaza_Crear_Editar.aspx" />
     <Content Include="ProyectoEstacionamiento_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
@@ -260,7 +262,24 @@
     <Compile Include="Pages\Login\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Plaza\Plaza_CRUD.aspx.cs">
+      <DependentUpon>Plaza_CRUD.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Plaza\Plaza_CRUD.aspx.designer.cs">
+      <DependentUpon>Plaza_CRUD.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Plaza\Plaza_Crear_Editar.aspx.cs">
+      <DependentUpon>Plaza_Crear_Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Plaza\Plaza_Crear_Editar.aspx.designer.cs">
+      <DependentUpon>Plaza_Crear_Editar.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Playero.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Plaza.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -7,29 +7,29 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace Proyecto_Estacionamiento.Pages.Estacionamiento
+namespace Proyecto_Estacionamiento.Pages.Plaza
 {
 
 
-    public partial class EstacionamientoCRUD
+    public partial class Plaza_CRUD
     {
 
         /// <summary>
-        /// Control btnCrear.
+        /// Control btnAgregar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCrear;
+        protected global::System.Web.UI.WebControls.Button btnAgregar;
 
         /// <summary>
-        /// Control gvEstacionamientos.
+        /// Control gvPlazas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvEstacionamientos;
+        protected global::System.Web.UI.WebControls.GridView gvPlazas;
     }
 }

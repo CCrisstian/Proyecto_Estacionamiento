@@ -4,12 +4,14 @@
     Inherits="Proyecto_Estacionamiento.Pages.Estacionamiento.Estacionamiento_Crear" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+
     <div>
         <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-estacionamiento">
             <h3>Ingrese los Datos del Estacionamiento:</h3>
 
             <asp:Label runat="server" AssociatedControlID="txtNombre" Text="Nombre:" />
             <asp:TextBox ID="txtNombre" runat="server" Width="285px"></asp:TextBox>
+            <br />
             <br />
 
             <asp:Label runat="server" AssociatedControlID="txtDireccion" Text="Dirección:" />

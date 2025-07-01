@@ -53,6 +53,17 @@
           <Property Name="Playero_legajo" Type="int" Nullable="false" />
           <Property Name="Est_id" Type="int" />
         </EntityType>
+        <EntityType Name="Plaza">
+          <Key>
+            <PropertyRef Name="Plaza_id" />
+          </Key>
+          <Property Name="Plaza_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Est_id" Type="int" Nullable="false" />
+          <Property Name="Categoria_id" Type="int" Nullable="false" />
+          <Property Name="Plaza_Nombre" Type="varchar" MaxLength="100" />
+          <Property Name="Plaza_Tipo" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Plaza_Disponibilidad" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -129,6 +140,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Plaza_Categoria">
+          <End Role="Categoria_Vehiculo" Type="Self.Categoria_Vehiculo" Multiplicity="1" />
+          <End Role="Plaza" Type="Self.Plaza" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categoria_Vehiculo">
+              <PropertyRef Name="Categoria_id" />
+            </Principal>
+            <Dependent Role="Plaza">
+              <PropertyRef Name="Categoria_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plaza_Estacionamiento">
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
+          <End Role="Plaza" Type="Self.Plaza" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estacionamiento">
+              <PropertyRef Name="Est_id" />
+            </Principal>
+            <Dependent Role="Plaza">
+              <PropertyRef Name="Est_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="ProyectoEstacionamientoModelStoreContainer">
           <EntitySet Name="Categoria_Vehiculo" EntityType="Self.Categoria_Vehiculo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dueño" EntityType="Self.Dueño" Schema="dbo" store:Type="Tables" />
@@ -136,6 +171,7 @@
           <EntitySet Name="Incidencias" EntityType="Self.Incidencias" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Metodos_De_Pago" EntityType="Self.Metodos_De_Pago" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Playero" EntityType="Self.Playero" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Plaza" EntityType="Self.Plaza" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tipos_Tarifa" EntityType="Self.Tipos_Tarifa" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
@@ -155,6 +191,14 @@
             <End Role="Usuarios" EntitySet="Usuarios" />
             <End Role="Playero" EntitySet="Playero" />
           </AssociationSet>
+          <AssociationSet Name="FK_Plaza_Categoria" Association="Self.FK_Plaza_Categoria">
+            <End Role="Categoria_Vehiculo" EntitySet="Categoria_Vehiculo" />
+            <End Role="Plaza" EntitySet="Plaza" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plaza_Estacionamiento" Association="Self.FK_Plaza_Estacionamiento">
+            <End Role="Estacionamiento" EntitySet="Estacionamiento" />
+            <End Role="Plaza" EntitySet="Plaza" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -166,6 +210,7 @@
           </Key>
           <Property Name="Categoria_id" Type="Int32" Nullable="false" />
           <Property Name="Categoria_descripcion" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Plaza" Relationship="ProyectoEstacionamientoModel.FK_Plaza_Categoria" FromRole="Categoria_Vehiculo" ToRole="Plaza" />
         </EntityType>
         <EntityType Name="Dueño">
           <Key>
@@ -189,6 +234,7 @@
           <Property Name="Est_puntaje" Type="Double" Nullable="false" />
           <NavigationProperty Name="Dueño" Relationship="Self.FK_Estacionamiento_Dueño" FromRole="Estacionamiento" ToRole="Dueño" />
           <NavigationProperty Name="Playero" Relationship="Self.FK_Playero_Estacionamiento" FromRole="Estacionamiento" ToRole="Playero" />
+          <NavigationProperty Name="Plaza" Relationship="ProyectoEstacionamientoModel.FK_Plaza_Estacionamiento" FromRole="Estacionamiento" ToRole="Plaza" />
         </EntityType>
         <EntityType Name="Incidencias">
           <Key>
@@ -336,7 +382,53 @@
             <End Role="Usuarios" EntitySet="Usuarios" />
             <End Role="Playero" EntitySet="Playero" />
           </AssociationSet>
+          <EntitySet Name="Plaza" EntityType="ProyectoEstacionamientoModel.Plaza" />
+          <AssociationSet Name="FK_Plaza_Categoria" Association="ProyectoEstacionamientoModel.FK_Plaza_Categoria">
+            <End Role="Categoria_Vehiculo" EntitySet="Categoria_Vehiculo" />
+            <End Role="Plaza" EntitySet="Plaza" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Plaza_Estacionamiento" Association="ProyectoEstacionamientoModel.FK_Plaza_Estacionamiento">
+            <End Role="Estacionamiento" EntitySet="Estacionamiento" />
+            <End Role="Plaza" EntitySet="Plaza" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Plaza">
+          <Key>
+            <PropertyRef Name="Plaza_id" />
+          </Key>
+          <Property Name="Plaza_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Est_id" Type="Int32" Nullable="false" />
+          <Property Name="Categoria_id" Type="Int32" Nullable="false" />
+          <Property Name="Plaza_Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Plaza_Tipo" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Plaza_Disponibilidad" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Categoria_Vehiculo" Relationship="ProyectoEstacionamientoModel.FK_Plaza_Categoria" FromRole="Plaza" ToRole="Categoria_Vehiculo" />
+          <NavigationProperty Name="Estacionamiento" Relationship="ProyectoEstacionamientoModel.FK_Plaza_Estacionamiento" FromRole="Plaza" ToRole="Estacionamiento" />
+        </EntityType>
+        <Association Name="FK_Plaza_Categoria">
+          <End Type="ProyectoEstacionamientoModel.Categoria_Vehiculo" Role="Categoria_Vehiculo" Multiplicity="1" />
+          <End Type="ProyectoEstacionamientoModel.Plaza" Role="Plaza" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categoria_Vehiculo">
+              <PropertyRef Name="Categoria_id" />
+            </Principal>
+            <Dependent Role="Plaza">
+              <PropertyRef Name="Categoria_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Plaza_Estacionamiento">
+          <End Type="ProyectoEstacionamientoModel.Estacionamiento" Role="Estacionamiento" Multiplicity="1" />
+          <End Type="ProyectoEstacionamientoModel.Plaza" Role="Plaza" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estacionamiento">
+              <PropertyRef Name="Est_id" />
+            </Principal>
+            <Dependent Role="Plaza">
+              <PropertyRef Name="Est_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -425,6 +517,18 @@
                 <ScalarProperty Name="Usu_ap" ColumnName="Usu_ap" />
                 <ScalarProperty Name="Usu_nom" ColumnName="Usu_nom" />
                 <ScalarProperty Name="Usu_tipo" ColumnName="Usu_tipo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Plaza">
+            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Plaza">
+              <MappingFragment StoreEntitySet="Plaza">
+                <ScalarProperty Name="Plaza_Disponibilidad" ColumnName="Plaza_Disponibilidad" />
+                <ScalarProperty Name="Plaza_Tipo" ColumnName="Plaza_Tipo" />
+                <ScalarProperty Name="Plaza_Nombre" ColumnName="Plaza_Nombre" />
+                <ScalarProperty Name="Categoria_id" ColumnName="Categoria_id" />
+                <ScalarProperty Name="Est_id" ColumnName="Est_id" />
+                <ScalarProperty Name="Plaza_id" ColumnName="Plaza_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

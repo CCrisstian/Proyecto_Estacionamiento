@@ -34,5 +34,6 @@ namespace Proyecto_Estacionamiento
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Tipos_Tarifa> Tipos_Tarifa { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }
+        public virtual DbSet<Plaza> Plaza { get; set; }
     }
 }

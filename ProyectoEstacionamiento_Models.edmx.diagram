@@ -19,6 +19,9 @@
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Playero_Estacionamiento" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Incidencias_Playero" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Playero_Usuarios" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Plaza" Width="1.5" PointX="9.5" PointY="4.375" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Plaza_Categoria" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Plaza_Estacionamiento" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

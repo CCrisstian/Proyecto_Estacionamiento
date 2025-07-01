@@ -56,7 +56,7 @@
                         </a>
                     </li>
                     <li>
-                        <a runat="server" href=""
+                        <a runat="server" href="~/Pages/Plaza/Plaza_CRUD.aspx"
                             style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">PLAZAS
                         </a>
                     </li>

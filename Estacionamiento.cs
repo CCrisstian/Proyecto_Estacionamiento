@@ -18,6 +18,7 @@ namespace Proyecto_Estacionamiento
         public Estacionamiento()
         {
             this.Playero = new HashSet<Playero>();
+            this.Plaza = new HashSet<Plaza>();
         }
     
         public int Est_id { get; set; }
@@ -32,5 +33,7 @@ namespace Proyecto_Estacionamiento
         public virtual Dueño Dueño { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Playero> Playero { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Plaza> Plaza { get; set; }
     }
 }
