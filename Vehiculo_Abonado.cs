@@ -12,12 +12,13 @@ namespace Proyecto_Estacionamiento
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class Vehiculo_Abonado
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public int VA_id { get; set; }
+        public string Vehiculo_Patente { get; set; }
+        public int Tarifa_id { get; set; }
+    
+        public virtual Tarifa Tarifa { get; set; }
+        public virtual Vehiculo Vehiculo { get; set; }
     }
 }

@@ -214,6 +214,9 @@
     <Content Include="Site.Mobile.Master" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Acepta_Metodo_De_Pago.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Categoria_Vehiculo.cs">
@@ -229,6 +232,9 @@
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Metodos_De_Pago.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ocupacion.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Pages\Default\Default.aspx.cs">
@@ -276,6 +282,9 @@
     <Compile Include="Pages\Plaza\Plaza_Crear_Editar.aspx.designer.cs">
       <DependentUpon>Plaza_Crear_Editar.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pago_Ocupacion.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Playero.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
@@ -312,13 +321,22 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
-    <Compile Include="sysdiagrams.cs">
+    <Compile Include="Tarifa.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Tipos_Tarifa.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
+    <Compile Include="Turno.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Usuarios.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vehiculo.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Vehiculo_Abonado.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">

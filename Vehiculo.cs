@@ -12,24 +12,25 @@ namespace Proyecto_Estacionamiento
     using System;
     using System.Collections.Generic;
     
-    public partial class Plaza
+    public partial class Vehiculo
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Plaza()
+        public Vehiculo()
         {
             this.Ocupacion = new HashSet<Ocupacion>();
+            this.Vehiculo_Abonado = new HashSet<Vehiculo_Abonado>();
         }
     
-        public int Est_id { get; set; }
-        public int Plaza_id { get; set; }
-        public Nullable<int> Categoria_id { get; set; }
-        public string Plaza_Nombre { get; set; }
-        public string Plaza_Tipo { get; set; }
-        public bool Plaza_Disponibilidad { get; set; }
+        public string Vehiculo_Patente { get; set; }
+        public int Categoria_id { get; set; }
+        public string Vehiculo_Marca { get; set; }
+        public int Vehiculo_Modelo { get; set; }
+        public string Vehiculo_Color { get; set; }
     
         public virtual Categoria_Vehiculo Categoria_Vehiculo { get; set; }
-        public virtual Estacionamiento Estacionamiento { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ocupacion> Ocupacion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Vehiculo_Abonado> Vehiculo_Abonado { get; set; }
     }
 }

@@ -14,11 +14,18 @@ namespace Proyecto_Estacionamiento
     
     public partial class Playero
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Playero()
+        {
+            this.Turno = new HashSet<Turno>();
+        }
+    
         public int Playero_legajo { get; set; }
         public Nullable<int> Est_id { get; set; }
     
-        public virtual Estacionamiento Estacionamiento { get; set; }
         public virtual Incidencias Incidencias { get; set; }
         public virtual Usuarios Usuarios { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Turno> Turno { get; set; }
     }
 }

@@ -60,6 +60,24 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
         protected global::System.Web.UI.WebControls.DropDownList ddlLocalidad;
 
         /// <summary>
+        /// Control ddlDiaInicio.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlDiaInicio;
+
+        /// <summary>
+        /// Control ddlDiaFin.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlDiaFin;
+
+        /// <summary>
         /// Control ddlHoraInicio.
         /// </summary>
         /// <remarks>
@@ -78,13 +96,40 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
         protected global::System.Web.UI.WebControls.DropDownList ddlHoraFin;
 
         /// <summary>
-        /// Control lstDias.
+        /// Control chkDiasFeriado.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox lstDias;
+        protected global::System.Web.UI.WebControls.CheckBox chkDiasFeriado;
+
+        /// <summary>
+        /// Control chkFinDeSemana.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkFinDeSemana;
+
+        /// <summary>
+        /// Control ddlHoraInicio_FinDeSemana.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicio_FinDeSemana;
+
+        /// <summary>
+        /// Control ddlHoraFin_FinDeSemana.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFin_FinDeSemana;
 
         /// <summary>
         /// Control lblMensaje.

@@ -17,8 +17,10 @@ namespace Proyecto_Estacionamiento
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Estacionamiento()
         {
-            this.Playero = new HashSet<Playero>();
+            this.Acepta_Metodo_De_Pago = new HashSet<Acepta_Metodo_De_Pago>();
+            this.Pago_Ocupacion = new HashSet<Pago_Ocupacion>();
             this.Plaza = new HashSet<Plaza>();
+            this.Tarifa = new HashSet<Tarifa>();
         }
     
         public int Est_id { get; set; }
@@ -29,11 +31,20 @@ namespace Proyecto_Estacionamiento
         public string Est_direccion { get; set; }
         public string Est_horario { get; set; }
         public double Est_puntaje { get; set; }
+        public string Est_Dias_Atencion { get; set; }
+        public string Est_Hra_Atencion { get; set; }
+        public Nullable<bool> Est_Dias_Feriado_Atencion { get; set; }
+        public Nullable<bool> Est_Fin_de_semana_Atencion { get; set; }
+        public string Est_Hora_Fin_de_semana { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Acepta_Metodo_De_Pago> Acepta_Metodo_De_Pago { get; set; }
         public virtual Dueño Dueño { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Playero> Playero { get; set; }
+        public virtual ICollection<Pago_Ocupacion> Pago_Ocupacion { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Plaza> Plaza { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Tarifa> Tarifa { get; set; }
     }
 }

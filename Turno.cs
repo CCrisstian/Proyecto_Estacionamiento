@@ -12,18 +12,16 @@ namespace Proyecto_Estacionamiento
     using System;
     using System.Collections.Generic;
     
-    public partial class Tipos_Tarifa
+    public partial class Turno
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Tipos_Tarifa()
-        {
-            this.Tarifa = new HashSet<Tarifa>();
-        }
+        public System.DateTime Turno_FechaHora_Inicio { get; set; }
+        public int Turno_id { get; set; }
+        public int Playero_Legajo { get; set; }
+        public Nullable<System.DateTime> Turno_FechaHora_fin { get; set; }
+        public Nullable<double> Caja_Monto_Inicio { get; set; }
+        public Nullable<double> Caja_Monto_fin { get; set; }
+        public Nullable<double> Caja_Monto_total { get; set; }
     
-        public int Tipos_tarifa_id { get; set; }
-        public string Tipos_tarifa_descripcion { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Tarifa> Tarifa { get; set; }
+        public virtual Playero Playero { get; set; }
     }
 }

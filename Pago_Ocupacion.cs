@@ -12,23 +12,22 @@ namespace Proyecto_Estacionamiento
     using System;
     using System.Collections.Generic;
     
-    public partial class Plaza
+    public partial class Pago_Ocupacion
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Plaza()
+        public Pago_Ocupacion()
         {
             this.Ocupacion = new HashSet<Ocupacion>();
         }
     
+        public int Pago_id { get; set; }
         public int Est_id { get; set; }
-        public int Plaza_id { get; set; }
-        public Nullable<int> Categoria_id { get; set; }
-        public string Plaza_Nombre { get; set; }
-        public string Plaza_Tipo { get; set; }
-        public bool Plaza_Disponibilidad { get; set; }
+        public int Metodo_Pago_id { get; set; }
+        public double Pago_Importe { get; set; }
+        public Nullable<System.DateTime> Pago_Fecha { get; set; }
     
-        public virtual Categoria_Vehiculo Categoria_Vehiculo { get; set; }
         public virtual Estacionamiento Estacionamiento { get; set; }
+        public virtual Metodos_De_Pago Metodos_De_Pago { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ocupacion> Ocupacion { get; set; }
     }

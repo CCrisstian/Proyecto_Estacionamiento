@@ -14,7 +14,19 @@ namespace Proyecto_Estacionamiento
     
     public partial class Metodos_De_Pago
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Metodos_De_Pago()
+        {
+            this.Acepta_Metodo_De_Pago = new HashSet<Acepta_Metodo_De_Pago>();
+            this.Pago_Ocupacion = new HashSet<Pago_Ocupacion>();
+        }
+    
         public int Metodo_pago_id { get; set; }
         public string Metodo_pago_descripcion { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Acepta_Metodo_De_Pago> Acepta_Metodo_De_Pago { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Pago_Ocupacion> Pago_Ocupacion { get; set; }
     }
 }

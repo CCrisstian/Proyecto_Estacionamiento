@@ -13,6 +13,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
     {
         private void CargarEstacionamientos()
         {
+            // Cargar los Estacionamientos desde la Base de Datos y enlazarlos a la grilla
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 var lista = db.Estacionamiento.ToList();
@@ -21,11 +22,12 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             }
         }
 
+        // Evento que se ejecuta al cargar la página
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            if (!IsPostBack)    // Verificar si es la primera carga de la página
             {
-                CargarEstacionamientos();
+                CargarEstacionamientos(); // Llamar al método para cargar los estacionamientos
             }
         }
 
@@ -34,11 +36,13 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             Response.Redirect("~/Pages/Estacionamiento/Estacionamiento_Crear.aspx");
         }
 
+        // Evento para manejar la selección de un Estacionamiento desde la grilla
         protected void gvEstacionamientos_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
+        // Evento para manejar la Edición de un Estacionamiento desde la grilla
         protected void gvEstacionamientos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "EditarCustom")
@@ -50,6 +54,8 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                 Response.Redirect($"Estacionamiento_Crear.aspx?id={id}");
             }
         }
+
+        // Evento para manejar la eliminación de un Estacionamiento desde la grilla
         protected void gvEstacionamientos_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
             int id = Convert.ToInt32(gvEstacionamientos.DataKeys[e.RowIndex].Value);

@@ -12,18 +12,14 @@ namespace Proyecto_Estacionamiento
     using System;
     using System.Collections.Generic;
     
-    public partial class Tipos_Tarifa
+    public partial class Acepta_Metodo_De_Pago
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Tipos_Tarifa()
-        {
-            this.Tarifa = new HashSet<Tarifa>();
-        }
+        public int Est_id { get; set; }
+        public int Metodo_Pago_id { get; set; }
+        public Nullable<System.DateTime> AMP_Desde { get; set; }
+        public Nullable<System.DateTime> AMP_Hasta { get; set; }
     
-        public int Tipos_tarifa_id { get; set; }
-        public string Tipos_tarifa_descripcion { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Tarifa> Tarifa { get; set; }
+        public virtual Estacionamiento Estacionamiento { get; set; }
+        public virtual Metodos_De_Pago Metodos_De_Pago { get; set; }
     }
 }

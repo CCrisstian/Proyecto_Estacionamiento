@@ -18,6 +18,8 @@ namespace Proyecto_Estacionamiento
         public Categoria_Vehiculo()
         {
             this.Plaza = new HashSet<Plaza>();
+            this.Tarifa = new HashSet<Tarifa>();
+            this.Vehiculo = new HashSet<Vehiculo>();
         }
     
         public int Categoria_id { get; set; }
@@ -25,5 +27,9 @@ namespace Proyecto_Estacionamiento
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Plaza> Plaza { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Tarifa> Tarifa { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Vehiculo> Vehiculo { get; set; }
     }
 }
