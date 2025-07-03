@@ -132,8 +132,12 @@
     <Content Include="Pages\Estacionamiento\Estacionamiento_Crear.aspx" />
     <Content Include="Pages\Estacionamiento\EstacionamientoCRUD.aspx" />
     <Content Include="Pages\Login\Login.aspx" />
+    <Content Include="Pages\Playeros\Playero_Crear_Editar.aspx" />
+    <Content Include="Pages\Playeros\Playero_CRUD.aspx" />
     <Content Include="Pages\Plaza\Plaza_CRUD.aspx" />
     <Content Include="Pages\Plaza\Plaza_Crear_Editar.aspx" />
+    <Content Include="Pages\Tarifas\Tarifa_Listar.aspx" />
+    <Content Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx" />
     <Content Include="ProyectoEstacionamiento_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
@@ -268,6 +272,20 @@
     <Compile Include="Pages\Login\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Playeros\Playero_Crear_Editar.aspx.cs">
+      <DependentUpon>Playero_Crear_Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Playeros\Playero_Crear_Editar.aspx.designer.cs">
+      <DependentUpon>Playero_Crear_Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Playeros\Playero_CRUD.aspx.cs">
+      <DependentUpon>Playero_CRUD.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Playeros\Playero_CRUD.aspx.designer.cs">
+      <DependentUpon>Playero_CRUD.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Plaza\Plaza_CRUD.aspx.cs">
       <DependentUpon>Plaza_CRUD.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -281,6 +299,20 @@
     </Compile>
     <Compile Include="Pages\Plaza\Plaza_Crear_Editar.aspx.designer.cs">
       <DependentUpon>Plaza_Crear_Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Tarifas\Tarifa_Listar.aspx.cs">
+      <DependentUpon>Tarifa_Listar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Tarifas\Tarifa_Listar.aspx.designer.cs">
+      <DependentUpon>Tarifa_Listar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx.cs">
+      <DependentUpon>Tarifa_Crear_Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx.designer.cs">
+      <DependentUpon>Tarifa_Crear_Editar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pago_Ocupacion.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>

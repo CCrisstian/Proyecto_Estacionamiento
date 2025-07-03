@@ -41,7 +41,7 @@
         <br />
         <asp:Label ID="lblMensaje" runat="server" ForeColor="Red" />
         <br />
-        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" />
         <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" CausesValidation="false" />
+        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" />
     </asp:Panel>
 </asp:Content>

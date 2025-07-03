@@ -61,7 +61,12 @@
                         </a>
                     </li>
                     <li>
-                        <a runat="server" href=""
+                        <a runat="server" href="~/Pages/Tarifas/Tarifa_Listar.aspx"
+                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">TARIFAS
+                        </a>
+                    </li>
+                    <li>
+                        <a runat="server" href="~/Pages/Playeros/Playero_CRUD.aspx"
                             style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">PLAYERO
                         </a>
                     </li>

@@ -21,12 +21,12 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         {   // Obtenemos las Plazas desde la Base de Datos
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                var plazas = db.Plaza
-                    .Include("Categoria_Vehiculo")
-                    .Include("Estacionamiento")
+                var plazas = db.Plaza                   // Obtenemos las Plazas
+                    .Include("Categoria_Vehiculo")      // Incluimos la relación con Categoria_Vehiculo
+                    .Include("Estacionamiento")         // Incluimos la relación con Estacionamiento
                     .ToList();
-                gvPlazas.DataSource = plazas;
-                gvPlazas.DataBind();
+                gvPlazas.DataSource = plazas;           // Asignamos la lista de Plazas como fuente de datos del GridView
+                gvPlazas.DataBind();                    // Realizamos el enlace de datos al GridView
             }
         }
 
@@ -40,7 +40,8 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
             if (e.CommandName == "Editar")
             {
                 int plazaId = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect("~/Pages/Plaza/Plaza_Crear_Editar.aspx?id=" + plazaId);
+                Response.Redirect("~/Pages/Plaza/Plaza_Crear_Editar.aspx?id=" + plazaId);   
+                // Redirigimos a la página de edición de Plaza con el ID de la Plaza seleccionada
             }
         }
     }

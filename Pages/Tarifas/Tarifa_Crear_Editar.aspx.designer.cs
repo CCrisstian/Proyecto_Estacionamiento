@@ -7,11 +7,11 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace Proyecto_Estacionamiento.Pages.Plaza
+namespace Proyecto_Estacionamiento.Pages.Tarifas
 {
 
 
-    public partial class Plaza_Crear_Editar
+    public partial class Tarifa_Crear_Editar
     {
 
         /// <summary>
@@ -33,58 +33,67 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         protected global::System.Web.UI.WebControls.Panel pnlFormulario;
 
         /// <summary>
-        /// Control ddlEstacionamiento.
+        /// Control ddlEstacionamientos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstacionamiento;
+        protected global::System.Web.UI.WebControls.DropDownList ddlEstacionamientos;
 
         /// <summary>
-        /// Control ddlCategoria.
+        /// Control ddlTiposTarifa.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCategoria;
+        protected global::System.Web.UI.WebControls.DropDownList ddlTiposTarifa;
 
         /// <summary>
-        /// Control txtNombre.
+        /// Control ddlCategorias.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNombre;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCategorias;
 
         /// <summary>
-        /// Control txtTipo.
+        /// Control txtTarifaMonto.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTipo;
+        protected global::System.Web.UI.WebControls.TextBox txtTarifaMonto;
 
         /// <summary>
-        /// Control ddlDisponible.
+        /// Control txtTarifaDesde.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDisponible;
+        protected global::System.Web.UI.WebControls.TextBox txtTarifaDesde;
 
         /// <summary>
-        /// Control lblMensaje.
+        /// Control calTarifaDesde.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMensaje;
+        protected global::System.Web.UI.WebControls.Calendar calTarifaDesde;
+
+        /// <summary>
+        /// Control btnMostrarCalendario.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnMostrarCalendario;
 
         /// <summary>
         /// Control btnCancelar.
