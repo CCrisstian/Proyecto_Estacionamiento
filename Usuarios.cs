@@ -14,12 +14,12 @@ namespace Proyecto_Estacionamiento
     
     public partial class Usuarios
     {
-        public int Usu_legajo { get; set; }
         public Nullable<int> Usu_dni { get; set; }
         public string Usu_pass { get; set; }
         public string Usu_ap { get; set; }
         public string Usu_nom { get; set; }
         public string Usu_tipo { get; set; }
+        public int Usu_legajo { get; set; }
     
         public virtual Dueño Dueño { get; set; }
         public virtual Playero Playero { get; set; }

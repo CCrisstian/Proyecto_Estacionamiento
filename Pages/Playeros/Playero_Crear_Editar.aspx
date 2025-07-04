@@ -22,6 +22,7 @@
                 <asp:Label ID="lblLegajo" runat="server" Text="Legajo:" /></td>
             <td>
                 <asp:TextBox ID="txtLegajo" runat="server" />
+                <asp:HiddenField ID="hfLegajo" runat="server" />
                 <asp:RequiredFieldValidator ID="rfvLegajo" runat="server" ControlToValidate="txtLegajo"
                     ErrorMessage="El legajo es obligatorio." Display="Dynamic" CssClass="text-danger" />
             </td>

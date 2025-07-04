@@ -84,12 +84,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
             using (var context = new ProyectoEstacionamientoEntities()) // Reemplaza por tu contexto real
             {
-                // Elimina primero el usuario relacionado
-                var usuario = context.Usuarios.FirstOrDefault(u => u.Usu_legajo == playeroLegajo);
-                if (usuario != null)
-                    context.Usuarios.Remove(usuario);
 
-                // Luego elimina el playero
                 var playero = context.Playero.FirstOrDefault(p => p.Playero_legajo == playeroLegajo);
                 if (playero != null)
                     context.Playero.Remove(playero);

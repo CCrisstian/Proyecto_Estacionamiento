@@ -10,15 +10,23 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         protected void Page_Load(object sender, EventArgs e)
         {
             this.PreRender += Page_PreRender;
+
             if (!IsPostBack)
             {
                 CargarEstacionamientos();
 
-                if (Request.QueryString["legajo"] != null)
+                if (!string.IsNullOrEmpty(Request.QueryString["legajo"]))
                 {
-                    int legajo = int.Parse(Request.QueryString["legajo"]);
-                    CargarDatos(legajo);
-                    txtLegajo.Enabled = true;
+                    int legajoEdicion = int.Parse(Request.QueryString["legajo"]);
+                    CargarDatos(legajoEdicion);
+
+                    txtLegajo.Text = legajoEdicion.ToString();
+                    txtLegajo.Enabled = false; // Edición: no se puede cambiar legajo
+                    hfLegajo.Value = legajoEdicion.ToString();
+                }
+                else
+                {
+                    txtLegajo.Enabled = true;  // Alta: se puede ingresar legajo
                 }
             }
         }
@@ -67,16 +75,33 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         {
             lblError.Visible = true;
 
-            // Validaciones iniciales de entrada
-            if (!int.TryParse(txtLegajo.Text, out int legajo))
+            bool esAlta = string.IsNullOrEmpty(Request.QueryString["legajo"]);
+
+            int legajo;
+
+            if (esAlta)
             {
-                lblError.Text = "El Legajo debe ser un número entero válido.";
-                return;
+                // En alta, el legajo viene del TextBox (editable)
+                if (string.IsNullOrWhiteSpace(txtLegajo.Text) || !int.TryParse(txtLegajo.Text, out legajo))
+                {
+                    lblError.Text = "El Legajo debe ser un número entero válido.";
+                    return;
+                }
+            }
+            else
+            {
+                // En edición, el legajo viene del HiddenField (txtLegajo está deshabilitado)
+                if (string.IsNullOrWhiteSpace(hfLegajo.Value) || !int.TryParse(hfLegajo.Value, out legajo))
+                {
+                    lblError.Text = "No se pudo obtener el Legajo para edición.";
+                    return;
+                }
             }
 
-            if (!int.TryParse(txtDni.Text, out int dni))
+            // Validar DNI obligatorio y válido
+            if (string.IsNullOrWhiteSpace(txtDni.Text) || !int.TryParse(txtDni.Text, out int dni) || dni <= 0)
             {
-                lblError.Text = "El DNI debe ser un número entero válido.";
+                lblError.Text = "El DNI es obligatorio y debe ser un número entero válido mayor que cero.";
                 return;
             }
 
@@ -85,92 +110,113 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
             string apellido = txtApellido.Text;
             string nombre = txtNombre.Text;
 
-            // Determinar si es alta o edición
-            bool esAlta = Request.QueryString["legajo"] == null;
-
-            int? legajoOriginal = null;
-            if (!esAlta)
-            {
-                legajoOriginal = int.Parse(Request.QueryString["legajo"]);
-            }
-
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 Usuarios usuarioExistente = db.Usuarios.FirstOrDefault(u => u.Usu_legajo == legajo);
-                Playero playeroExistente = db.Playero.FirstOrDefault(p => p.Playero_legajo == legajo);
 
-                // Validar si se está intentando usar un legajo ya existente en edición
-                if (!esAlta && legajoOriginal != legajo && usuarioExistente != null)
+                int? legajoOriginal = null;
+                if (!esAlta)
                 {
-                    lblError.Text = "Ya existe un Playero con ese Legajo. Por favor, ingrese uno diferente.";
-                    return;
-                }
-
-                // Validar si el legajo ya existe en alta
-                if (esAlta && usuarioExistente != null)
-                {
-                    lblError.Text = "Ya existe un Playero con ese Legajo. Por favor, ingrese uno diferente.";
-                    return;
-                }
-
-                // Validar si el DNI ya está en uso por otro legajo
-                bool dniDuplicado = db.Usuarios.Any(u => u.Usu_dni == dni && u.Usu_legajo != legajoOriginal);
-                if (dniDuplicado)
-                {
-                    lblError.Text = "Ya existe un Playero con ese DNI. Por favor, ingrese uno diferente.";
-                    return;
-                }
-
-                if (esAlta)
-                {
-                    // Alta
-                    var nuevoUsuario = new Usuarios
+                    legajoOriginal = int.Parse(Request.QueryString["legajo"]);
+                    if (legajoOriginal != legajo && usuarioExistente != null)
                     {
-                        Usu_legajo = legajo,
-                        Usu_dni = dni,
-                        Usu_pass = pass,
-                        Usu_ap = apellido,
-                        Usu_nom = nombre,
-                        Usu_tipo = "Playero"
-                    };
-
-                    var nuevoPlayero = new Playero
-                    {
-                        Playero_legajo = legajo,
-                        Est_id = estId,
-                        Usuarios = nuevoUsuario
-                    };
-
-                    db.Usuarios.Add(nuevoUsuario);
-                    db.Playero.Add(nuevoPlayero);
+                        lblError.Text = "Ya existe un Playero con ese Legajo. Por favor, ingrese uno diferente.";
+                        return;
+                    }
                 }
                 else
                 {
-                    // Edición
-                    Usuarios usuarioEdicion = db.Usuarios.FirstOrDefault(u => u.Usu_legajo == legajoOriginal);
-                    Playero playeroEdicion = db.Playero.FirstOrDefault(p => p.Playero_legajo == legajoOriginal);
-
-                    if (usuarioEdicion != null)
+                    if (usuarioExistente != null)
                     {
-                        usuarioEdicion.Usu_legajo = legajo; // permite cambiar el legajo
-                        usuarioEdicion.Usu_dni = dni;
-                        usuarioEdicion.Usu_pass = pass;
-                        usuarioEdicion.Usu_ap = apellido;
-                        usuarioEdicion.Usu_nom = nombre;
-                        usuarioEdicion.Usu_tipo = "Playero";
-                    }
-
-                    if (playeroEdicion != null)
-                    {
-                        playeroEdicion.Playero_legajo = legajo;
-                        playeroEdicion.Est_id = estId;
+                        lblError.Text = "Ya existe un Playero con ese Legajo. Por favor, ingrese uno diferente.";
+                        return;
                     }
                 }
 
-                db.SaveChanges();
-            }
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
 
-            Response.Redirect("Playero_CRUD.aspx");
+                        if (esAlta)
+                        {
+                            var nuevoUsuario = new Usuarios();
+                            nuevoUsuario.Usu_legajo = legajo;
+                            nuevoUsuario.Usu_dni = dni;
+                            nuevoUsuario.Usu_pass = pass;
+                            nuevoUsuario.Usu_ap = apellido;
+                            nuevoUsuario.Usu_nom = nombre;
+                            nuevoUsuario.Usu_tipo = "Playero";
+
+                            db.Usuarios.Add(nuevoUsuario);
+
+                            var nuevoPlayero = new Playero
+                            {
+                                Playero_legajo = legajo,
+                                Est_id = estId
+                            };
+
+                            db.Playero.Add(nuevoPlayero);
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+                            Usuarios usuarioEdicion = db.Usuarios.FirstOrDefault(u => u.Usu_legajo == legajoOriginal);
+                            Playero playeroEdicion = db.Playero.FirstOrDefault(p => p.Playero_legajo == legajoOriginal);
+
+                            if (usuarioEdicion != null)
+                            {
+                                usuarioEdicion.Usu_legajo = legajo;
+                                usuarioEdicion.Usu_dni = dni;
+                                usuarioEdicion.Usu_pass = pass;
+                                usuarioEdicion.Usu_ap = apellido;
+                                usuarioEdicion.Usu_nom = nombre;
+                                usuarioEdicion.Usu_tipo = "Playero";
+                            }
+
+                            if (playeroEdicion != null)
+                            {
+                                playeroEdicion.Playero_legajo = legajo;
+                                playeroEdicion.Est_id = estId;
+                            }
+
+                            db.SaveChanges();
+                        }
+
+                        transaction.Commit();
+                        Response.Redirect("Playero_CRUD.aspx");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        string mensajeErrorRaiz = ObtenerMensajeErrorCompleto(ex);
+
+                        if (mensajeErrorRaiz.Contains("UQ_usuarios_usu_dni"))
+                        {
+                            lblError.Text = "Ya existe un Playero con ese DNI. Por favor, ingrese uno diferente.";
+                        }
+                        else if (mensajeErrorRaiz.Contains("PK_Usuarios"))
+                        {
+                            lblError.Text = "Ya existe un Playero con ese Legajo. Por favor, ingrese uno diferente.";
+                        }
+                        else
+                        {
+                            lblError.Text = "Ocurrió un error al guardar los datos. Detalles: " + mensajeErrorRaiz;
+                        }
+                    }
+                }
+            }
         }
+
+
+        private string ObtenerMensajeErrorCompleto(Exception ex)
+        {
+            if (ex.InnerException == null)
+                return ex.Message;
+            else
+                return ObtenerMensajeErrorCompleto(ex.InnerException);
+        }
+
+
     }
 }
