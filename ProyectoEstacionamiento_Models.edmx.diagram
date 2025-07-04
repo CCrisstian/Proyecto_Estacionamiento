@@ -4,22 +4,22 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="ebba6c72293440d9809b06ad071ce3b4" Name="Diagram1">
+      <Diagram DiagramId="658c0a6c75a74f9b80c27609a80854dd" Name="Diagram1" ZoomLevel="97">
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Acepta_Metodo_De_Pago" Width="1.5" PointX="6" PointY="9.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Categoria_Vehiculo" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Dueño" Width="1.5" PointX="1.5" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Categoria_Vehiculo" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Dueño" Width="1.5" PointX="1.5" PointY="10.125" IsExpanded="true" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Estacionamiento" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Incidencias" Width="1.5" PointX="6" PointY="21.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Metodos_De_Pago" Width="1.5" PointX="3.75" PointY="18.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Ocupacion" Width="1.5" PointX="8.25" PointY="9" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Pago_Ocupacion" Width="1.5" PointX="6" PointY="18.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Playero" Width="1.5" PointX="3.75" PointY="23" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Plaza" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Incidencias" Width="1.5" PointX="6" PointY="21.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Metodos_De_Pago" Width="1.5" PointX="3.75" PointY="18.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Ocupacion" Width="1.5" PointX="8.25" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Pago_Ocupacion" Width="1.5" PointX="6" PointY="18" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Playero" Width="1.5" PointX="3.75" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Plaza" Width="1.5" PointX="3" PointY="5.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Tarifa" Width="1.5" PointX="6" PointY="5.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Tipos_Tarifa" Width="1.5" PointX="3.75" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Turno" Width="1.5" PointX="6" PointY="24" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Usuarios" Width="1.5" PointX="1.5" PointY="16.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo" Width="1.5" PointX="3" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Tipos_Tarifa" Width="1.5" PointX="3.75" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Turno" Width="1.5" PointX="6" PointY="23.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Usuarios" Width="1.5" PointX="1.5" PointY="16.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo" Width="1.5" PointX="3" PointY="13" IsExpanded="true" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo_Abonado" Width="1.5" PointX="11.25" PointY="9.5" IsExpanded="true" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Acepta_Metodo_De_Pago_Estacionamiento" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Acepta_Metodo_De_Pago_Metodos_De_Pago" ManuallyRouted="false" />
@@ -42,6 +42,7 @@
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Tarifa_Tipos_Tarifa" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Tarifa" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Playero_Estacionamiento" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

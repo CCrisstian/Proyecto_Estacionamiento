@@ -14,6 +14,12 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
             if (!IsPostBack)
             {
                 CargarPlazas(); // Cargamos las Plazas al cargar la página Plaza
+                string tipoUsuario = Session["Usu_tipo"] as string;
+                if (tipoUsuario != "Dueño")
+                {
+                    // Oculta los elementos si no es Dueño
+                    btnAgregar.Visible = false;
+                }
             }
         }
 
@@ -44,5 +50,24 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 // Redirigimos a la página de edición de Plaza con el ID de la Plaza seleccionada
             }
         }
+
+        protected void gvPlazas_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string tipoUsuario = Session["Usu_tipo"] as string;
+
+                // Si no es "Dueño", ocultar el botón Editar
+                if (tipoUsuario != "Dueño")
+                {
+                    Button btnEditar = (Button)e.Row.FindControl("btnEditar");
+                    if (btnEditar != null)
+                    {
+                        btnEditar.Visible = false;
+                    }
+                }
+            }
+        }
+
     }
 }

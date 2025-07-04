@@ -26,7 +26,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 var datos = db.Playero
                     .Select(p => new
                     {
-                        Est_id = p.Est_id,
+                        Est_nombre = p.Estacionamiento.Est_nombre,
                         Playero_legajo = p.Playero_legajo,
                         Usu_dni = p.Usuarios.Usu_dni,
                         Usu_pass = p.Usuarios.Usu_pass,

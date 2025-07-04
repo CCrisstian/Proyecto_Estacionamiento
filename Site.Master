@@ -50,7 +50,7 @@
                             style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">INICIO
                         </a>
                     </li>
-                    <li>
+                    <li id="menuEstacionamiento" runat="server">
                         <a runat="server" href="~/Pages/Estacionamiento/EstacionamientoCRUD.aspx"
                             style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">ESTACIONAMIENTO
                         </a>
@@ -65,7 +65,7 @@
                             style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">TARIFAS
                         </a>
                     </li>
-                    <li>
+                    <li id="menuPlayero" runat="server">
                         <a runat="server" href="~/Pages/Playeros/Playero_CRUD.aspx"
                             style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">PLAYERO
                         </a>

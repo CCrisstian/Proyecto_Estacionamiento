@@ -52,8 +52,9 @@
             <label for="txtClave">Contraseña</label>
             <br />
             <asp:TextBox ID="txtClave" runat="server" TextMode="Password" CssClass="form-control" Width="317px" />
-
+            <br />
             <asp:Button ID="btnLogin" runat="server" Text="Ingresar" CssClass="btn" OnClick="btnLogin_Click" Width="166px" />
+            <br />
             <asp:Label ID="lblMensaje" runat="server" ForeColor="Red"></asp:Label>
         </div>
     </form>

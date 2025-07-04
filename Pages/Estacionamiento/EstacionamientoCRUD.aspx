@@ -10,19 +10,24 @@
 
     <asp:GridView ID="gvEstacionamientos" runat="server" AutoGenerateColumns="False"
         OnRowCommand="gvEstacionamientos_RowCommand"
-        OnRowDeleting="gvEstacionamientos_RowDeleting"
         DataKeyNames="Est_id"
         CssClass="grid" Width="100%" OnSelectedIndexChanged="gvEstacionamientos_SelectedIndexChanged">
         <Columns>
-            <asp:BoundField DataField="Est_nombre" HeaderText="Nombre" />
             <asp:BoundField DataField="Est_provincia" HeaderText="Provincia" />
             <asp:BoundField DataField="Est_localidad" HeaderText="Localidad" />
             <asp:BoundField DataField="Est_direccion" HeaderText="Dirección" />
-
+            <asp:BoundField DataField="Est_nombre" HeaderText="Nombre" />
             <asp:BoundField DataField="Est_puntaje" HeaderText="Puntaje" />
 
-            <asp:CommandField ShowDeleteButton="True" ButtonType="Button" />
-            
+            <asp:TemplateField>
+                <ItemTemplate>
+                    <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="EliminarCustom"
+                        CommandArgument='<%# Eval("Est_id") %>'
+                        OnClientClick="return confirm('¿Está seguro que desea eliminar este Estacionamiento?');" />
+
+                </ItemTemplate>
+            </asp:TemplateField>
+
             <asp:TemplateField>
                 <ItemTemplate>
                     <asp:Button ID="btnEditar" runat="server" Text="Editar" CommandName="EditarCustom"

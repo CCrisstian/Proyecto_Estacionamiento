@@ -16,6 +16,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 {
                     lblTitulo.Text = "Editar Plaza";
                     int plazaId = int.Parse(Request.QueryString["id"]); // Guardamos el id de la Plaza desde la URL
+                    ddlEstacionamiento.Enabled = false; // Deshabilita el campo Estacionamiento
                     CargarPlaza(plazaId);   // Cargamos el id de la Plaza para poder Editarla
                 }
                 else
@@ -73,7 +74,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
             using (var db = new ProyectoEstacionamientoEntities()) // Conexión a la Base de Datos
             {
                 Proyecto_Estacionamiento.Plaza plaza;   // Creamos una nueva Plaza
-                if (Request.QueryString["id"] != null)  // Si existe el parámetro id en la URL, significa que el usuario está editando una Plaza existente.
+                if (Request.QueryString["id"] != null)  // Si existe el parámetro id, significa que se está Editando.
                 {
                     // Editar
                     int plazaId = int.Parse(Request.QueryString["id"]);
@@ -88,11 +89,11 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 {
                     // Agregar
                     plaza = new Proyecto_Estacionamiento.Plaza();
+                    plaza.Est_id = int.Parse(ddlEstacionamiento.SelectedValue); // Solo en Agregar
                     db.Plaza.Add(plaza);    // Se agrega al contexto de la Base de Datos, pero aún no se guarda nada.
                 }
 
                 // Toma los valores seleccionados por el usuario o ya presentes en los campos de la página y los asigna a la entidad Plaza.
-                plaza.Est_id = int.Parse(ddlEstacionamiento.SelectedValue);
                 plaza.Categoria_id = int.Parse(ddlCategoria.SelectedValue);
                 plaza.Plaza_Nombre = txtNombre.Text;
                 plaza.Plaza_Tipo = txtTipo.Text;

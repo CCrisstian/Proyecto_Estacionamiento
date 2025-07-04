@@ -36,8 +36,6 @@
             <br />
             <br />
 
-
-
             <asp:Label runat="server" Text="Días de Atención (Inicio - Fin):" />
             <asp:DropDownList ID="ddlDiaInicio" runat="server">
                 <asp:ListItem>Lunes</asp:ListItem>
@@ -45,8 +43,6 @@
                 <asp:ListItem>Miércoles</asp:ListItem>
                 <asp:ListItem>Jueves</asp:ListItem>
                 <asp:ListItem>Viernes</asp:ListItem>
-                <asp:ListItem>Sábado</asp:ListItem>
-                <asp:ListItem>Domingo</asp:ListItem>
             </asp:DropDownList>
             <asp:DropDownList ID="ddlDiaFin" runat="server">
                 <asp:ListItem>Lunes</asp:ListItem>
@@ -54,8 +50,6 @@
                 <asp:ListItem>Miércoles</asp:ListItem>
                 <asp:ListItem>Jueves</asp:ListItem>
                 <asp:ListItem>Viernes</asp:ListItem>
-                <asp:ListItem>Sábado</asp:ListItem>
-                <asp:ListItem>Domingo</asp:ListItem>
             </asp:DropDownList>
             <br />
             <br />
@@ -68,7 +62,8 @@
 
             <asp:CheckBox ID="chkDiasFeriado" runat="server" Text="Atiende en días feriados" />
             <br />
-            <asp:CheckBox ID="chkFinDeSemana" runat="server" Text="Atiende fines de semana" />
+
+            <asp:CheckBox ID="chkFinDeSemana" runat="server" AutoPostBack="true" OnCheckedChanged="chkFinDeSemana_CheckedChanged" Text="Atiende fines de semana" />
             <br />
             <br />
 
@@ -80,6 +75,8 @@
 
             <!-- Mensajes de Error -->
             <asp:Label ID="lblMensaje" runat="server" ForeColor="Red" />
+            <br />
+            <br />
 
             <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" />
 

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Acepta_Metodo_De_Pago">
           <Key>
             <PropertyRef Name="Est_id" />
@@ -38,7 +38,6 @@
           <Property Name="Est_provincia" Type="varchar" MaxLength="100" />
           <Property Name="Est_localidad" Type="varchar" MaxLength="100" />
           <Property Name="Est_direccion" Type="varchar" MaxLength="100" />
-          <Property Name="Est_horario" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="Est_puntaje" Type="float" Nullable="false" />
           <Property Name="Est_Dias_Atencion" Type="varchar" MaxLength="100" />
           <Property Name="Est_Hra_Atencion" Type="varchar" MaxLength="50" />
@@ -165,7 +164,9 @@
           <Property Name="Tarifa_id" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_Acepta_Metodo_De_Pago_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Acepta_Metodo_De_Pago" Type="Self.Acepta_Metodo_De_Pago" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -275,7 +276,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Pago_Ocupacion_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Pago_Ocupacion" Type="Self.Pago_Ocupacion" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -295,6 +298,20 @@
             </Principal>
             <Dependent Role="Pago_Ocupacion">
               <PropertyRef Name="Metodo_Pago_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Playero_Estacionamiento">
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Playero" Type="Self.Playero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estacionamiento">
+              <PropertyRef Name="Est_id" />
+            </Principal>
+            <Dependent Role="Playero">
+              <PropertyRef Name="Est_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -323,7 +340,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Plaza_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Plaza" Type="Self.Plaza" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -347,7 +366,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Tarifa_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1" />
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Tarifa" Type="Self.Tarifa" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -479,6 +500,10 @@
             <End Role="Metodos_De_Pago" EntitySet="Metodos_De_Pago" />
             <End Role="Pago_Ocupacion" EntitySet="Pago_Ocupacion" />
           </AssociationSet>
+          <AssociationSet Name="FK_Playero_Estacionamiento" Association="Self.FK_Playero_Estacionamiento">
+            <End Role="Estacionamiento" EntitySet="Estacionamiento" />
+            <End Role="Playero" EntitySet="Playero" />
+          </AssociationSet>
           <AssociationSet Name="FK_Playero_Usuarios" Association="Self.FK_Playero_Usuarios">
             <End Role="Usuarios" EntitySet="Usuarios" />
             <End Role="Playero" EntitySet="Playero" />
@@ -520,8 +545,7 @@
             <End Role="Vehiculo" EntitySet="Vehiculo" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProyectoEstacionamientoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -565,7 +589,6 @@
           <Property Name="Est_provincia" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Est_localidad" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Est_direccion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Est_horario" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Est_puntaje" Type="Double" Nullable="false" />
           <Property Name="Est_Dias_Atencion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Est_Hra_Atencion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -577,6 +600,7 @@
           <NavigationProperty Name="Pago_Ocupacion" Relationship="Self.FK_Pago_Ocupacion_Estacionamiento" FromRole="Estacionamiento" ToRole="Pago_Ocupacion" />
           <NavigationProperty Name="Plaza" Relationship="Self.FK_Plaza_Estacionamiento" FromRole="Estacionamiento" ToRole="Plaza" />
           <NavigationProperty Name="Tarifa" Relationship="Self.FK_Tarifa_Estacionamiento" FromRole="Estacionamiento" ToRole="Tarifa" />
+          <NavigationProperty Name="Playero" Relationship="ProyectoEstacionamientoModel.FK_Playero_Estacionamiento" FromRole="Estacionamiento" ToRole="Playero" />
         </EntityType>
         <EntityType Name="Incidencias">
           <Key>
@@ -636,6 +660,7 @@
           <NavigationProperty Name="Incidencias" Relationship="Self.FK_Incidencias_Playero" FromRole="Playero" ToRole="Incidencias" />
           <NavigationProperty Name="Usuarios" Relationship="Self.FK_Playero_Usuarios" FromRole="Playero" ToRole="Usuarios" />
           <NavigationProperty Name="Turno" Relationship="Self.FK_Turno_Playero" FromRole="Playero" ToRole="Turno" />
+          <NavigationProperty Name="Estacionamiento" Relationship="ProyectoEstacionamientoModel.FK_Playero_Estacionamiento" FromRole="Playero" ToRole="Estacionamiento" />
         </EntityType>
         <EntityType Name="Plaza">
           <Key>
@@ -1081,7 +1106,23 @@
             <End Role="Vehiculo" EntitySet="Vehiculo" />
             <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
           </AssociationSet>
+          <AssociationSet Name="FK_Playero_Estacionamiento" Association="ProyectoEstacionamientoModel.FK_Playero_Estacionamiento">
+            <End Role="Estacionamiento" EntitySet="Estacionamiento" />
+            <End Role="Playero" EntitySet="Playero" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="FK_Playero_Estacionamiento">
+          <End Type="ProyectoEstacionamientoModel.Estacionamiento" Role="Estacionamiento" Multiplicity="0..1" />
+          <End Type="ProyectoEstacionamientoModel.Playero" Role="Playero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estacionamiento">
+              <PropertyRef Name="Est_id" />
+            </Principal>
+            <Dependent Role="Playero">
+              <PropertyRef Name="Est_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1122,7 +1163,6 @@
                 <ScalarProperty Name="Est_provincia" ColumnName="Est_provincia" />
                 <ScalarProperty Name="Est_localidad" ColumnName="Est_localidad" />
                 <ScalarProperty Name="Est_direccion" ColumnName="Est_direccion" />
-                <ScalarProperty Name="Est_horario" ColumnName="Est_horario" />
                 <ScalarProperty Name="Est_puntaje" ColumnName="Est_puntaje" />
                 <ScalarProperty Name="Est_Dias_Atencion" ColumnName="Est_Dias_Atencion" />
                 <ScalarProperty Name="Est_Hra_Atencion" ColumnName="Est_Hra_Atencion" />

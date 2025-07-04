@@ -16,7 +16,7 @@
         OnRowDataBound="gvPlayeros_RowDataBound"
         OnRowDeleting="gvPlayeros_RowDeleting">
         <Columns>
-            <asp:BoundField DataField="Est_id" HeaderText="Estacionamiento" />
+            <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />
             <asp:BoundField DataField="Playero_legajo" HeaderText="Legajo" />
             <asp:BoundField DataField="Usu_dni" HeaderText="DNI" />
             <asp:BoundField DataField="Usu_pass" HeaderText="Contraseña" />
@@ -27,11 +27,11 @@
             <asp:ButtonField ButtonType="Button" CommandName="Editar" Text="Editar" />
 
             <asp:TemplateField>
-    <ItemTemplate>
-        <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="Delete"
-            OnClientClick="return confirm('¿Está seguro que desea eliminar este playero?');" />
-    </ItemTemplate>
-</asp:TemplateField>
+                <ItemTemplate>
+                    <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="Delete"
+                        OnClientClick="return confirm('¿Está seguro que desea eliminar este playero?');" />
+                </ItemTemplate>
+            </asp:TemplateField>
 
         </Columns>
     </asp:GridView>

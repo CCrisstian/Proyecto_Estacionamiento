@@ -7,7 +7,9 @@
     <br />
     <br />
 
-    <asp:GridView ID="gvTarifas" runat="server" AutoGenerateColumns="False" OnRowCommand="gvTarifas_RowCommand" Width="900px">
+    <asp:GridView ID="gvTarifas" runat="server" AutoGenerateColumns="False" OnRowCommand="gvTarifas_RowCommand"
+        OnRowDataBound="gvPlazas_RowDataBound"
+        Width="900px">
         <Columns>
 
             <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />

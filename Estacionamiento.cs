@@ -21,6 +21,7 @@ namespace Proyecto_Estacionamiento
             this.Pago_Ocupacion = new HashSet<Pago_Ocupacion>();
             this.Plaza = new HashSet<Plaza>();
             this.Tarifa = new HashSet<Tarifa>();
+            this.Playero = new HashSet<Playero>();
         }
     
         public int Est_id { get; set; }
@@ -29,7 +30,6 @@ namespace Proyecto_Estacionamiento
         public string Est_provincia { get; set; }
         public string Est_localidad { get; set; }
         public string Est_direccion { get; set; }
-        public string Est_horario { get; set; }
         public double Est_puntaje { get; set; }
         public string Est_Dias_Atencion { get; set; }
         public string Est_Hra_Atencion { get; set; }
@@ -46,5 +46,7 @@ namespace Proyecto_Estacionamiento
         public virtual ICollection<Plaza> Plaza { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Tarifa> Tarifa { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Playero> Playero { get; set; }
     }
 }

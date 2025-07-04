@@ -14,6 +14,12 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
             if (!IsPostBack)    // Verifica si es la primera vez que se carga la página
             {
                 CargarTarifas(); // Llama al método para cargar las Tarifas
+                string tipoUsuario = Session["Usu_tipo"] as string;
+                if (tipoUsuario != "Dueño")
+                {
+                    // Oculta los elementos si no es Dueño
+                    btnAgregarTarifa.Visible = false;
+                }
             }
         }
 
@@ -52,6 +58,24 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 Response.Redirect($"Tarifa_Crear_Editar.aspx?id={tarifaId}");
             }
             
+        }
+
+        protected void gvPlazas_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string tipoUsuario = Session["Usu_tipo"] as string;
+
+                // Si no es "Dueño", ocultar el botón Editar
+                if (tipoUsuario != "Dueño")
+                {
+                    Button btnEditar = (Button)e.Row.FindControl("btnEditar");
+                    if (btnEditar != null)
+                    {
+                        btnEditar.Visible = false;
+                    }
+                }
+            }
         }
     }
 }

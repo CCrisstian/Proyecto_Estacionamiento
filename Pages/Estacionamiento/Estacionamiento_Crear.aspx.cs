@@ -22,6 +22,8 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     ddlHoraFin_FinDeSemana.Items.Add(horaTexto);
                 }
 
+                ToggleHoraControls(false);
+
                 // Modo Edición
                 if (Request.QueryString["id"] != null)
                 {
@@ -33,9 +35,24 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 
         }
 
+
+        protected void chkFinDeSemana_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleHoraControls(chkFinDeSemana.Checked);
+        }
+
+        private void ToggleHoraControls(bool visible)
+        {
+            ddlHoraInicio_FinDeSemana.Visible = visible;
+            ddlHoraFin_FinDeSemana.Visible = visible;
+        }
+
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             lblMensaje.Text = ""; // Limpiar Mensaje de Error previo
+
+            bool finDeSemana = chkFinDeSemana.Checked; // Verificar si se seleccionó Atencion Fin de semana
+
 
             // 1. Validación de campos obligatorios
             if (string.IsNullOrWhiteSpace(txtNombre.Text) || string.IsNullOrWhiteSpace(txtDireccion.Text))
@@ -53,14 +70,24 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                 return;
             }
 
-            // 3. Validar horario fin de semana (opcional, si quieres validar)
-            int horaInicioFinde = int.Parse(ddlHoraInicio_FinDeSemana.SelectedValue.Substring(0, 2));
-            int horaFinFinde = int.Parse(ddlHoraFin_FinDeSemana.SelectedValue.Substring(0, 2));
-            if (horaInicioFinde >= horaFinFinde)
+            // 3. Validar horario fin de semana
+            string horaFinDeSemana = null; // valor por defecto
+
+            if (finDeSemana)
             {
-                lblMensaje.Text = "La hora de inicio de fin de semana debe ser menor que la hora de fin.";
-                return;
+                int horaInicioFinde = int.Parse(ddlHoraInicio_FinDeSemana.SelectedValue.Substring(0, 2));
+                int horaFinFinde = int.Parse(ddlHoraFin_FinDeSemana.SelectedValue.Substring(0, 2));
+
+                if (horaInicioFinde >= horaFinFinde)
+                {
+                    lblMensaje.Text = "La hora de inicio de fin de semana debe ser menor que la hora de fin.";
+                    return;
+                }
+
+                // Si todo está bien, armamos el string horario
+                horaFinDeSemana = ddlHoraInicio_FinDeSemana.SelectedValue + " - " + ddlHoraFin_FinDeSemana.SelectedValue;
             }
+
 
             // 4. Leer datos del formulario
             string nombre = txtNombre.Text.Trim();
@@ -70,8 +97,6 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             string horario = ddlHoraInicio.SelectedValue + " - " + ddlHoraFin.SelectedValue;
             string diasAtencion = ddlDiaInicio.SelectedValue + " a " + ddlDiaFin.SelectedValue;
             bool diasFeriado = chkDiasFeriado.Checked;
-            bool finDeSemana = chkFinDeSemana.Checked;
-            string horaFinDeSemana = ddlHoraInicio_FinDeSemana.SelectedValue + " - " + ddlHoraFin_FinDeSemana.SelectedValue;
 
             // 5. Validar y Obtener el legajo del Dueño desde la Sesión
             if (Session["Usu_legajo"] == null)
@@ -96,7 +121,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                             est.Est_direccion = direccion;
                             est.Est_provincia = provincia;
                             est.Est_localidad = localidad;
-                            est.Est_horario = horario;
+                            est.Est_Hra_Atencion = horario;
                             est.Est_Dias_Atencion = diasAtencion;
                             est.Est_Dias_Feriado_Atencion = diasFeriado;
                             est.Est_Fin_de_semana_Atencion = finDeSemana;
@@ -118,7 +143,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                             Est_direccion = direccion,
                             Est_provincia = provincia,
                             Est_localidad = localidad,
-                            Est_horario = horario,
+                            Est_Hra_Atencion = horario,
                             Est_puntaje = 0,
                             Est_Dias_Atencion = diasAtencion,
                             Est_Dias_Feriado_Atencion = diasFeriado,
@@ -155,7 +180,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     ddlLocalidad.SelectedValue = est.Est_localidad;
 
                     // Horario (Inicio - Fin)
-                    var horarioSplit = est.Est_horario.Split('-');
+                    var horarioSplit = est.Est_Hra_Atencion.Split('-');
                     ddlHoraInicio.SelectedValue = horarioSplit[0].Trim();
                     ddlHoraFin.SelectedValue = horarioSplit[1].Trim();
 
@@ -169,9 +194,15 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     chkFinDeSemana.Checked = est.Est_Fin_de_semana_Atencion ?? false;
 
                     // Horario Fin de Semana (Inicio - Fin)
-                    var findeSplit = est.Est_Hora_Fin_de_semana.Split('-');
-                    ddlHoraInicio_FinDeSemana.SelectedValue = findeSplit[0].Trim();
-                    ddlHoraFin_FinDeSemana.SelectedValue = findeSplit[1].Trim();
+                    if (!string.IsNullOrEmpty(est.Est_Hora_Fin_de_semana))
+                    {
+                        var findeSplit = est.Est_Hora_Fin_de_semana.Split('-');
+                        if (findeSplit.Length == 2)
+                        {
+                            ddlHoraInicio_FinDeSemana.SelectedValue = findeSplit[0].Trim();
+                            ddlHoraFin_FinDeSemana.SelectedValue = findeSplit[1].Trim();
+                        }
+                    }
 
                     ViewState["Est_id"] = est.Est_id; // Guardamos el ID
                 }

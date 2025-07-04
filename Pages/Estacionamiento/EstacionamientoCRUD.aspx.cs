@@ -42,36 +42,37 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 
         }
 
-        // Evento para manejar la Edición de un Estacionamiento desde la grilla
+        // Evento para manejar la Edición o Eliminación de un Estacionamiento desde la grilla
         protected void gvEstacionamientos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            // Eliminar Estacionamiento
+            if (e.CommandName == "EliminarCustom")
+            {
+                int id = Convert.ToInt32(e.CommandArgument);
+
+                using (var db = new ProyectoEstacionamientoEntities())
+                {
+                    var est = db.Estacionamiento.FirstOrDefault(x => x.Est_id == id);
+                    if (est != null)
+                    {
+                        db.Estacionamiento.Remove(est);
+                        db.SaveChanges();
+                    }
+                }
+
+                CargarEstacionamientos(); // Refrescar grilla
+            }
+
+            // Redirigir a editar
             if (e.CommandName == "EditarCustom")
             {
                 int index = Convert.ToInt32(e.CommandArgument);
-                int id = Convert.ToInt32(gvEstacionamientos.DataKeys[index].Value);
-
-                // Redirigir a la página de edición con el ID en la query string
-                Response.Redirect($"Estacionamiento_Crear.aspx?id={id}");
+                int est_id = Convert.ToInt32(gvEstacionamientos.DataKeys[index].Value);
+                Response.Redirect($"Estacionamiento_Crear.aspx?edit={est_id}");
             }
         }
 
-        // Evento para manejar la eliminación de un Estacionamiento desde la grilla
-        protected void gvEstacionamientos_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            int id = Convert.ToInt32(gvEstacionamientos.DataKeys[e.RowIndex].Value);
 
-            using (var db = new ProyectoEstacionamientoEntities())
-            {
-                var est = db.Estacionamiento.Find(id);
-                if (est != null)
-                {
-                    db.Estacionamiento.Remove(est);
-                    db.SaveChanges();
-                }
-            }
-
-            CargarEstacionamientos(); // Refrescar grilla
-        }
 
 
     }

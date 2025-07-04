@@ -12,6 +12,17 @@ namespace Proyecto_Estacionamiento
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                string tipoUsuario = Session["Usu_tipo"] as string;
+
+                if (tipoUsuario != "Dueño")
+                {
+                    // Oculta los elementos si no es Dueño
+                    menuEstacionamiento.Visible = false;
+                    menuPlayero.Visible = false;
+                }
+            }
         }
 
         protected void btnLogout_Click(object sender, EventArgs e)
