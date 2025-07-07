@@ -73,16 +73,17 @@
             <br />
             <br />
 
+            <asp:CheckBox ID="chkDisponibilidad" runat="server" Text="Disponibilidad" />
+            <br />
+
             <!-- Mensajes de Error -->
             <asp:Label ID="lblMensaje" runat="server" ForeColor="Red" />
             <br />
             <br />
 
-            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" />
-
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" />
-
+            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" />
+        
         </asp:Panel>
-
     </div>
 </asp:Content>

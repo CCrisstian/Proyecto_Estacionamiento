@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="be25abdd5d914b04a4765e7509dfef6c" Name="Diagram1">
+      <Diagram DiagramId="98a29b877da344258ad1078d6c39c247" Name="Diagram1">
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Acepta_Metodo_De_Pago" Width="1.5" PointX="7.5" PointY="12" IsExpanded="true" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Categoria_Vehiculo" Width="1.5" PointX="8.25" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Dueño" Width="1.5" PointX="3" PointY="12.25" IsExpanded="true" />

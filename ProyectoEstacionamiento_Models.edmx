@@ -44,6 +44,7 @@
           <Property Name="Est_Dias_Feriado_Atencion" Type="bit" />
           <Property Name="Est_Fin_de_semana_Atencion" Type="bit" />
           <Property Name="Est_Hora_Fin_de_semana" Type="varchar" MaxLength="100" />
+          <Property Name="Est_Disponibilidad" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Incidencias">
           <Key>
@@ -138,12 +139,12 @@
           <Key>
             <PropertyRef Name="Usu_legajo" />
           </Key>
+          <Property Name="Usu_legajo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Usu_dni" Type="int" />
           <Property Name="Usu_pass" Type="varchar" MaxLength="12" />
           <Property Name="Usu_ap" Type="varchar" MaxLength="25" />
           <Property Name="Usu_nom" Type="varchar" MaxLength="25" />
           <Property Name="Usu_tipo" Type="varchar" MaxLength="50" />
-          <Property Name="Usu_legajo" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Vehiculo">
           <Key>
@@ -164,9 +165,7 @@
           <Property Name="Tarifa_id" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_Acepta_Metodo_De_Pago_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
           <End Role="Acepta_Metodo_De_Pago" Type="Self.Acepta_Metodo_De_Pago" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -276,9 +275,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Pago_Ocupacion_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
           <End Role="Pago_Ocupacion" Type="Self.Pago_Ocupacion" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -302,9 +299,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Playero_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1" />
           <End Role="Playero" Type="Self.Playero" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -340,9 +335,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Plaza_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
           <End Role="Plaza" Type="Self.Plaza" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -366,9 +359,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Tarifa_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1" />
           <End Role="Tarifa" Type="Self.Tarifa" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -596,6 +587,7 @@
           <Property Name="Est_Dias_Feriado_Atencion" Type="Boolean" />
           <Property Name="Est_Fin_de_semana_Atencion" Type="Boolean" />
           <Property Name="Est_Hora_Fin_de_semana" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Est_Disponibilidad" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Acepta_Metodo_De_Pago" Relationship="Self.FK_Acepta_Metodo_De_Pago_Estacionamiento" FromRole="Estacionamiento" ToRole="Acepta_Metodo_De_Pago" />
           <NavigationProperty Name="Dueño" Relationship="Self.FK_Estacionamiento_Dueño" FromRole="Estacionamiento" ToRole="Dueño" />
           <NavigationProperty Name="Pago_Ocupacion" Relationship="Self.FK_Pago_Ocupacion_Estacionamiento" FromRole="Estacionamiento" ToRole="Pago_Ocupacion" />
@@ -720,12 +712,12 @@
           <Key>
             <PropertyRef Name="Usu_legajo" />
           </Key>
+          <Property Name="Usu_legajo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Usu_dni" Type="Int32" />
           <Property Name="Usu_pass" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
           <Property Name="Usu_ap" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="Usu_nom" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="Usu_tipo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Usu_legajo" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Dueño" Relationship="Self.FK_Dueño_Usuarios" FromRole="Usuarios" ToRole="Dueño" />
           <NavigationProperty Name="Playero" Relationship="Self.FK_Playero_Usuarios" FromRole="Usuarios" ToRole="Playero" />
         </EntityType>
@@ -753,9 +745,7 @@
           <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_Abonado_Vehiculo" FromRole="Vehiculo_Abonado" ToRole="Vehiculo" />
         </EntityType>
         <Association Name="FK_Acepta_Metodo_De_Pago_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
           <End Role="Acepta_Metodo_De_Pago" Type="Self.Acepta_Metodo_De_Pago" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -839,9 +829,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Pago_Ocupacion_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
           <End Role="Pago_Ocupacion" Type="Self.Pago_Ocupacion" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -853,9 +841,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Playero_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1" />
           <End Role="Playero" Type="Self.Playero" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -867,9 +853,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Plaza_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
           <End Role="Plaza" Type="Self.Plaza" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -881,9 +865,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Tarifa_Estacionamiento">
-          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="0..1" />
           <End Role="Tarifa" Type="Self.Tarifa" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Estacionamiento">
@@ -1180,6 +1162,7 @@
                 <ScalarProperty Name="Est_Dias_Feriado_Atencion" ColumnName="Est_Dias_Feriado_Atencion" />
                 <ScalarProperty Name="Est_Fin_de_semana_Atencion" ColumnName="Est_Fin_de_semana_Atencion" />
                 <ScalarProperty Name="Est_Hora_Fin_de_semana" ColumnName="Est_Hora_Fin_de_semana" />
+                <ScalarProperty Name="Est_Disponibilidad" ColumnName="Est_Disponibilidad" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1280,12 +1263,12 @@
           <EntitySetMapping Name="Usuarios">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Usuarios">
               <MappingFragment StoreEntitySet="Usuarios">
+                <ScalarProperty Name="Usu_legajo" ColumnName="Usu_legajo" />
                 <ScalarProperty Name="Usu_dni" ColumnName="Usu_dni" />
                 <ScalarProperty Name="Usu_pass" ColumnName="Usu_pass" />
                 <ScalarProperty Name="Usu_ap" ColumnName="Usu_ap" />
                 <ScalarProperty Name="Usu_nom" ColumnName="Usu_nom" />
                 <ScalarProperty Name="Usu_tipo" ColumnName="Usu_tipo" />
-                <ScalarProperty Name="Usu_legajo" ColumnName="Usu_legajo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -35,7 +35,6 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 
         }
 
-
         protected void chkFinDeSemana_CheckedChanged(object sender, EventArgs e)
         {
             ToggleHoraControls(chkFinDeSemana.Checked);
@@ -52,7 +51,6 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             lblMensaje.Text = ""; // Limpiar Mensaje de Error previo
 
             bool finDeSemana = chkFinDeSemana.Checked; // Verificar si se seleccionó Atencion Fin de semana
-
 
             // 1. Validación de campos obligatorios
             if (string.IsNullOrWhiteSpace(txtNombre.Text) || string.IsNullOrWhiteSpace(txtDireccion.Text))
@@ -97,6 +95,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             string horario = ddlHoraInicio.SelectedValue + " - " + ddlHoraFin.SelectedValue;
             string diasAtencion = ddlDiaInicio.SelectedValue + " a " + ddlDiaFin.SelectedValue;
             bool diasFeriado = chkDiasFeriado.Checked;
+            bool disponibilidad = chkDisponibilidad.Checked;
 
             // 5. Validar y Obtener el legajo del Dueño desde la Sesión
             if (Session["Usu_legajo"] == null)
@@ -111,7 +110,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             {
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
-                    if (ViewState["Est_id"] != null)
+                    if (ViewState["Est_id"] != null)    // Editar un Estacionamiento existente
                     {
                         int id = (int)ViewState["Est_id"];
                         var est = db.Estacionamiento.Find(id);
@@ -126,6 +125,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                             est.Est_Dias_Feriado_Atencion = diasFeriado;
                             est.Est_Fin_de_semana_Atencion = finDeSemana;
                             est.Est_Hora_Fin_de_semana = horaFinDeSemana;
+                            est.Est_Disponibilidad = disponibilidad;
                             db.SaveChanges();
                         }
                         else
@@ -134,7 +134,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                             return;
                         }
                     }
-                    else
+                    else // Crear un nuevo Estacionamiento
                     {
                         var nuevoEstacionamiento = new Proyecto_Estacionamiento.Estacionamiento
                         {
@@ -148,7 +148,8 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                             Est_Dias_Atencion = diasAtencion,
                             Est_Dias_Feriado_Atencion = diasFeriado,
                             Est_Fin_de_semana_Atencion = finDeSemana,
-                            Est_Hora_Fin_de_semana = horaFinDeSemana
+                            Est_Hora_Fin_de_semana = horaFinDeSemana,
+                            Est_Disponibilidad = disponibilidad
                         };
                         db.Estacionamiento.Add(nuevoEstacionamiento);
                         db.SaveChanges();
@@ -192,6 +193,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     // Booleanos
                     chkDiasFeriado.Checked = est.Est_Dias_Feriado_Atencion ?? false;
                     chkFinDeSemana.Checked = est.Est_Fin_de_semana_Atencion ?? false;
+                    chkDisponibilidad.Checked = est.Est_Disponibilidad;
 
                     // Horario Fin de Semana (Inicio - Fin)
                     if (!string.IsNullOrEmpty(est.Est_Hora_Fin_de_semana))

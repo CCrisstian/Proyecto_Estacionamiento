@@ -42,38 +42,16 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 
         }
 
-        // Evento para manejar la Edición o Eliminación de un Estacionamiento desde la grilla
+        // Evento para manejar la Edición de un Estacionamiento desde la grilla
         protected void gvEstacionamientos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            // Eliminar Estacionamiento
-            if (e.CommandName == "EliminarCustom")
-            {
-                int id = Convert.ToInt32(e.CommandArgument);
-
-                using (var db = new ProyectoEstacionamientoEntities())
-                {
-                    var est = db.Estacionamiento.FirstOrDefault(x => x.Est_id == id);
-                    if (est != null)
-                    {
-                        db.Estacionamiento.Remove(est);
-                        db.SaveChanges();
-                    }
-                }
-
-                CargarEstacionamientos(); // Refrescar grilla
-            }
-
-            // Redirigir a editar
             if (e.CommandName == "EditarCustom")
             {
                 int index = Convert.ToInt32(e.CommandArgument);
                 int est_id = Convert.ToInt32(gvEstacionamientos.DataKeys[index].Value);
-                Response.Redirect($"Estacionamiento_Crear.aspx?edit={est_id}");
+                Response.Redirect($"Estacionamiento_Crear.aspx?id={est_id}");
             }
         }
-
-
-
 
     }
 }
