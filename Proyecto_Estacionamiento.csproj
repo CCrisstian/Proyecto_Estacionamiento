@@ -138,6 +138,7 @@
     <Content Include="Pages\Plaza\Plaza_Crear_Editar.aspx" />
     <Content Include="Pages\Tarifas\Tarifa_Listar.aspx" />
     <Content Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx" />
+    <Content Include="Pages\Turnos\Turno_Listar.aspx" />
     <Content Include="ProyectoEstacionamiento_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
@@ -313,6 +314,13 @@
     </Compile>
     <Compile Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx.designer.cs">
       <DependentUpon>Tarifa_Crear_Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Turnos\Turno_Listar.aspx.cs">
+      <DependentUpon>Turno_Listar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Turnos\Turno_Listar.aspx.designer.cs">
+      <DependentUpon>Turno_Listar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pago_Ocupacion.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>

@@ -32,7 +32,6 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                         Usu_pass = p.Usuarios.Usu_pass,
                         Usu_ap = p.Usuarios.Usu_ap,
                         Usu_nom = p.Usuarios.Usu_nom,
-                        Usu_tipo = "Playero" // Valor por defecto
                     })
                     .ToList();
                 gvPlayeros.DataSource = datos;
@@ -82,7 +81,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
             // Obtén el legajo del playero desde la fila seleccionada
             int playeroLegajo = Convert.ToInt32(gvPlayeros.DataKeys[e.RowIndex].Value);
 
-            using (var context = new ProyectoEstacionamientoEntities()) // Reemplaza por tu contexto real
+            using (var context = new ProyectoEstacionamientoEntities())
             {
 
                 var playero = context.Playero.FirstOrDefault(p => p.Playero_legajo == playeroLegajo);

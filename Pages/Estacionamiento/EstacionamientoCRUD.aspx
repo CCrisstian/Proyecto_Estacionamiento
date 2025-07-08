@@ -11,7 +11,9 @@
     <asp:GridView ID="gvEstacionamientos" runat="server" AutoGenerateColumns="False"
         OnRowCommand="gvEstacionamientos_RowCommand"
         DataKeyNames="Est_id"
-        CssClass="grid" Width="100%" OnSelectedIndexChanged="gvEstacionamientos_SelectedIndexChanged">
+        CssClass="grid" Width="100%" OnSelectedIndexChanged="gvEstacionamientos_SelectedIndexChanged" CellPadding="4" ForeColor="#333333" GridLines="None">
+        
+        <AlternatingRowStyle BackColor="White" />
         
         <Columns>
             <asp:BoundField DataField="Est_provincia" HeaderText="Provincia" />
@@ -29,6 +31,17 @@
             </asp:TemplateField>
 
         </Columns>
+
+        <EditRowStyle BackColor="#7C6F57" />
+        <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
+        <HeaderStyle BackColor="#009900" Font-Bold="True" ForeColor="White" />
+        <PagerStyle BackColor="#666666" ForeColor="White" HorizontalAlign="Center" />
+        <RowStyle BackColor="#E3EAEB" />
+        <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
+        <SortedAscendingCellStyle BackColor="#F8FAFA" />
+        <SortedAscendingHeaderStyle BackColor="#246B61" />
+        <SortedDescendingCellStyle BackColor="#D4DFE1" />
+        <SortedDescendingHeaderStyle BackColor="#15524A" />
 
     </asp:GridView>
 
