@@ -207,6 +207,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     }
 
                     ViewState["Est_id"] = est.Est_id; // Guardamos el ID
+                    ToggleHoraControls(chkFinDeSemana.Checked);
                 }
             }
         }
