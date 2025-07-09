@@ -32,6 +32,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                         Usu_pass = p.Usuarios.Usu_pass,
                         Usu_ap = p.Usuarios.Usu_ap,
                         Usu_nom = p.Usuarios.Usu_nom,
+                        Playero_Activo = p.Playero_activo
                     })
                     .ToList();
                 gvPlayeros.DataSource = datos;
@@ -57,42 +58,6 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 // Redirige al formulario de edición con el legajo como parámetro
                 Response.Redirect($"Playero_Crear_Editar.aspx?legajo={playeroLegajo}");
             }
-        }
-
-        protected void gvPlayeros_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                foreach (TableCell cell in e.Row.Cells)
-                {
-                    foreach (Control control in cell.Controls)
-                    {
-                        if (control is LinkButton btn && btn.CommandName == "Delete")
-                        {
-                            btn.OnClientClick = "return confirm('¿Está seguro que desea eliminar este playero?');";
-                        }
-                    }
-                }
-            }
-        }
-
-        protected void gvPlayeros_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            // Obtén el legajo del playero desde la fila seleccionada
-            int playeroLegajo = Convert.ToInt32(gvPlayeros.DataKeys[e.RowIndex].Value);
-
-            using (var context = new ProyectoEstacionamientoEntities())
-            {
-
-                var playero = context.Playero.FirstOrDefault(p => p.Playero_legajo == playeroLegajo);
-                if (playero != null)
-                    context.Playero.Remove(playero);
-
-                context.SaveChanges();
-            }
-
-            // Recarga la grilla
-            CargarGrilla();
         }
     }
 }

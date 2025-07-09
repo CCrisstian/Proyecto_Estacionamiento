@@ -15,13 +15,22 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
     {
 
         /// <summary>
-        /// Control GridViewTurnos.
+        /// Control lblMontoInicio.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewTurnos;
+        protected global::System.Web.UI.WebControls.Label lblMontoInicio;
+
+        /// <summary>
+        /// Control txtMontoInicio.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtMontoInicio;
 
         /// <summary>
         /// Control btnInicioTurno.
@@ -33,6 +42,24 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         protected global::System.Web.UI.WebControls.Button btnInicioTurno;
 
         /// <summary>
+        /// Control lblMontoFin.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMontoFin;
+
+        /// <summary>
+        /// Control txtMontoFin.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtMontoFin;
+
+        /// <summary>
         /// Control btnFinTurno.
         /// </summary>
         /// <remarks>
@@ -40,5 +67,14 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnFinTurno;
+
+        /// <summary>
+        /// Control GridViewTurnos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GridViewTurnos;
     }
 }

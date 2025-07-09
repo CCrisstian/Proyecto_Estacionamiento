@@ -12,9 +12,7 @@
 
     <asp:GridView ID="gvPlayeros" runat="server" AutoGenerateColumns="False"
         DataKeyNames="Playero_legajo"
-        OnRowCommand="gvPlayeros_RowCommand"
-        OnRowDataBound="gvPlayeros_RowDataBound"
-        OnRowDeleting="gvPlayeros_RowDeleting" CellPadding="4" ForeColor="#333333" GridLines="None">
+        OnRowCommand="gvPlayeros_RowCommand">
         <AlternatingRowStyle BackColor="White" />
         <Columns>
             <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />
@@ -23,15 +21,9 @@
             <asp:BoundField DataField="Usu_dni" HeaderText="DNI" />
             <asp:BoundField DataField="Usu_ap" HeaderText="Apellido" />
             <asp:BoundField DataField="Usu_nom" HeaderText="Nombre" />
+            <asp:BoundField DataField="Playero_Activo" HeaderText="Activo" />
 
             <asp:ButtonField ButtonType="Button" CommandName="Editar" Text="Editar" />
-
-            <asp:TemplateField>
-                <ItemTemplate>
-                    <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="Delete"
-                        OnClientClick="return confirm('¿Está seguro que desea eliminar este playero?');" />
-                </ItemTemplate>
-            </asp:TemplateField>
 
         </Columns>
 

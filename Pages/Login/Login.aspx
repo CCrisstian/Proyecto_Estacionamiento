@@ -17,6 +17,7 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 0 10px #ccc;
+            height: 323px;
         }
         .login-container h2 {
             text-align: center;
@@ -31,7 +32,7 @@
             border-color: inherit;
             border-width: medium;
             padding: 10px;
-            background-color: #007acc;
+            background-color: #009900;
             color: white;
             cursor: pointer;
             margin-left: 110px;
@@ -49,13 +50,19 @@
             <br />
             <asp:TextBox ID="txtUsuario" runat="server" CssClass="form-control" Width="318px" />
 
-            <label for="txtClave">Contraseña</label>
+            <label for="txtClave">
+
+            <br />
+            Contraseña</label>
             <br />
             <asp:TextBox ID="txtClave" runat="server" TextMode="Password" CssClass="form-control" Width="317px" />
+
+            <br />
+            <asp:Label ID="lblMensaje" runat="server" ForeColor="Red"></asp:Label>
+            <br />
             <br />
             <asp:Button ID="btnLogin" runat="server" Text="Ingresar" CssClass="btn" OnClick="btnLogin_Click" Width="166px" />
             <br />
-            <asp:Label ID="lblMensaje" runat="server" ForeColor="Red"></asp:Label>
         </div>
     </form>
 </body>

@@ -20,7 +20,22 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                     int legajoEdicion = int.Parse(Request.QueryString["legajo"]);
                     CargarDatos(legajoEdicion);
                 }
+                else
+                {
+                    // Modo alta: limpiar los campos
+                    LimpiarCampos();
+                }
             }
+        }
+
+        private void LimpiarCampos()
+        {
+            txtDni.Text = string.Empty;
+            txtPass.Text = string.Empty;
+            txtApellido.Text = string.Empty;
+            txtNombre.Text = string.Empty;
+            chkActivo.Checked = true; // Valor por defecto
+            ddlEstacionamientos.ClearSelection(); // Limpia el DropDownList si es necesario
         }
 
         protected void Page_PreRender(object sender, EventArgs e)
@@ -58,6 +73,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                     txtPass.Text = playero.Usuarios.Usu_pass;
                     txtApellido.Text = playero.Usuarios.Usu_ap;
                     txtNombre.Text = playero.Usuarios.Usu_nom;
+                    chkActivo.Checked = playero.Playero_activo;
                 }
             }
         }
@@ -118,6 +134,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                             var nuevoPlayero = new Playero
                             {
                                 Playero_legajo = nuevoUsuario.Usu_legajo, // Usar el legajo recién generado
+                                Playero_activo = chkActivo.Checked,
                                 Est_id = estId
                             };
 
@@ -141,6 +158,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
                             if (playeroEdicion != null)
                             {
+                                playeroEdicion.Playero_activo = chkActivo.Checked;
                                 playeroEdicion.Est_id = estId;
                             }
 
@@ -173,7 +191,6 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
             }
         }
 
-
         private string ObtenerMensajeErrorCompleto(Exception ex)
         {
             if (ex.InnerException == null)
@@ -181,7 +198,6 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
             else
                 return ObtenerMensajeErrorCompleto(ex.InnerException);
         }
-
 
     }
 }

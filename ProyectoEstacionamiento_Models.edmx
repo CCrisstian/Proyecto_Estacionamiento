@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Acepta_Metodo_De_Pago">
           <Key>
             <PropertyRef Name="Est_id" />
@@ -91,6 +91,7 @@
           </Key>
           <Property Name="Playero_legajo" Type="int" Nullable="false" />
           <Property Name="Est_id" Type="int" />
+          <Property Name="Playero_activo" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Plaza">
           <Key>
@@ -536,8 +537,7 @@
             <End Role="Vehiculo" EntitySet="Vehiculo" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProyectoEstacionamientoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -654,6 +654,7 @@
           <NavigationProperty Name="Incidencias" Relationship="Self.FK_Incidencias_Playero" FromRole="Playero" ToRole="Incidencias" />
           <NavigationProperty Name="Usuarios" Relationship="Self.FK_Playero_Usuarios" FromRole="Playero" ToRole="Usuarios" />
           <NavigationProperty Name="Turno" Relationship="Self.FK_Turno_Playero" FromRole="Playero" ToRole="Turno" />
+          <Property Name="Playero_activo" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Plaza">
           <Key>
@@ -1210,6 +1211,7 @@
           <EntitySetMapping Name="Playero">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Playero">
               <MappingFragment StoreEntitySet="Playero">
+                <ScalarProperty Name="Playero_activo" ColumnName="Playero_activo" />
                 <ScalarProperty Name="Playero_legajo" ColumnName="Playero_legajo" />
                 <ScalarProperty Name="Est_id" ColumnName="Est_id" />
               </MappingFragment>

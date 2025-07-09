@@ -21,14 +21,14 @@
             <td>
                 <asp:Label ID="lblDni" runat="server" Text="DNI:" /></td>
             <td>
-                <asp:TextBox ID="txtDni" runat="server" />
+                <asp:TextBox ID="txtDni" runat="server" autocomplete="off"/>
                 <asp:RequiredFieldValidator ID="rfvDNI" runat="server" ControlToValidate="txtDni"
                     ErrorMessage="El DNI es obligatorio." Display="Dynamic" CssClass="text-danger" />
             </td>
         </tr>
         <tr>
             <td>
-                <asp:Label ID="lblPass" runat="server" Text="Contraseña:" /></td>
+                <asp:Label ID="lblPass" runat="server" Text="Contraseña:" autocomplete="new-password"/></td>
             <td>
                 <asp:TextBox ID="txtPass" runat="server" TextMode="Password" />
                 <asp:RequiredFieldValidator ID="rfvPass" runat="server" ControlToValidate="txtPass"
@@ -53,6 +53,15 @@
                     ErrorMessage="El Nombre es obligatorio." Display="Dynamic" CssClass="text-danger" />
             </td>
         </tr>
+        <tr>
+            <td>
+                <asp:Label ID="lblActivo" runat="server" Text="Activo:" />
+            </td>
+            <td>
+                <asp:CheckBox ID="chkActivo" runat="server" />
+            </td>
+        </tr>
+
         <tr>
             <td>
                 <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" />

@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Turnos
 {
     public partial class Turno_Listar : System.Web.UI.Page
     {
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -18,9 +14,12 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 string tipoUsuario = Session["Usu_tipo"] as string;
                 if (tipoUsuario != "Playero")
                 {
-                    // Oculta los elementos si no es Playero
                     btnInicioTurno.Visible = false;
                     btnFinTurno.Visible = false;
+                    lblMontoInicio.Visible = false;
+                    lblMontoFin.Visible = false;
+                    txtMontoInicio.Visible = false;
+                    txtMontoFin.Visible = false;
                 }
             }
         }
@@ -53,6 +52,12 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         {
             try
             {
+                if (!double.TryParse(txtMontoInicio.Text, out double montoInicio) || montoInicio < 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Ingrese un monto de inicio válido y no negativo.');", true);
+                    return;
+                }
+
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
                     if (Session["Usu_legajo"] == null)
@@ -74,7 +79,6 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         return;
                     }
 
-                    // Asignar fecha con precisión truncada a segundos
                     DateTime fechaInicio = DateTime.Now;
                     fechaInicio = new DateTime(fechaInicio.Year, fechaInicio.Month, fechaInicio.Day,
                                                fechaInicio.Hour, fechaInicio.Minute, fechaInicio.Second);
@@ -83,13 +87,14 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     {
                         Playero_Legajo = legajoPlayero,
                         Turno_FechaHora_Inicio = fechaInicio,
-                        Caja_Monto_Inicio = 0   // Por ahora, el monto de inicio es 0
+                        Caja_Monto_Inicio = montoInicio
                     };
 
                     db.Turno.Add(nuevoTurno);
                     db.SaveChanges();
                 }
 
+                txtMontoInicio.Text = "";
                 CargarTurnos();
             }
             catch (Exception ex)
@@ -102,6 +107,12 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         {
             try
             {
+                if (!double.TryParse(txtMontoFin.Text, out double montoFin) || montoFin < 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Ingrese un monto de fin válido y no negativo.');", true);
+                    return;
+                }
+
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
                     if (Session["Usu_legajo"] == null)
@@ -127,15 +138,14 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     fechaFin = new DateTime(fechaFin.Year, fechaFin.Month, fechaFin.Day, fechaFin.Hour, fechaFin.Minute, fechaFin.Second);
 
                     turnoAbierto.Turno_FechaHora_fin = fechaFin;
+                    turnoAbierto.Caja_Monto_fin = montoFin;
 
-                    turnoAbierto.Caja_Monto_fin = 0;    // Por ahora, el Monto Fin es 0
-
-                    // Aquí se realizará el cálculo del Monto Total
-                    turnoAbierto.Caja_Monto_total = turnoAbierto.Caja_Monto_fin - (turnoAbierto.Caja_Monto_Inicio ?? 0);
+                    turnoAbierto.Caja_Monto_total = montoFin - (turnoAbierto.Caja_Monto_Inicio ?? 0);
 
                     db.SaveChanges();
                 }
 
+                txtMontoFin.Text = "";
                 CargarTurnos();
             }
             catch (Exception ex)
@@ -143,7 +153,5 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", $"alert('Error al finalizar turno: {ex.Message}');", true);
             }
         }
-
-
     }
 }

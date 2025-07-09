@@ -22,6 +22,7 @@ namespace Proyecto_Estacionamiento
     
         public int Playero_legajo { get; set; }
         public Nullable<int> Est_id { get; set; }
+        public bool Playero_activo { get; set; }
     
         public virtual Estacionamiento Estacionamiento { get; set; }
         public virtual Incidencias Incidencias { get; set; }
