@@ -57,6 +57,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
@@ -347,6 +348,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Servicios\Provincias_Localidades.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

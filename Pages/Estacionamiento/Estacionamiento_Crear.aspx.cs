@@ -4,15 +4,28 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Proyecto_Estacionamiento.Servicios;
 
 namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 {
     public partial class Estacionamiento_Crear : System.Web.UI.Page
     {
+        // Servicio para obtener Provincias y Localidades desde la API de Datos Abiertos del Gobierno Argentino
+        private Provincias_Localidades servicioProvinciasLocalidades = new Provincias_Localidades();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                // Cargar Provincias
+                var provincias = Task.Run(() => servicioProvinciasLocalidades.ObtenerProvinciasAsync()).Result;
+                ddlProvincia.DataSource = provincias;
+                ddlProvincia.DataBind();
+                ddlProvincia.Items.Insert(0, new ListItem("- Seleccione una provincia -", ""));
+
                 for (int hora = 0; hora < 24; hora++)
                 {
                     string horaTexto = hora.ToString("D2") + ":00";
@@ -32,7 +45,16 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     btnGuardar.Text = "Actualizar";
                 }
             }
+        }
 
+        protected void ddlProvincia_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string provincia = ddlProvincia.SelectedValue;
+            var localidades = Task.Run(() => servicioProvinciasLocalidades.ObtenerLocalidadesAsync(provincia)).Result;
+
+            ddlLocalidad.DataSource = localidades;
+            ddlLocalidad.DataBind();
+            ddlLocalidad.Items.Insert(0, new ListItem("- Seleccione una localidad -", ""));
         }
 
         protected void chkFinDeSemana_CheckedChanged(object sender, EventArgs e)
@@ -178,6 +200,12 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     txtNombre.Text = est.Est_nombre;
                     txtDireccion.Text = est.Est_direccion;
                     ddlProvincia.SelectedValue = est.Est_provincia;
+
+                    // Cargar las localidades ANTES de setear la seleccionada
+                    var localidades = Task.Run(() => servicioProvinciasLocalidades.ObtenerLocalidadesAsync(est.Est_provincia)).Result;
+                    ddlLocalidad.DataSource = localidades;
+                    ddlLocalidad.DataBind();
+                    ddlLocalidad.Items.Insert(0, new ListItem("- Seleccione una localidad -", ""));
                     ddlLocalidad.SelectedValue = est.Est_localidad;
 
                     // Horario (Inicio - Fin)

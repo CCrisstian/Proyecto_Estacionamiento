@@ -12,7 +12,7 @@
 
     <asp:GridView ID="gvPlayeros" runat="server" AutoGenerateColumns="False"
         DataKeyNames="Playero_legajo"
-        OnRowCommand="gvPlayeros_RowCommand">
+        OnRowCommand="gvPlayeros_RowCommand" Width="896px">
         <AlternatingRowStyle BackColor="White" />
         <Columns>
             <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />

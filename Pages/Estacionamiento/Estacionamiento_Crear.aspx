@@ -20,19 +20,11 @@
             <br />
 
             <asp:Label runat="server" Text="Provincia:" />
-            <asp:DropDownList ID="ddlProvincia" runat="server">
-                <asp:ListItem>Chaco</asp:ListItem>
-                <asp:ListItem>Corrientes</asp:ListItem>
-                <asp:ListItem>Formosa</asp:ListItem>
-            </asp:DropDownList>
+            <asp:DropDownList ID="ddlProvincia" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlProvincia_SelectedIndexChanged" />
 
             <asp:Label runat="server" Text="Localidad:" />
-            <asp:DropDownList ID="ddlLocalidad" runat="server">
-                <asp:ListItem>Resistencia</asp:ListItem>
-                <asp:ListItem>Barranqueras</asp:ListItem>
-                <asp:ListItem>Fontana</asp:ListItem>
-                <asp:ListItem>Vilelas</asp:ListItem>
-            </asp:DropDownList>
+            <asp:DropDownList ID="ddlLocalidad" runat="server" />
+
             <br />
             <br />
 
@@ -83,7 +75,7 @@
 
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" />
             <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" />
-        
+
         </asp:Panel>
     </div>
 </asp:Content>
