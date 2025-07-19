@@ -24,7 +24,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                 var provincias = Task.Run(() => servicioProvinciasLocalidades.ObtenerProvinciasAsync()).Result;
                 ddlProvincia.DataSource = provincias;
                 ddlProvincia.DataBind();
-                ddlProvincia.Items.Insert(0, new ListItem("- Seleccione una provincia -", ""));
+                ddlProvincia.Items.Insert(0, new ListItem("- Seleccione una Provincia -", ""));
 
                 for (int hora = 0; hora < 24; hora++)
                 {
@@ -54,7 +54,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 
             ddlLocalidad.DataSource = localidades;
             ddlLocalidad.DataBind();
-            ddlLocalidad.Items.Insert(0, new ListItem("- Seleccione una localidad -", ""));
+            ddlLocalidad.Items.Insert(0, new ListItem("- Seleccione una Localidad -", ""));
         }
 
         protected void chkFinDeSemana_CheckedChanged(object sender, EventArgs e)
