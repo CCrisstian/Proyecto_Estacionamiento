@@ -22,6 +22,41 @@ namespace Proyecto_Estacionamiento
                     menuEstacionamiento.Visible = false;
                     menuPlayero.Visible = false;
                 }
+
+                string currentUrl = Request.Url.AbsolutePath.ToLower();
+
+                if (currentUrl.Contains("/default/"))
+                {
+                    menuInicio.Attributes["class"] = "tab active";
+                }
+                else if (currentUrl.Contains("/estacionamiento/"))
+                {
+                    menuEstacionamiento.Attributes["class"] = "tab active";
+                }
+                else if (currentUrl.Contains("/plaza/"))
+                {
+                    menuPlaza.Attributes["class"] = "tab active";
+                }
+                else if (currentUrl.Contains("/tarifas/"))
+                {
+                    menuTarifa.Attributes["class"] = "tab active";
+                }
+                else if (currentUrl.Contains("/metodos_de_pago/"))
+                {
+                    menuMetodosDePago.Attributes["class"] = "tab active";
+                }
+                else if (currentUrl.Contains("/playeros/"))
+                {
+                    menuPlayero.Attributes["class"] = "tab active";
+                }
+                else if (currentUrl.Contains("/turnos/"))
+                {
+                    menuTurno.Attributes["class"] = "tab active";
+                }
+                else if (currentUrl.Contains("/abonados/"))
+                {
+                    menuAbonado.Attributes["class"] = "tab active";
+                }
             }
         }
 

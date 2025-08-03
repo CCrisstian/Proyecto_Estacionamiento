@@ -5,7 +5,7 @@ using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 {
-    public partial class AgregarMetodoPago : System.Web.UI.Page
+    public partial class MetodosDePago_CrearEditar : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -87,7 +87,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
             if (desde > hasta)
             {
-                lblError.Text = "La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.";
+                lblError.Text = "La Fecha 'Desde' no puede ser mayor que la Fecha 'Hasta'.";
                 lblError.Visible = true;
                 return;
             }
@@ -118,7 +118,11 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 }
 
                 context.SaveChanges();
-                Response.Redirect("MetodosDePago_Listar.aspx");
+
+                string accion = existente == null ? "Agregado" : "Editado";
+
+                // variable exito se usa para mostrar mensaje de éxito (SweetAlert)
+                Response.Redirect($"MetodosDePago_Listar.aspx?exito=1&accion={accion}");  
             }
         }
 

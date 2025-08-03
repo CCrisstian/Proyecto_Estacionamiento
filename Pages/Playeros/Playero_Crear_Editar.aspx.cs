@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Web.UI;
-using Proyecto_Estacionamiento;
 
 namespace Proyecto_Estacionamiento.Pages.Playeros
 {
@@ -166,7 +164,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                         }
 
                         transaction.Commit();
-                        Response.Redirect("Playero_CRUD.aspx");
+                        Response.Redirect("Playero_Listar.aspx");
                     }
                     catch (Exception ex)
                     {
@@ -190,7 +188,6 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 }
             }
         }
-
         private string ObtenerMensajeErrorCompleto(Exception ex)
         {
             if (ex.InnerException == null)

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
@@ -15,6 +11,12 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
             if (!IsPostBack)
             {
                 CargarGrilla();
+                string tipoUsuario = Session["Usu_tipo"] as string;
+                if (tipoUsuario != "Dueño")
+                {
+                    // Oculta los elementos si no es Dueño
+                    btnAgregar.Visible = false;
+                }
             }
         }
 
@@ -40,7 +42,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("AgregarMetodoPago.aspx");
+            Response.Redirect("MetodosDePago_CrearEditar.aspx");
         }
 
         protected void gvMetodosPago_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -53,7 +55,25 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 int estId = Convert.ToInt32(gvMetodosPago.DataKeys[rowIndex]["Est_id"]);
                 int metodoId = Convert.ToInt32(gvMetodosPago.DataKeys[rowIndex]["Metodo_Pago_id"]);
 
-                Response.Redirect($"AgregarMetodoPago.aspx?estId={estId}&metodoId={metodoId}");
+                Response.Redirect($"MetodosDePago_CrearEditar.aspx?estId={estId}&metodoId={metodoId}");
+            }
+        }
+
+        protected void gvMetodosPago_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string tipoUsuario = Session["Usu_tipo"] as string;
+
+                // Si no es "Dueño", ocultar el botón Editar
+                if (tipoUsuario != "Dueño")
+                {
+                    Button btnEditar = (Button)e.Row.FindControl("btnEditar");
+                    if (btnEditar != null)
+                    {
+                        btnEditar.Visible = false;
+                    }
+                }
             }
         }
 

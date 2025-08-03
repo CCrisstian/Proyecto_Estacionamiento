@@ -100,13 +100,13 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 plaza.Plaza_Disponibilidad = ddlDisponible.SelectedValue == "true";
 
                 db.SaveChanges(); // Guardado en la Base de Datos
-                Response.Redirect("~/Pages/Plaza/Plaza_CRUD.aspx");
+                Response.Redirect("~/Pages/Plaza/Plaza_Listar.aspx");
             }
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Plaza/Plaza_CRUD.aspx");
+            Response.Redirect("~/Pages/Plaza/Plaza_Listar.aspx");
         }
     }
 }

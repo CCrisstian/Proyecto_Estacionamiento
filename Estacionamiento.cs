@@ -37,6 +37,8 @@ namespace Proyecto_Estacionamiento
         public Nullable<bool> Est_Fin_de_semana_Atencion { get; set; }
         public string Est_Hora_Fin_de_semana { get; set; }
         public bool Est_Disponibilidad { get; set; }
+        public Nullable<double> Est_Latitud { get; set; }
+        public Nullable<double> Est_Longitud { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Acepta_Metodo_De_Pago> Acepta_Metodo_De_Pago { get; set; }

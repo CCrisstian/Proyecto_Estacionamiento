@@ -60,7 +60,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
             
         }
 
-        protected void gvPlazas_RowDataBound(object sender, GridViewRowEventArgs e)
+        protected void gvTarifas_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {

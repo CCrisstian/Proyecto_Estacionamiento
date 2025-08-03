@@ -8,7 +8,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %>  - Grupo4 - Proyecto_Estacionamiento_ACE</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+    <title><%: Page.Title %>Grupo4 - Proyecto_Estacionamiento_ACE</title>
+
+    <%-- CSS --%>
+    <link href="~/Content/planilla.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/tabs.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/formularios.css" rel="stylesheet" type="text/css" />
+
+    <%-- SWEETALERT2 --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
@@ -21,7 +32,7 @@
 
 <body>
     <form runat="server" autocomplete="off">
-        <asp:ScriptManager runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
             <Scripts>
                 <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
                 <%--Framework Scripts--%>
@@ -40,58 +51,45 @@
             </Scripts>
         </asp:ScriptManager>
 
-        <!-- HEADER de la pagina -->
-        <div class="container" style="background-color: #009900; color: #FFFFFF; font-style: normal">
-            <!-- Icono sobre el MENU -->
-            <asp:Image ID="Image1" runat="server" Height="79px" ImageUrl="~/Images/LogoACE_SinFondo.PNG" Width="90px" margin-left="0px;" />
-            <!-- MENU de navegación -->
-            <asp:Panel ID="PanelMenu" runat="server">
-                <ul style="display: flex; gap: 60px; list-style: none; padding: 0; margin: 0;">
-                    <li>
-                        <a runat="server" href="~/Pages/Default/Default.aspx"
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">INICIO
-                        </a>
-                    </li>
-                    <li id="menuEstacionamiento" runat="server">
-                        <a runat="server" href="~/Pages/Estacionamiento/EstacionamientoCRUD.aspx"
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">ESTACIONAMIENTO
-                        </a>
-                    </li>
-                    <li>
-                        <a runat="server" href="~/Pages/Plaza/Plaza_CRUD.aspx"
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">PLAZAS
-                        </a>
-                    </li>
-                    <li>
-                        <a runat="server" href="~/Pages/Tarifas/Tarifa_Listar.aspx"
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">TARIFAS
-                        </a>
-                    </li>
-                    <li>
-                        <a runat="server" href="~/Pages/Metodos_De_Pago/MetodosDePago_Listar.aspx"
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">METODOS DE PAGO
-                        </a>
-                    </li>
-                    <li id="menuPlayero" runat="server">
-                        <a runat="server" href="~/Pages/Playeros/Playero_CRUD.aspx"
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">PLAYERO
-                        </a>
-                    </li>
-                    <li>
-                        <a runat="server" href="~/Pages/Turnos/Turno_Listar.aspx"
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">TURNOS
-                        </a>
-                    </li>
-                    <li>
-                        <a runat="server" href=""
-                            style="display: inline; text-decoration: none; color: inherit; font-weight: 400; padding: 0;">ABONADOS
-                        </a>
-                    </li>
-                    <asp:Button ID="btnLogout" runat="server" Text="Cerrar sesión" OnClick="btnLogout_Click" />
-                </ul>
-            </asp:Panel>
+       <!-- HEADER de la página -->
+<div class="container" style="background-color: #009900; color: #FFFFFF;">
+    <!-- Icono sobre el MENU -->
+    <asp:Image ID="Image1" runat="server" Height="79px" ImageUrl="~/Images/LogoACE_SinFondo.PNG" Width="90px" />
 
-        </div>
+    <!-- Menú con estilo de pestañas -->
+    <asp:Panel ID="PanelMenu" runat="server" CssClass="tabs">
+        <ul style="display: flex; list-style: none; padding: 0; margin: 0;">
+            <li id="menuInicio" runat="server" class="tab">
+                <a runat="server" href="~/Pages/Default/Default.aspx">INICIO</a>
+            </li>
+            <li id="menuEstacionamiento" runat="server" class="tab">
+                <a runat="server" href="~/Pages/Estacionamiento/Estacionamiento_Listar.aspx">ESTACIONAMIENTO</a>
+            </li>
+            <li id="menuPlaza" runat="server" class="tab">
+                <a runat="server" href="~/Pages/Plaza/Plaza_Listar.aspx">PLAZAS</a>
+            </li>
+            <li id="menuTarifa" runat="server" class="tab">
+                <a runat="server" href="~/Pages/Tarifas/Tarifa_Listar.aspx">TARIFAS</a>
+            </li>
+            <li id="menuMetodosDePago" runat="server" class="tab">
+                <a runat="server" href="~/Pages/Metodos_De_Pago/MetodosDePago_Listar.aspx">METODOS DE PAGO</a>
+            </li>
+            <li id="menuPlayero" runat="server" class="tab">
+                <a runat="server" href="~/Pages/Playeros/Playero_Listar.aspx">PLAYERO</a>
+            </li>
+            <li id="menuTurno" runat="server" class="tab">
+                <a runat="server" href="~/Pages/Turnos/Turno_Listar.aspx">TURNOS</a>
+            </li>
+            <li id="menuAbonado" runat="server" class="tab">
+                <a runat="server" href="">ABONADOS</a>
+            </li>
+            <li>
+                <asp:Button ID="btnLogout" runat="server" Text="Cerrar Sesión ❌" OnClick="btnLogout_Click" CssClass="btn btn-danger" />
+            </li>
+        </ul>
+    </asp:Panel>
+</div>
+
 
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server" />
@@ -99,7 +97,7 @@
 
             <!-- FOOTER de la pagina -->
             <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - Grupo4 - Proyecto_Estacionamiento_ACE</p>
+                <p>&copy;- Grupo4 - Proyecto_Estacionamiento_ACE</p>
             </footer>
 
         </div>

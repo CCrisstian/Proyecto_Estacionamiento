@@ -125,19 +125,22 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\formularios.css" />
+    <Content Include="Content\planilla.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\tabs.css" />
     <Content Include="Images\LogoACE_SinFondo.PNG" />
     <Content Include="Pages\Default\Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Pages\Estacionamiento\Estacionamiento_Crear.aspx" />
-    <Content Include="Pages\Estacionamiento\EstacionamientoCRUD.aspx" />
+    <Content Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx" />
+    <Content Include="Pages\Estacionamiento\Estacionamiento_Listar.aspx" />
     <Content Include="Pages\Login\Login.aspx" />
-    <Content Include="Pages\Metodos_De_Pago\AgregarMetodoPago.aspx" />
+    <Content Include="Pages\Metodos_De_Pago\MetodosDePago_CrearEditar.aspx" />
     <Content Include="Pages\Metodos_De_Pago\MetodosDePago_Listar.aspx" />
     <Content Include="Pages\Playeros\Playero_Crear_Editar.aspx" />
-    <Content Include="Pages\Playeros\Playero_CRUD.aspx" />
-    <Content Include="Pages\Plaza\Plaza_CRUD.aspx" />
+    <Content Include="Pages\Playeros\Playero_Listar.aspx" />
+    <Content Include="Pages\Plaza\Plaza_Listar.aspx" />
     <Content Include="Pages\Plaza\Plaza_Crear_Editar.aspx" />
     <Content Include="Pages\Tarifas\Tarifa_Listar.aspx" />
     <Content Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx" />
@@ -233,19 +236,19 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Estacionamiento\Estacionamiento_Crear.aspx.cs">
-      <DependentUpon>Estacionamiento_Crear.aspx</DependentUpon>
+    <Compile Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx.cs">
+      <DependentUpon>Estacionamiento_CrearEditar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Estacionamiento\Estacionamiento_Crear.aspx.designer.cs">
-      <DependentUpon>Estacionamiento_Crear.aspx</DependentUpon>
+    <Compile Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx.designer.cs">
+      <DependentUpon>Estacionamiento_CrearEditar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Estacionamiento\EstacionamientoCRUD.aspx.cs">
-      <DependentUpon>EstacionamientoCRUD.aspx</DependentUpon>
+    <Compile Include="Pages\Estacionamiento\Estacionamiento_Listar.aspx.cs">
+      <DependentUpon>Estacionamiento_Listar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Estacionamiento\EstacionamientoCRUD.aspx.designer.cs">
-      <DependentUpon>EstacionamientoCRUD.aspx</DependentUpon>
+    <Compile Include="Pages\Estacionamiento\Estacionamiento_Listar.aspx.designer.cs">
+      <DependentUpon>Estacionamiento_Listar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Login\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
@@ -254,12 +257,12 @@
     <Compile Include="Pages\Login\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Metodos_De_Pago\AgregarMetodoPago.aspx.cs">
-      <DependentUpon>AgregarMetodoPago.aspx</DependentUpon>
+    <Compile Include="Pages\Metodos_De_Pago\MetodosDePago_CrearEditar.aspx.cs">
+      <DependentUpon>MetodosDePago_CrearEditar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Metodos_De_Pago\AgregarMetodoPago.aspx.designer.cs">
-      <DependentUpon>AgregarMetodoPago.aspx</DependentUpon>
+    <Compile Include="Pages\Metodos_De_Pago\MetodosDePago_CrearEditar.aspx.designer.cs">
+      <DependentUpon>MetodosDePago_CrearEditar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Metodos_De_Pago\MetodosDePago_Listar.aspx.cs">
       <DependentUpon>MetodosDePago_Listar.aspx</DependentUpon>
@@ -275,19 +278,19 @@
     <Compile Include="Pages\Playeros\Playero_Crear_Editar.aspx.designer.cs">
       <DependentUpon>Playero_Crear_Editar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Playeros\Playero_CRUD.aspx.cs">
-      <DependentUpon>Playero_CRUD.aspx</DependentUpon>
+    <Compile Include="Pages\Playeros\Playero_Listar.aspx.cs">
+      <DependentUpon>Playero_Listar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Playeros\Playero_CRUD.aspx.designer.cs">
-      <DependentUpon>Playero_CRUD.aspx</DependentUpon>
+    <Compile Include="Pages\Playeros\Playero_Listar.aspx.designer.cs">
+      <DependentUpon>Playero_Listar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Plaza\Plaza_CRUD.aspx.cs">
-      <DependentUpon>Plaza_CRUD.aspx</DependentUpon>
+    <Compile Include="Pages\Plaza\Plaza_Listar.aspx.cs">
+      <DependentUpon>Plaza_Listar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Plaza\Plaza_CRUD.aspx.designer.cs">
-      <DependentUpon>Plaza_CRUD.aspx</DependentUpon>
+    <Compile Include="Pages\Plaza\Plaza_Listar.aspx.designer.cs">
+      <DependentUpon>Plaza_Listar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Plaza\Plaza_Crear_Editar.aspx.cs">
       <DependentUpon>Plaza_Crear_Editar.aspx</DependentUpon>
@@ -343,6 +346,7 @@
       <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
     </Compile>
     <Compile Include="Servicios\Provincias_Localidades.cs" />
+    <Compile Include="Servicios\ServicioGeocodificacion.cs" />
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

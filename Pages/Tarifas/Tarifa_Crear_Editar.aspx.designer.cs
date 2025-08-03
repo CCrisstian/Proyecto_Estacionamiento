@@ -42,6 +42,15 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         protected global::System.Web.UI.WebControls.DropDownList ddlEstacionamientos;
 
         /// <summary>
+        /// Control rfvEstacionamientos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEstacionamientos;
+
+        /// <summary>
         /// Control ddlTiposTarifa.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlTiposTarifa;
+
+        /// <summary>
+        /// Control rfvTiposTarifa.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTiposTarifa;
 
         /// <summary>
         /// Control ddlCategorias.
@@ -60,6 +78,15 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         protected global::System.Web.UI.WebControls.DropDownList ddlCategorias;
 
         /// <summary>
+        /// Control rfvCategorias.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCategorias;
+
+        /// <summary>
         /// Control txtTarifaMonto.
         /// </summary>
         /// <remarks>
@@ -67,6 +94,24 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtTarifaMonto;
+
+        /// <summary>
+        /// Control rfvMonto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvMonto;
+
+        /// <summary>
+        /// Control revMonto.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revMonto;
 
         /// <summary>
         /// Control txtTarifaDesde.
@@ -85,6 +130,15 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Calendar calTarifaDesde;
+
+        /// <summary>
+        /// Control rfvFecha.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvFecha;
 
         /// <summary>
         /// Control btnMostrarCalendario.

@@ -15,6 +15,15 @@ namespace Proyecto_Estacionamiento
     {
 
         /// <summary>
+        /// Control ScriptManager1.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager ScriptManager1;
+
+        /// <summary>
         /// Control Image1.
         /// </summary>
         /// <remarks>
@@ -33,6 +42,15 @@ namespace Proyecto_Estacionamiento
         protected global::System.Web.UI.WebControls.Panel PanelMenu;
 
         /// <summary>
+        /// Control menuInicio.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuInicio;
+
+        /// <summary>
         /// Control menuEstacionamiento.
         /// </summary>
         /// <remarks>
@@ -42,6 +60,33 @@ namespace Proyecto_Estacionamiento
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuEstacionamiento;
 
         /// <summary>
+        /// Control menuPlaza.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuPlaza;
+
+        /// <summary>
+        /// Control menuTarifa.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuTarifa;
+
+        /// <summary>
+        /// Control menuMetodosDePago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuMetodosDePago;
+
+        /// <summary>
         /// Control menuPlayero.
         /// </summary>
         /// <remarks>
@@ -49,6 +94,24 @@ namespace Proyecto_Estacionamiento
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuPlayero;
+
+        /// <summary>
+        /// Control menuTurno.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuTurno;
+
+        /// <summary>
+        /// Control menuAbonado.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuAbonado;
 
         /// <summary>
         /// Control btnLogout.

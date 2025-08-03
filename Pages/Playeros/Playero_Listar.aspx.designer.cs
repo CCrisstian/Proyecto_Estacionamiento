@@ -7,29 +7,29 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace Proyecto_Estacionamiento.Pages.Estacionamiento
+namespace Proyecto_Estacionamiento.Pages.Playeros
 {
 
 
-    public partial class EstacionamientoCRUD
+    public partial class Playero_Listar
     {
 
         /// <summary>
-        /// Control btnCrear.
+        /// Control btnAgregarPlayero.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCrear;
+        protected global::System.Web.UI.WebControls.Button btnAgregarPlayero;
 
         /// <summary>
-        /// Control gvEstacionamientos.
+        /// Control gvPlayeros.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvEstacionamientos;
+        protected global::System.Web.UI.WebControls.GridView gvPlayeros;
     }
 }

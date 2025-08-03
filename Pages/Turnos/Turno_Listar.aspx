@@ -5,49 +5,57 @@
     <h2>Lista de Turnos</h2>
 
     <br />
+
+    <div class="form-section">
+        <div class="form-row">
+            <asp:Label ID="lblMontoInicio" runat="server" Text="Monto de Inicio:" CssClass="form-label" />
+
+            <div>
+                <asp:TextBox ID="txtMontoInicio" runat="server" CssClass="form-control" />
+            </div>
+
+            <asp:Button ID="btnInicioTurno" runat="server" Text="Inicio de Turno" CssClass="btn btn-success" OnClick="btnInicioTurno_Click" />
+        </div>
+
+        <div class="form-row">
+            <asp:Label ID="lblMontoFin" runat="server" Text="Monto de Fin:" CssClass="form-label" />
+
+            <div>
+                <asp:TextBox ID="txtMontoFin" runat="server" CssClass="form-control" />
+            </div>
+
+            <asp:Button ID="btnFinTurno" runat="server" Text="Fin de Turno" CssClass="btn btn-danger" OnClick="btnFinTurno_Click" />
+        </div>
+    </div>
+
     <br />
 
-    <asp:Label ID="lblMontoInicio" runat="server" Text="Monto de Inicio: " />
-    <asp:TextBox ID="txtMontoInicio" runat="server" />
-    <asp:Button ID="btnInicioTurno" runat="server" Text="Inicio de Turno" OnClick="btnInicioTurno_Click" />
+    <div class="grid-wrapper">
 
-    <br />
-    <br />
+        <asp:GridView ID="GridViewTurnos" runat="server" AutoGenerateColumns="False"
+            CssClass="grid" Width="100%" CellPadding="4" ForeColor="#333333" GridLines="None">
 
-    <asp:Label ID="lblMontoFin" runat="server" Text="Monto de Fin: " />
-    <asp:TextBox ID="txtMontoFin" runat="server" />
-    <asp:Button ID="btnFinTurno" runat="server" Text="Fin de Turno" OnClick="btnFinTurno_Click" />
+            <Columns>
+                <asp:BoundField DataField="Estacionamiento" HeaderText="Estacionamiento" />
 
-    <br />
-    <br />
+                <asp:TemplateField HeaderText="Playero">
+                    <ItemTemplate>
+                        <%# Eval("ApellidoPlayero") %>, <%# Eval("NombrePlayero") %>
+                    </ItemTemplate>
+                </asp:TemplateField>
 
-    <asp:GridView ID="GridViewTurnos" runat="server" AutoGenerateColumns="False" Width="100%" CssClass="table table-bordered" CellPadding="4" ForeColor="#333333" GridLines="None">
-        <AlternatingRowStyle BackColor="White" />
-        <Columns>
-            <asp:BoundField DataField="Estacionamiento" HeaderText="Estacionamiento" />
+                <asp:BoundField DataField="Turno_FechaHora_Inicio" HeaderText="Inicio de Turno"
+                    DataFormatString="{0:dd/MM/yyyy HH:mm}" HtmlEncode="false" />
+                <asp:BoundField DataField="Turno_FechaHora_fin" HeaderText="Fin de Turno"
+                    DataFormatString="{0:dd/MM/yyyy HH:mm}" HtmlEncode="false" />
+                <asp:BoundField DataField="Caja_Monto_Inicio" HeaderText="Monto Inicio"
+                    DataFormatString="{0:C}" HtmlEncode="false" />
+                <asp:BoundField DataField="Caja_Monto_fin" HeaderText="Monto Fin"
+                    DataFormatString="{0:C}" HtmlEncode="false" />
+                <asp:BoundField DataField="Caja_Monto_total" HeaderText="Total"
+                    DataFormatString="{0:C}" HtmlEncode="false" />
+            </Columns>
 
-            <asp:TemplateField HeaderText="Playero">
-                <ItemTemplate>
-                    <%# Eval("ApellidoPlayero") %>, <%# Eval("NombrePlayero") %>
-                </ItemTemplate>
-            </asp:TemplateField>
-
-            <asp:BoundField DataField="Turno_FechaHora_Inicio" HeaderText="Inicio de Turno" DataFormatString="{0:dd/MM/yyyy HH:mm}" HtmlEncode="false" />
-            <asp:BoundField DataField="Turno_FechaHora_fin" HeaderText="Fin de Turno" DataFormatString="{0:dd/MM/yyyy HH:mm}" HtmlEncode="false" />
-
-            <asp:BoundField DataField="Caja_Monto_Inicio" HeaderText="Monto Inicio" DataFormatString="{0:C}" HtmlEncode="false" />
-            <asp:BoundField DataField="Caja_Monto_fin" HeaderText="Monto Fin" DataFormatString="{0:C}" HtmlEncode="false" />
-            <asp:BoundField DataField="Caja_Monto_total" HeaderText="Total" DataFormatString="{0:C}" HtmlEncode="false" />
-        </Columns>
-        <EditRowStyle BackColor="#7C6F57" />
-        <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
-        <HeaderStyle BackColor="#009900" Font-Bold="True" ForeColor="White" />
-        <PagerStyle BackColor="#666666" ForeColor="White" HorizontalAlign="Center" />
-        <RowStyle BackColor="#E3EAEB" />
-        <SelectedRowStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
-        <SortedAscendingCellStyle BackColor="#F8FAFA" />
-        <SortedAscendingHeaderStyle BackColor="#246B61" />
-        <SortedDescendingCellStyle BackColor="#D4DFE1" />
-        <SortedDescendingHeaderStyle BackColor="#15524A" />
-    </asp:GridView>
+        </asp:GridView>
+    </div>
 </asp:Content>

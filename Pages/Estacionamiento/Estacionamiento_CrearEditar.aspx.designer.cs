@@ -11,7 +11,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 {
 
 
-    public partial class Estacionamiento_Crear
+    public partial class Estacionamiento_CrearEditar
     {
 
         /// <summary>
@@ -33,15 +33,6 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
         protected global::System.Web.UI.WebControls.TextBox txtNombre;
 
         /// <summary>
-        /// Control txtDireccion.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDireccion;
-
-        /// <summary>
         /// Control ddlProvincia.
         /// </summary>
         /// <remarks>
@@ -58,6 +49,15 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlLocalidad;
+
+        /// <summary>
+        /// Control txtDireccion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDireccion;
 
         /// <summary>
         /// Control ddlDiaInicio.

@@ -1,31 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Proyecto_Estacionamiento.Servicios;
 
 namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 {
-    public partial class Estacionamiento_Crear : System.Web.UI.Page
+    public partial class Estacionamiento_CrearEditar : System.Web.UI.Page
     {
         // Servicio para obtener Provincias y Localidades desde la API de Datos Abiertos del Gobierno Argentino
         private Provincias_Localidades servicioProvinciasLocalidades = new Provincias_Localidades();
 
-        protected void Page_Load(object sender, EventArgs e)
+        protected async void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // Cargar Provincias
-                var provincias = Task.Run(() => servicioProvinciasLocalidades.ObtenerProvinciasAsync()).Result;
+                // Cargar provincias
+                var provincias = await servicioProvinciasLocalidades.ObtenerProvinciasAsync();
                 ddlProvincia.DataSource = provincias;
                 ddlProvincia.DataBind();
                 ddlProvincia.Items.Insert(0, new ListItem("- Seleccione una Provincia -", ""));
 
+                // Cargar horas
                 for (int hora = 0; hora < 24; hora++)
                 {
                     string horaTexto = hora.ToString("D2") + ":00";
@@ -37,7 +32,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 
                 ToggleHoraControls(false);
 
-                // Modo Edición
+                // Modo Editar
                 if (Request.QueryString["id"] != null)
                 {
                     int id = int.Parse(Request.QueryString["id"]);
@@ -47,14 +42,16 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             }
         }
 
-        protected void ddlProvincia_SelectedIndexChanged(object sender, EventArgs e)
+        protected async void ddlProvincia_SelectedIndexChanged(object sender, EventArgs e)
         {
             string provincia = ddlProvincia.SelectedValue;
-            var localidades = Task.Run(() => servicioProvinciasLocalidades.ObtenerLocalidadesAsync(provincia)).Result;
-
-            ddlLocalidad.DataSource = localidades;
-            ddlLocalidad.DataBind();
-            ddlLocalidad.Items.Insert(0, new ListItem("- Seleccione una Localidad -", ""));
+            if (!string.IsNullOrEmpty(provincia))
+            {
+                var localidades = await servicioProvinciasLocalidades.ObtenerLocalidadesAsync(provincia);
+                ddlLocalidad.DataSource = localidades;
+                ddlLocalidad.DataBind();
+                ddlLocalidad.Items.Insert(0, new ListItem("- Seleccione una Localidad -", ""));
+            }
         }
 
         protected void chkFinDeSemana_CheckedChanged(object sender, EventArgs e)
@@ -68,7 +65,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             ddlHoraFin_FinDeSemana.Visible = visible;
         }
 
-        protected void btnGuardar_Click(object sender, EventArgs e)
+        protected async void btnGuardar_Click(object sender, EventArgs e)
         {
             lblMensaje.Text = ""; // Limpiar Mensaje de Error previo
 
@@ -130,8 +127,20 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             // 6. (Crear/Editar) y Guardar el nuevo Estacionamiento en la Base de Datos
             try
             {
+                var servicioGeo = new ServicioGeocodificacion();
+                var coordenadas = await servicioGeo.ObtenerCoordenadasAsync(direccion, localidad, provincia);
+
+                // Validar que se obtuvieron coordenadas válidas
+                if (!coordenadas.EsValida)
+                {
+                    lblMensaje.Text = "No se pudo obtener la ubicación geográfica. Verifica la dirección.";
+                    return;
+                }
+
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
+                    string accion;
+
                     if (ViewState["Est_id"] != null)    // Editar un Estacionamiento existente
                     {
                         int id = (int)ViewState["Est_id"];
@@ -139,16 +148,21 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                         if (est != null)
                         {
                             est.Est_nombre = nombre;
-                            est.Est_direccion = direccion;
                             est.Est_provincia = provincia;
                             est.Est_localidad = localidad;
+                            est.Est_direccion = direccion;
+
+                            est.Est_Latitud = coordenadas.Latitud;
+                            est.Est_Longitud = coordenadas.Longitud;
+
                             est.Est_Hra_Atencion = horario;
                             est.Est_Dias_Atencion = diasAtencion;
                             est.Est_Dias_Feriado_Atencion = diasFeriado;
                             est.Est_Fin_de_semana_Atencion = finDeSemana;
                             est.Est_Hora_Fin_de_semana = horaFinDeSemana;
                             est.Est_Disponibilidad = disponibilidad;
-                            db.SaveChanges();
+
+                            accion = "editado";
                         }
                         else
                         {
@@ -162,9 +176,13 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                         {
                             Dueño_Legajo = legajoDueño,
                             Est_nombre = nombre,
-                            Est_direccion = direccion,
                             Est_provincia = provincia,
                             Est_localidad = localidad,
+                            Est_direccion = direccion,
+
+                            Est_Latitud = coordenadas.Latitud,
+                            Est_Longitud = coordenadas.Longitud,
+
                             Est_Hra_Atencion = horario,
                             Est_puntaje = 0,
                             Est_Dias_Atencion = diasAtencion,
@@ -174,19 +192,21 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                             Est_Disponibilidad = disponibilidad
                         };
                         db.Estacionamiento.Add(nuevoEstacionamiento);
-                        db.SaveChanges();
+                        accion = "agregado";
                     }
+                    db.SaveChanges();
+                    Response.Redirect($"Estacionamiento_Listar.aspx?exito=1&accion={accion}");
                 }
-                Response.Redirect("EstacionamientoCRUD.aspx");
             }
             catch (Exception ex)
             {
                 lblMensaje.Text = "Error al guardar: " + ex.Message;
             }
         }
+
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Estacionamiento/EstacionamientoCRUD.aspx");
+            Response.Redirect("~/Pages/Estacionamiento/Estacionamiento_Listar.aspx");
         }
 
         private void CargarEstacionamiento(int id)
@@ -201,7 +221,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     txtDireccion.Text = est.Est_direccion;
                     ddlProvincia.SelectedValue = est.Est_provincia;
 
-                    // Cargar las localidades ANTES de setear la seleccionada
+                    // Cargar las localidades
                     var localidades = Task.Run(() => servicioProvinciasLocalidades.ObtenerLocalidadesAsync(est.Est_provincia)).Result;
                     ddlLocalidad.DataSource = localidades;
                     ddlLocalidad.DataBind();

@@ -11,7 +11,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 {
 
 
-    public partial class AgregarMetodoPago
+    public partial class MetodosDePago_CrearEditar
     {
 
         /// <summary>

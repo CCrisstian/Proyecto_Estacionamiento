@@ -45,6 +45,8 @@
           <Property Name="Est_Fin_de_semana_Atencion" Type="bit" />
           <Property Name="Est_Hora_Fin_de_semana" Type="varchar" MaxLength="100" />
           <Property Name="Est_Disponibilidad" Type="bit" Nullable="false" />
+          <Property Name="Est_Latitud" Type="float" />
+          <Property Name="Est_Longitud" Type="float" />
         </EntityType>
         <EntityType Name="Incidencias">
           <Key>
@@ -594,6 +596,8 @@
           <NavigationProperty Name="Playero" Relationship="Self.FK_Playero_Estacionamiento" FromRole="Estacionamiento" ToRole="Playero" />
           <NavigationProperty Name="Plaza" Relationship="Self.FK_Plaza_Estacionamiento" FromRole="Estacionamiento" ToRole="Plaza" />
           <NavigationProperty Name="Tarifa" Relationship="Self.FK_Tarifa_Estacionamiento" FromRole="Estacionamiento" ToRole="Tarifa" />
+          <Property Name="Est_Latitud" Type="Double" />
+          <Property Name="Est_Longitud" Type="Double" />
         </EntityType>
         <EntityType Name="Incidencias">
           <Key>
@@ -1151,6 +1155,8 @@
           <EntitySetMapping Name="Estacionamiento">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Estacionamiento">
               <MappingFragment StoreEntitySet="Estacionamiento">
+                <ScalarProperty Name="Est_Longitud" ColumnName="Est_Longitud" />
+                <ScalarProperty Name="Est_Latitud" ColumnName="Est_Latitud" />
                 <ScalarProperty Name="Est_id" ColumnName="Est_id" />
                 <ScalarProperty Name="Dueño_Legajo" ColumnName="Dueño_Legajo" />
                 <ScalarProperty Name="Est_nombre" ColumnName="Est_nombre" />
