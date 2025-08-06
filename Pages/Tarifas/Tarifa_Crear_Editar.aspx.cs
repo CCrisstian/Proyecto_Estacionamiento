@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Tarifas
@@ -26,7 +23,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 else
                 {
                     lblTitulo.Text = "Agregar Tarifa";
-                    txtTarifaDesde.Text = "";
                 }
             }
         }
@@ -43,7 +39,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                     ddlTiposTarifa.SelectedValue = tarifa.Tipos_Tarifa_Id?.ToString() ?? "";
                     ddlCategorias.SelectedValue = tarifa.Categoria_id?.ToString() ?? "";
                     txtTarifaMonto.Text = tarifa.Tarifa_Monto.ToString("0.##");
-                    txtTarifaDesde.Text = tarifa.Tarifa_Desde.ToString("yyyy-MM-dd");
                 }
             }
         }
@@ -87,27 +82,13 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
             }
         }
 
-        // Evento para mostrar/ocultar el calendario al hacer clic en el botón
-        protected void btnMostrarCalendario_Click(object sender, EventArgs e)
-        {
-            calTarifaDesde.Visible = !calTarifaDesde.Visible;
-        }
-
-        // Evento para manejar la selección de una fecha en el calendario
-        protected void calTarifaDesde_SelectionChanged(object sender, EventArgs e)
-        {
-            txtTarifaDesde.Text = calTarifaDesde.SelectedDate.ToString("yyyy-MM-dd");
-            calTarifaDesde.Visible = false;
-        }
-
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             // Validación Estacionamiento, Tarifa y Categoria
             if (ddlEstacionamientos.SelectedIndex == 0 ||
                 ddlTiposTarifa.SelectedIndex == 0 ||
                 ddlCategorias.SelectedIndex == 0 ||
-                string.IsNullOrWhiteSpace(txtTarifaMonto.Text) ||
-                string.IsNullOrWhiteSpace(txtTarifaDesde.Text))
+                string.IsNullOrWhiteSpace(txtTarifaMonto.Text))
             {
                 return;
             }
@@ -120,14 +101,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 return;
             }
 
-            // Validar formato de la fecha
-            if (!DateTime.TryParse(txtTarifaDesde.Text, out DateTime fechaDesde))
-            {
-                lblTitulo.Text = "La Fecha no tiene un formato válido.";
-                lblTitulo.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 Tarifa tarifa = new Tarifa
@@ -136,7 +109,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                     Tipos_Tarifa_Id = int.Parse(ddlTiposTarifa.SelectedValue),
                     Categoria_id = int.Parse(ddlCategorias.SelectedValue),
                     Tarifa_Monto = (double)monto,
-                    Tarifa_Desde = fechaDesde
+                    Tarifa_Desde = DateTime.Now
                 };
 
                 if (Request.QueryString["id"] != null)

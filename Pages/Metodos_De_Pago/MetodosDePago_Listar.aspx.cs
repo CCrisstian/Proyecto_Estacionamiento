@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -22,20 +23,55 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
         private void CargarGrilla()
         {
-            using (var context = new ProyectoEstacionamientoEntities())
+            string tipoUsuario = Session["Usu_tipo"] as string;
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
+            using (var db = new ProyectoEstacionamientoEntities())
             {
-                var datos = context.Acepta_Metodo_De_Pago
+                IQueryable<Acepta_Metodo_De_Pago> query = db.Acepta_Metodo_De_Pago
+                    .Include("Estacionamiento")
+                    .Include("Metodos_De_Pago");
+
+                // Filtrar para que los Dueños y Playeros vean sus Metodos de Pago
+                if (tipoUsuario == "Dueño")
+                {
+                    var estIdList = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id);
+
+                    query = query.Where(amp => estIdList.Contains(amp.Est_id));
+                }
+                else if (tipoUsuario == "Playero")
+                {
+                    var estId = db.Playero
+                                  .Where(p => p.Playero_legajo == legajo)
+                                  .Select(p => p.Est_id)
+                                  .FirstOrDefault();
+
+                    if (estId.HasValue)
+                    {
+                        query = query.Where(amp => amp.Est_id == estId.Value);
+                    }
+                    else
+                    {
+                        query = query.Where(amp => false); // no mostrar resultados si no hay Est_id
+                    }
+                }
+
+                var metodosDePago = query
                     .Select(a => new
                     {
-                        a.Estacionamiento.Est_nombre,
-                        a.Metodos_De_Pago.Metodo_pago_descripcion,
-                        a.AMP_Desde,
-                        a.AMP_Hasta,
-                        a.Est_id,
-                        a.Metodo_Pago_id
+                        Est_nombre = a.Estacionamiento.Est_nombre,
+                        Metodo_pago_descripcion = a.Metodos_De_Pago.Metodo_pago_descripcion,
+                        AMP_Desde = a.AMP_Desde,
+                        AMP_Hasta = a.AMP_Hasta,
+                        Est_id = a.Est_id,
+                        Metodo_Pago_id = a.Metodo_Pago_id
                     })
+                    .OrderBy(a => a.Est_nombre)
                     .ToList();
-                gvMetodosPago.DataSource = datos;
+
+                gvMetodosPago.DataSource = metodosDePago;
                 gvMetodosPago.DataBind();
             }
         }

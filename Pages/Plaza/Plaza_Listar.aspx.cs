@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Plaza
 {
-    public partial class Plaza_CRUD : System.Web.UI.Page
+    public partial class Plaza_Listar : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -21,17 +22,52 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         }
 
         private void CargarPlazas()
-        {   // Obtenemos las Plazas desde la Base de Datos
+        {
+            string tipoUsuario = Session["Usu_tipo"] as string;
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                var plazas = db.Plaza                   // Obtenemos las Plazas
-                    .Include("Categoria_Vehiculo")      // Incluimos la relación con Categoria_Vehiculo
-                    .Include("Estacionamiento")         // Incluimos la relación con Estacionamiento
-                    .ToList();
-                gvPlazas.DataSource = plazas;           // Asignamos la lista de Plazas como fuente de datos del GridView
-                gvPlazas.DataBind();                    // Realizamos el enlace de datos al GridView
+                List<Proyecto_Estacionamiento.Plaza> plazas = new List<Proyecto_Estacionamiento.Plaza>();
+
+
+                if (tipoUsuario == "Dueño")
+                {
+                    // Obtener los Est_id asociados al legajo del Dueño
+                    var estIds = db.Estacionamiento
+                                   .Where(e => e.Dueño_Legajo == legajo)
+                                   .Select(e => e.Est_id)
+                                   .ToList();
+
+                    plazas = db.Plaza
+                        .Include("Categoria_Vehiculo")
+                        .Include("Estacionamiento")
+                        .Where(p => estIds.Contains(p.Est_id))
+                        .OrderBy(p => p.Estacionamiento.Est_nombre)
+                        .ToList();
+                }
+                else if (tipoUsuario == "Playero")
+                {
+                    // Obtener el Est_id asignado al Playero
+                    var estId = db.Playero
+                                  .Where(p => p.Playero_legajo == legajo)
+                                  .Select(p => p.Est_id)
+                                  .FirstOrDefault();
+
+                    plazas = db.Plaza
+                        .Include("Categoria_Vehiculo")
+                        .Include("Estacionamiento")
+                        .Where(p => p.Est_id == estId)
+                        .OrderBy(p => p.Estacionamiento.Est_nombre)
+                        .ToList();
+                }
+
+                // Mostrar las plazas si se encontraron
+                gvPlazas.DataSource = plazas;
+                gvPlazas.DataBind();
             }
         }
+
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {

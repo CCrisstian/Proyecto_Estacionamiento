@@ -71,7 +71,6 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
                 if (relacion != null)
                 {
-                    txtDesde.Text = relacion.AMP_Desde?.ToString("yyyy-MM-dd") ?? "";
                     txtHasta.Text = relacion.AMP_Hasta?.ToString("yyyy-MM-dd") ?? "";
                 }
             }
@@ -82,7 +81,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
             if (!Page.IsValid)
                 return;
 
-            DateTime desde = DateTime.Parse(txtDesde.Text);
+            DateTime desde = DateTime.Now;
             DateTime hasta = DateTime.Parse(txtHasta.Text);
 
             if (desde > hasta)

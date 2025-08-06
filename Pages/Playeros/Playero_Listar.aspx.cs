@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using static Proyecto_Estacionamiento.Pages.Metodos_De_Pago.MetodosDePago_Listar;
 
 namespace Proyecto_Estacionamiento.Pages.Playeros
 {
@@ -14,24 +16,36 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 CargarGrilla();
             }
         }
-
         private void CargarGrilla()
         {
+            string tipoUsuario = Session["Usu_tipo"] as string;
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                var datos = db.Playero
+                IQueryable<Playero> query = db.Playero;
+
+                var estIdList = db.Estacionamiento
+                                   .Where(e => e.Dueño_Legajo == legajo)
+                                   .Select(e => e.Est_id);
+
+                query = query.Where(pl => pl.Est_id.HasValue && estIdList.Contains(pl.Est_id.Value));
+
+                var playeros = query
                     .Select(p => new
                     {
                         Est_nombre = p.Estacionamiento.Est_nombre,
                         Playero_legajo = p.Playero_legajo,
-                        Usu_dni = p.Usuarios.Usu_dni,
+                        Usu_dni = p.Usuarios.Usu_dni ?? 0,
                         Usu_pass = p.Usuarios.Usu_pass,
                         Usu_ap = p.Usuarios.Usu_ap,
                         Usu_nom = p.Usuarios.Usu_nom,
-                        Playero_Activo = p.Playero_activo
+                        Playero_activo = p.Playero_activo
                     })
+                    .OrderBy(p => p.Est_nombre)
                     .ToList();
-                gvPlayeros.DataSource = datos;
+
+                gvPlayeros.DataSource = playeros;
                 gvPlayeros.DataBind();
             }
         }
@@ -44,7 +58,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
         protected void gvPlayeros_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            
+
             if (e.CommandName == "Editar")
             {
                 int index = Convert.ToInt32(e.CommandArgument);

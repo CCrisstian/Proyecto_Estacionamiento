@@ -11,7 +11,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
 {
 
 
-    public partial class Plaza_CRUD
+    public partial class Plaza_Listar
     {
 
         /// <summary>

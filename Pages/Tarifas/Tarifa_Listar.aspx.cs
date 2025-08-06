@@ -25,12 +25,44 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
 
         private void CargarTarifas()
         {
-            using (var db = new ProyectoEstacionamientoEntities())  
+            string tipoUsuario = Session["Usu_tipo"] as string;
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
+            using (var db = new ProyectoEstacionamientoEntities())
             {
-                var tarifas = db.Tarifa 
+                // Filtro para que los Dueños y los Playeros vean solo sus Tarifas
+                IQueryable<Tarifa> query = db.Tarifa;
+
+                if (tipoUsuario == "Dueño")
+                {
+                    var estIdList = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id);
+
+                    query = query.Where(t => t.Est_id.HasValue && estIdList.Contains(t.Est_id.Value));
+                }
+                else if (tipoUsuario == "Playero")
+                {
+                    var estId = db.Playero
+                                  .Where(p => p.Playero_legajo == legajo)
+                                  .Select(p => p.Est_id)
+                                  .FirstOrDefault();
+
+                    if (estId.HasValue)
+                    {
+                        query = query.Where(t => t.Est_id == estId.Value);
+                    }
+                    else
+                    {
+                        // Por seguridad, que no devuelva nada si no se encuentra Est_id
+                        query = query.Where(t => false);
+                    }
+                }
+
+                var tarifas = query
+                    .OrderBy(t => t.Estacionamiento.Est_nombre)
                     .Select(t => new
                     {
-                        // Selecciona las propiedades necesarias para mostrar en el GridView
                         t.Tarifa_id,
                         Est_nombre = t.Estacionamiento.Est_nombre,
                         Tipos_Tarifa_Descripcion = t.Tipos_Tarifa.Tipos_tarifa_descripcion,
@@ -38,10 +70,10 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                         t.Tarifa_Monto,
                         t.Tarifa_Desde
                     })
-                    .ToList();  // Obtiene la lista de Tarifas
+                    .ToList();
 
-                gvTarifas.DataSource = tarifas; // Asigna la lista de Tarifas como fuente de datos del GridView
-                gvTarifas.DataBind();   // Realiza el enlace de datos al GridView
+                gvTarifas.DataSource = tarifas;
+                gvTarifas.DataBind();
             }
         }
 

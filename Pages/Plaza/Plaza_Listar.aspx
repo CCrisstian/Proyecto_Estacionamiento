@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Plazas" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Plaza_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Plaza.Plaza_CRUD" %>
+﻿<%@ Page Title="Plazas" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Plaza_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Plaza.Plaza_Listar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Plazas</h2>
@@ -15,7 +15,7 @@
             OnRowCommand="gvPlazas_RowCommand"
             OnRowDataBound="gvPlazas_RowDataBound"
             CssClass="grid"
-            Width="100%" CellPadding="4" GridLines="None">
+            Width="100%">
 
             <AlternatingRowStyle BackColor="White" />
 
@@ -24,8 +24,13 @@
                 <asp:BoundField DataField="Plaza_Nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="Plaza_Tipo" HeaderText="Tipo" />
                 <asp:BoundField DataField="Categoria_Vehiculo.Categoria_descripcion" HeaderText="Categoría" />
-                <asp:BoundField DataField="Plaza_Disponibilidad" HeaderText="Disponible" />
-
+                <asp:TemplateField HeaderText="Disponible">
+                    <ItemTemplate>
+                        <%# Convert.ToBoolean(Eval("Plaza_Disponibilidad")) 
+            ? "<span>&#9989;</span>" 
+            : "<span>&#10060;</span>" %>
+                    </ItemTemplate>
+                </asp:TemplateField>
                 <asp:TemplateField>
                     <ItemTemplate>
                         <asp:Button ID="btnEditar" runat="server" Text="Editar"

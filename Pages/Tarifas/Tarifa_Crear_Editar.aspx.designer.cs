@@ -114,42 +114,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revMonto;
 
         /// <summary>
-        /// Control txtTarifaDesde.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTarifaDesde;
-
-        /// <summary>
-        /// Control calTarifaDesde.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Calendar calTarifaDesde;
-
-        /// <summary>
-        /// Control rfvFecha.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvFecha;
-
-        /// <summary>
-        /// Control btnMostrarCalendario.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMostrarCalendario;
-
-        /// <summary>
         /// Control btnGuardar.
         /// </summary>
         /// <remarks>

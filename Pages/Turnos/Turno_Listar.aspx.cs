@@ -26,9 +26,42 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
         private void CargarTurnos()
         {
+            string tipoUsuario = Session["Usu_tipo"] as string;
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                var lista = db.Turno
+                IQueryable<Turno> query = db.Turno;
+
+                if (tipoUsuario == "Dueño")
+                {
+                    // Estacionamientos del dueño
+                    var estIds = db.Estacionamiento
+                                   .Where(e => e.Dueño_Legajo == legajo)
+                                   .Select(e => e.Est_id);
+
+                    query = query.Where(t => t.Playero.Est_id.HasValue && estIds.Contains(t.Playero.Est_id.Value));
+                }
+                else if (tipoUsuario == "Playero")
+                {
+                    // Estacionamiento asignado al playero
+                    var estId = db.Playero
+                                  .Where(p => p.Playero_legajo == legajo)
+                                  .Select(p => p.Est_id)
+                                  .FirstOrDefault();
+
+                    if (estId.HasValue)
+                    {
+                        query = query.Where(t => t.Playero.Est_id == estId.Value);
+                    }
+                    else
+                    {
+                        // No mostrar nada si no tiene estacionamiento asignado
+                        query = query.Where(t => false);
+                    }
+                }
+
+                var turnos = query
                     .Select(t => new
                     {
                         t.Turno_FechaHora_Inicio,
@@ -43,7 +76,7 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     .OrderByDescending(t => t.Turno_FechaHora_Inicio)
                     .ToList();
 
-                GridViewTurnos.DataSource = lista;
+                GridViewTurnos.DataSource = turnos;
                 GridViewTurnos.DataBind();
             }
         }

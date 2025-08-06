@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -8,11 +9,28 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
     {
         private void CargarEstacionamientos()
         {
+            string tipoUsuario = Session["Usu_tipo"] as string;
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
             // Cargar los Estacionamientos desde la Base de Datos y enlazarlos a la grilla
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                var lista = db.Estacionamiento.ToList();
-                gvEstacionamientos.DataSource = lista;
+                List<Proyecto_Estacionamiento.Estacionamiento> estacionamientos = new List<Proyecto_Estacionamiento.Estacionamiento>();
+
+                if (tipoUsuario == "Dueño")
+                {
+                    // Obtener los Est_id asociados al legajo del Dueño
+                    var estIds = db.Estacionamiento
+                                   .Where(e => e.Dueño_Legajo == legajo)
+                                   .Select(e => e.Est_id)
+                                   .ToList();
+
+                    estacionamientos = db.Estacionamiento
+                        .Where(e => estIds.Contains(e.Est_id))
+                        .OrderBy(e => e.Est_provincia)
+                        .ToList();
+                }
+                gvEstacionamientos.DataSource = estacionamientos;
                 gvEstacionamientos.DataBind();
             }
         }

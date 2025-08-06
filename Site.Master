@@ -78,7 +78,7 @@
                 <a runat="server" href="~/Pages/Playeros/Playero_Listar.aspx">PLAYERO</a>
             </li>
             <li id="menuTurno" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Turnos/Turno_Listar.aspx">TURNOS</a>
+                <a runat="server" href="~/Pages/Turnos/Turno_Listar">TURNOS</a>
             </li>
             <li id="menuAbonado" runat="server" class="tab">
                 <a runat="server" href="">ABONADOS</a>

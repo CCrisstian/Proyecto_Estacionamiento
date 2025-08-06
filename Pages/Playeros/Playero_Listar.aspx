@@ -26,7 +26,13 @@
                 <asp:BoundField DataField="Usu_dni" HeaderText="DNI" />
                 <asp:BoundField DataField="Usu_ap" HeaderText="Apellido" />
                 <asp:BoundField DataField="Usu_nom" HeaderText="Nombre" />
-                <asp:BoundField DataField="Playero_Activo" HeaderText="Activo" />
+                <asp:TemplateField HeaderText="Activo">
+                    <ItemTemplate>
+                        <%# Convert.ToBoolean(Eval("Playero_Activo")) 
+? "<span>&#9989;</span>" 
+: "<span>&#10060;</span>" %>
+                    </ItemTemplate>
+                </asp:TemplateField>
 
                 <asp:TemplateField>
                     <ItemTemplate>

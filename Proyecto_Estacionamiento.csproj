@@ -129,6 +129,7 @@
     <Content Include="Content\planilla.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\tabs.css" />
+    <Content Include="Images\EnConstruccion.png" />
     <Content Include="Images\LogoACE_SinFondo.PNG" />
     <Content Include="Pages\Default\Default.aspx" />
     <Content Include="favicon.ico" />

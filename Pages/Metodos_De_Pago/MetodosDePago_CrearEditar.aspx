@@ -29,16 +29,6 @@
         </div>
 
         <div class="form-group form-inline">
-            <label for="txtDesde">Desde:</label>
-            <asp:TextBox ID="txtDesde" runat="server" CssClass="form-control" />
-            <ajaxToolkit:CalendarExtender ID="calDesde" runat="server"
-                TargetControlID="txtDesde" Format="yyyy-MM-dd" />
-            <asp:RequiredFieldValidator ID="rfvDesde" runat="server"
-                ControlToValidate="txtDesde" ErrorMessage="Campo obligatorio"
-                ForeColor="Red" Display="Dynamic" />
-        </div>
-
-        <div class="form-group form-inline">
             <label for="txtHasta">Hasta:</label>
             <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control" />
             <ajaxToolkit:CalendarExtender ID="calHasta" runat="server"

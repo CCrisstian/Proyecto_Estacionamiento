@@ -44,16 +44,6 @@
                 ErrorMessage="El monto debe ser un número válido" ForeColor="Red" Display="Dynamic" />
         </div>
 
-        <div class="form-group form-inline">
-            <label for="txtTarifaDesde">Fecha:</label>
-            <asp:TextBox ID="txtTarifaDesde" runat="server" CssClass="form-control" />
-            <asp:Calendar ID="calTarifaDesde" runat="server" OnSelectionChanged="calTarifaDesde_SelectionChanged" Visible="false" />
-            <asp:RequiredFieldValidator ID="rfvFecha" runat="server"
-                ControlToValidate="txtTarifaDesde"
-                ErrorMessage="Debe ingresar una Fecha" ForeColor="Red" Display="Dynamic" />
-            <asp:Button ID="btnMostrarCalendario" runat="server" Text="Elegir Fecha" OnClick="btnMostrarCalendario_Click" CssClass="btn btn-secondary" />
-        </div>
-
     </asp:Panel>
 
     <br />

@@ -3,7 +3,6 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Estacionamientos</h2>
 
-
     <asp:Button ID="btnCrear" runat="server" Text="Crear Estacionamiento (➕)" OnClick="btnCrear_Click" CssClass="btn btn-success" />
     <br />
     <br />
@@ -21,7 +20,13 @@
                 <asp:BoundField DataField="Est_direccion" HeaderText="Dirección" />
                 <asp:BoundField DataField="Est_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="Est_puntaje" HeaderText="Puntaje" />
-                <asp:BoundField DataField="Est_Disponibilidad" HeaderText="Disponibilidad" />
+                <asp:TemplateField HeaderText="Disponible">
+                    <ItemTemplate>
+                        <%# Convert.ToBoolean(Eval("Est_Disponibilidad")) 
+? "<span>&#9989;</span>" 
+: "<span>&#10060;</span>" %>
+                    </ItemTemplate>
+                </asp:TemplateField>
 
                 <asp:TemplateField>
                     <ItemTemplate>
