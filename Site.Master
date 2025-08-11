@@ -16,7 +16,8 @@
     <%-- CSS --%>
     <link href="~/Content/planilla.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/tabs.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/css/formularios.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/formularios.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/dashboard.css" rel="stylesheet" type="text/css" />
 
     <%-- SWEETALERT2 --%>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -60,7 +61,7 @@
     <asp:Panel ID="PanelMenu" runat="server" CssClass="tabs">
         <ul style="display: flex; list-style: none; padding: 0; margin: 0;">
             <li id="menuInicio" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Default/Default.aspx">INICIO</a>
+                <a runat="server" href="~/Pages/Default/Ingreso_Listar.aspx">INICIO</a>
             </li>
             <li id="menuEstacionamiento" runat="server" class="tab">
                 <a runat="server" href="~/Pages/Estacionamiento/Estacionamiento_Listar.aspx">ESTACIONAMIENTO</a>

@@ -21,7 +21,7 @@
 
             <Columns>
                 <asp:BoundField DataField="Estacionamiento.Est_nombre" HeaderText="Estacionamiento" />
-                <asp:BoundField DataField="Plaza_Nombre" HeaderText="Nombre" />
+                <asp:BoundField DataField="Plaza_id" HeaderText="Nombre" />
                 <asp:BoundField DataField="Plaza_Tipo" HeaderText="Tipo" />
                 <asp:BoundField DataField="Categoria_Vehiculo.Categoria_descripcion" HeaderText="Categoría" />
                 <asp:TemplateField HeaderText="Disponible">

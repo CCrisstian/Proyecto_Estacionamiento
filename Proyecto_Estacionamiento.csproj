@@ -125,15 +125,17 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\dashboard.css" />
     <Content Include="Content\formularios.css" />
     <Content Include="Content\planilla.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\tabs.css" />
     <Content Include="Images\EnConstruccion.png" />
     <Content Include="Images\LogoACE_SinFondo.PNG" />
-    <Content Include="Pages\Default\Default.aspx" />
+    <Content Include="Pages\Default\Ingreso_Listar.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\Default\Ingreso_Registrar.aspx" />
     <Content Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx" />
     <Content Include="Pages\Estacionamiento\Estacionamiento_Listar.aspx" />
     <Content Include="Pages\Login\Login.aspx" />
@@ -227,15 +229,22 @@
     <Compile Include="Ocupacion.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Default\Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="Pages\Default\Ingreso_Listar.aspx.cs">
+      <DependentUpon>Ingreso_Listar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Default\Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
+    <Compile Include="Pages\Default\Ingreso_Listar.aspx.designer.cs">
+      <DependentUpon>Ingreso_Listar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Default\Ingreso_Registrar.aspx.cs">
+      <DependentUpon>Ingreso_Registrar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Default\Ingreso_Registrar.aspx.designer.cs">
+      <DependentUpon>Ingreso_Registrar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx.cs">
       <DependentUpon>Estacionamiento_CrearEditar.aspx</DependentUpon>
