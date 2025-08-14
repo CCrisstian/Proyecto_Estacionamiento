@@ -7,12 +7,13 @@
 
         <div class="form-group form-inline">
             <label for="txtPatente">Patente:</label>
-            <asp:TextBox ID="txtPatente" runat="server" MaxLength="100" CssClass="form-control" />
+            <asp:TextBox ID="txtPatente" runat="server" MaxLength="100" CssClass="form-control"
+                AutoPostBack="true" OnTextChanged="txtPatente_TextChanged" />
         </div>
 
         <div class="form-group form-inline">
             <label for="ddlCategoria">Categoría:</label>
-<asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlCategoria_SelectedIndexChanged" />
+            <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlCategoria_SelectedIndexChanged" />
         </div>
 
         <div class="form-group form-inline">
@@ -28,6 +29,7 @@
         <div class="form-group form-inline">
             <label>Color:</label>
             <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control">
+                <asp:ListItem Text="--Seleccione Color--" Value="0" />
                 <asp:ListItem>Blanco</asp:ListItem>
                 <asp:ListItem>Negro</asp:ListItem>
                 <asp:ListItem>Gris / Plata</asp:ListItem>

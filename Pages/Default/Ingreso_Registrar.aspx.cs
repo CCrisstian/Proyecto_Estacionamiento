@@ -33,6 +33,50 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
+        // Metodo para autocompletar los campos del Vehículo si se ingresa una patente existente
+        protected void txtPatente_TextChanged(object sender, EventArgs e)
+        {
+            string patenteIngresada = txtPatente.Text.Trim().Replace(" ", "").ToUpper();
+
+            using (var db = new ProyectoEstacionamientoEntities())
+            {
+                var vehiculo = db.Vehiculo
+                                 .FirstOrDefault(v => v.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada);
+
+                if (vehiculo != null)
+                {
+                    // Autocompletamos los campos
+                    ddlCategoria.SelectedValue = vehiculo.Categoria_id.ToString();
+                    txtMarca.Text = vehiculo.Vehiculo_Marca;
+                    txtModelo.Text = vehiculo.Vehiculo_Modelo.ToString();
+                    ddlColor.SelectedValue = vehiculo.Vehiculo_Color;
+
+                    // Bloqueamos edición de los campos
+                    ddlCategoria.Enabled = false;
+                    txtMarca.ReadOnly = true;
+                    txtModelo.ReadOnly = true;
+                    ddlColor.Enabled = false;
+
+                    // Filtrar automáticamente Plazas y Tarifas según categoría
+                    ddlCategoria_SelectedIndexChanged(null, null);
+                }
+                else
+                {
+                    // Si la patente se borra o es nueva, desbloqueamos campos y limpiamos
+                    ddlCategoria.Enabled = true;
+                    txtMarca.ReadOnly = false;
+                    txtModelo.ReadOnly = false;
+                    ddlColor.Enabled = true;
+
+                    ddlCategoria.SelectedValue = "0";
+                    txtMarca.Text = "";
+                    txtModelo.Text = "";
+                    ddlColor.SelectedValue = "0";
+                }
+            }
+        }
+
+
         private void CargarCategoriasFiltradas()
         {
 
@@ -84,6 +128,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
             CargarTarifasFiltradas(estacionamientoId, categoriaSeleccionadaId);
         }
 
+
         protected void CargarPlazasFiltradas(int? estacionamientoId, int categoriaSeleccionadaId)
         {
             if (categoriaSeleccionadaId == 0)   // Si no se seleccionó Categoría no se habilitan las Plazas
@@ -104,7 +149,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 if (plazas.Any())
                 {
                     ddlPlaza.DataSource = plazas;
-                    ddlPlaza.DataTextField = "Plaza_id";
+                    ddlPlaza.DataTextField = "Plaza_Nombre";
                     ddlPlaza.DataValueField = "Plaza_id";
                     ddlPlaza.DataBind();
                     ddlPlaza.Items.Insert(0, new ListItem("--Seleccione Plaza--", "0"));
@@ -116,6 +161,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 }
             }
         }
+
 
         protected void CargarTarifasFiltradas(int? estacionamientoId, int categoriaSeleccionadaId)
         {
@@ -154,6 +200,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
+
         private void CargarMetodosDePagoFiltrados()
         {
 
@@ -185,6 +232,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
+
         // Validaciones
         private bool ValidarFormulario()
         {
@@ -210,7 +258,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 return false;
             }
 
-            // Validar que los DropDownList tengan una opción seleccionada distinta a la predeterminada
             if (ddlCategoria.SelectedValue == "0")
             {
                 lblMensaje.Text = "Debe seleccionar una Categoría.";
@@ -251,33 +298,53 @@ namespace Proyecto_Estacionamiento.Pages.Default
             return true;
         }
 
+
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             if (!ValidarFormulario())
-                return; // Si no valida, salimos y mostramos mensaje en lblMensaje
+                return;
 
             try
             {
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
+                    // 🔍 Normalizamos la patente ingresada ingreso "a" y la convertimos en "A"
+                    var patenteIngresada = txtPatente.Text.Trim().Replace(" ", "").ToUpper();
+
+                    var ocupacionActiva = db.Ocupacion
+                        .FirstOrDefault(o => o.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada
+                                           && o.Ocu_fecha_Hora_Fin == null);
+
+                    if (ocupacionActiva != null)
+                    {
+                        lblMensaje.Text = $"El vehículo con patente {patenteIngresada} ya se encuentra dentro del estacionamiento.";
+                        return;
+                    }
+
                     using (var transaction = db.Database.BeginTransaction())
                     {
                         try
                         {
-                            // 1. Crear el objeto Vehiculo
-                            var nuevoVehiculo = new Vehiculo
+                            // Verificar si el vehículo ya existe
+                            var vehiculoExistente = db.Vehiculo
+                                .FirstOrDefault(v => v.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada);
+
+                            if (vehiculoExistente == null)
                             {
-                                Vehiculo_Patente = txtPatente.Text.Trim(),
-                                Categoria_id = int.Parse(ddlCategoria.SelectedValue),
-                                Vehiculo_Marca = txtMarca.Text.Trim(),
-                                Vehiculo_Modelo = int.Parse(txtModelo.Text.Trim()),
-                                Vehiculo_Color = ddlColor.SelectedValue
-                            };
+                                var nuevoVehiculo = new Vehiculo
+                                {
+                                    Vehiculo_Patente = patenteIngresada,
+                                    Categoria_id = int.Parse(ddlCategoria.SelectedValue),
+                                    Vehiculo_Marca = txtMarca.Text.Trim(),
+                                    Vehiculo_Modelo = int.Parse(txtModelo.Text.Trim()),
+                                    Vehiculo_Color = ddlColor.SelectedValue
+                                };
 
-                            db.Vehiculo.Add(nuevoVehiculo);
-                            db.SaveChanges();
+                                db.Vehiculo.Add(nuevoVehiculo);
+                                db.SaveChanges();
+                            }
 
-                            // 2. Crear el objeto Pago_Ocupacion
+                            // Crear Pago_Ocupacion
                             int? estId = ObtenerEstacionamientoId();
                             int metodoPagoId = Convert.ToInt32(ddlMetodoDePago.SelectedValue);
                             int tarifaId = Convert.ToInt32(ddlTarifa.SelectedValue);
@@ -296,19 +363,19 @@ namespace Proyecto_Estacionamiento.Pages.Default
                             db.SaveChanges();
                             int nuevoPago_id = nuevoPago.Pago_id;
 
-                            //3. Cambiar disponibilidad de Plaza
+                            // Cambiar disponibilidad de Plaza
                             int plazaIdSeleccionada = int.Parse(ddlPlaza.SelectedValue);
                             var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaIdSeleccionada);
                             plaza.Plaza_Disponibilidad = false;
                             db.SaveChanges();
 
-                            // 4. Crear la Ocupacion
+                            // Crear Ocupacion
                             var nuevaOcupacion = new Ocupacion
                             {
                                 Est_id = (int)estId,
                                 Plaza_id = plazaIdSeleccionada,
                                 Ocu_fecha_Hora_Inicio = DateTime.Now,
-                                Vehiculo_Patente = txtPatente.Text.Trim(),
+                                Vehiculo_Patente = patenteIngresada,
                                 Tarifa_id = tarifaId,
                                 Pago_id = nuevoPago_id
                             };
@@ -316,14 +383,12 @@ namespace Proyecto_Estacionamiento.Pages.Default
                             db.Ocupacion.Add(nuevaOcupacion);
                             db.SaveChanges();
 
-                            // Confirmar todo
+                            // Confirmar
                             transaction.Commit();
-
                             Response.Redirect("~/Pages/Default/Ingreso_Listar.aspx");
                         }
                         catch (Exception ex)
                         {
-                            // Revertir cambios si algo falla
                             transaction.Rollback();
                             lblMensaje.Text = "Error al guardar: " + ex.Message;
                         }
@@ -336,11 +401,11 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
+
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Pages/Default/Ingreso_Listar.aspx");
         }
-
 
     }
 }

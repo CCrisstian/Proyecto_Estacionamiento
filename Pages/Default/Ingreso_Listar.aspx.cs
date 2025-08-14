@@ -15,6 +15,13 @@ namespace Proyecto_Estacionamiento
             if (!IsPostBack)    // Verifica si es la primera vez que se carga la página
             {
                 CargarDashboard();
+
+                string tipoUsuario = Session["Usu_tipo"] as string;
+                if (tipoUsuario != "Playero")
+                {
+                    btnIngreso.Visible = false;
+                }
+
                 CargarIngresos();
             }
         }
@@ -67,6 +74,7 @@ namespace Proyecto_Estacionamiento
             public int Plaza_id { get; set; }
             public DateTime Ocu_fecha_Hora_Inicio { get; set; }
             // Más campos para mostrar y uso
+            public string Plaza_Nombre { get; set; } // <-- Nuevo
             public string Vehiculo_Patente { get; set; }
             public int Tarifa_id { get; set; }
             public int? Pago_id { get; set; }
@@ -114,6 +122,7 @@ namespace Proyecto_Estacionamiento
                     Est_id = o.Est_id,
                     Plaza_id = o.Plaza_id,
                     Ocu_fecha_Hora_Inicio = o.Ocu_fecha_Hora_Inicio,
+                    Plaza_Nombre = o.Plaza.Plaza_Nombre,
                     Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
                     Tarifa_id = o.Tarifa_id, // posible que no se use, pero se deja por si acaso
                     Pago_id = o.Pago_id,
@@ -121,7 +130,9 @@ namespace Proyecto_Estacionamiento
                     Entrada = o.Ocu_fecha_Hora_Inicio.ToString("HH:mm"),
                     Salida = o.Ocu_fecha_Hora_Fin.HasValue ? o.Ocu_fecha_Hora_Fin.Value.ToString("HH:mm") : "",
                     Monto = o.Pago_Ocupacion?.Pago_Importe
-                }).ToList();
+                })
+                    .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
+                    .ToList();
 
                 gvIngresos.DataSource = ingresos;
                 gvIngresos.DataKeyNames = new string[] { "Est_id", "Plaza_id", "Ocu_fecha_Hora_Inicio" };

@@ -6,13 +6,13 @@
     <div class="ingreso-layout">
         <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />
         <div class="dashboard">
-<div class="dashboard-card disponibles">
-    <asp:Literal ID="litPlazasDisponibles" runat="server" />
-</div>
+            <div class="dashboard-card disponibles">
+                <asp:Literal ID="litPlazasDisponibles" runat="server" />
+            </div>
 
-<div class="dashboard-card ocupadas">
-    <asp:Literal ID="litPlazasOcupadas" runat="server" />
-</div>
+            <div class="dashboard-card ocupadas">
+                <asp:Literal ID="litPlazasOcupadas" runat="server" />
+            </div>
         </div>
     </div>
 
@@ -28,7 +28,7 @@
 
             <Columns>
                 <asp:BoundField DataField="Vehiculo_Patente" HeaderText="Patente" />
-                <asp:BoundField DataField="Plaza_id" HeaderText="Plaza" />
+                <asp:BoundField DataField="Plaza_Nombre" HeaderText="Plaza" />
                 <asp:BoundField DataField="Tarifa" HeaderText="Tarifa" />
                 <asp:BoundField DataField="Entrada" HeaderText="Entrada" />
                 <asp:BoundField DataField="Salida" HeaderText="Salida" />
@@ -39,7 +39,8 @@
                         <asp:Button ID="btnEgreso" runat="server" Text="Egreso"
                             CommandName="Egreso"
                             CommandArgument='<%# Container.DataItemIndex %>'
-                            Enabled='<%# String.IsNullOrEmpty(Eval("Salida") as string) %>'
+                            Enabled='<%# String.IsNullOrEmpty(Eval("Salida") as string) 
+                       && (Session["Usu_tipo"] as string) == "Playero" %>'
                             CssClass="btn btn-danger btn-grid" />
                     </ItemTemplate>
                 </asp:TemplateField>
