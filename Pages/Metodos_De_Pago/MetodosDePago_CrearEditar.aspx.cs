@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -30,10 +31,15 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
         private void CargarEstacionamientos()
         {
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
             using (var context = new ProyectoEstacionamientoEntities())
             {
+                // Filtrar por Dueño_Legajo
                 var estacionamientos = context.Estacionamiento
-                    .Select(e => new { e.Est_id, e.Est_nombre }).ToList();
+                    .Where(e => e.Dueño_Legajo == legajo)
+                    .Select(e => new { e.Est_id, e.Est_nombre })
+                    .ToList();
 
                 ddlEstacionamientos.DataSource = estacionamientos;
                 ddlEstacionamientos.DataValueField = "Est_id";
@@ -82,9 +88,14 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 return;
 
             DateTime desde = DateTime.Now;
-            DateTime hasta = DateTime.Parse(txtHasta.Text);
+            DateTime? hasta = null;
 
-            if (desde > hasta)
+            if (DateTime.TryParse(txtHasta.Text, out DateTime fechaHasta))
+            {
+                hasta = fechaHasta;
+            }
+
+            if (hasta.HasValue && desde > hasta.Value)
             {
                 lblError.Text = "La Fecha 'Desde' no puede ser mayor que la Fecha 'Hasta'.";
                 lblError.Visible = true;

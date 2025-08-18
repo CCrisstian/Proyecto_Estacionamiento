@@ -46,12 +46,20 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         // Método para cargar Estacionamiento en los dropdowns
         private void CargarEstacionamientos()
         {
-            using (var db = new ProyectoEstacionamientoEntities())
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
+            using (var context = new ProyectoEstacionamientoEntities())
             {
-                ddlEstacionamientos.DataSource = db.Estacionamiento.ToList();               // Obtener la lista de Estacionamientos
-                ddlEstacionamientos.DataTextField = "Est_nombre";                           // Campo que se mostrará en el dropdown
-                ddlEstacionamientos.DataValueField = "Est_id";                              // Campo que se usará como valor del dropdown
-                ddlEstacionamientos.DataBind();                                             // Vincular la lista al dropdown
+                // Filtrar por Dueño_Legajo
+                var estacionamientos = context.Estacionamiento
+                    .Where(e => e.Dueño_Legajo == legajo)
+                    .Select(e => new { e.Est_id, e.Est_nombre })
+                    .ToList();
+
+                ddlEstacionamientos.DataSource = estacionamientos;
+                ddlEstacionamientos.DataValueField = "Est_id";
+                ddlEstacionamientos.DataTextField = "Est_nombre";
+                ddlEstacionamientos.DataBind();                                            // Vincular la lista al dropdown
                 ddlEstacionamientos.Items.Insert(0, new ListItem("-- Seleccione --", ""));  // Insertar un item por defecto
             }
         }

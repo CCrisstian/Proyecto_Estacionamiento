@@ -46,15 +46,19 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
         private void CargarEstacionamientos()
         {
-            using (var db = new ProyectoEstacionamientoEntities())
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
+            using (var context = new ProyectoEstacionamientoEntities())
             {
-                var estacionamientos = db.Estacionamiento
+                // Filtrar por Dueño_Legajo
+                var estacionamientos = context.Estacionamiento
+                    .Where(e => e.Dueño_Legajo == legajo)
                     .Select(e => new { e.Est_id, e.Est_nombre })
                     .ToList();
 
                 ddlEstacionamientos.DataSource = estacionamientos;
-                ddlEstacionamientos.DataTextField = "Est_nombre";
                 ddlEstacionamientos.DataValueField = "Est_id";
+                ddlEstacionamientos.DataTextField = "Est_nombre";
                 ddlEstacionamientos.DataBind();
             }
         }

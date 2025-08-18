@@ -33,9 +33,6 @@
             <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control" />
             <ajaxToolkit:CalendarExtender ID="calHasta" runat="server"
                 TargetControlID="txtHasta" Format="yyyy-MM-dd" />
-            <asp:RequiredFieldValidator ID="rfvHasta" runat="server"
-                ControlToValidate="txtHasta" ErrorMessage="Campo obligatorio"
-                ForeColor="Red" Display="Dynamic" />
         </div>
 
         <div class="form-group">

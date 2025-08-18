@@ -40,6 +40,7 @@ namespace Proyecto_Estacionamiento.Servicios
             {
                 // Armar dirección completa para búsqueda
                 string direccionCompleta = $"{direccion}, {localidad}, {provincia}, Argentina";
+                
                 // URL de la API de Nominatim para geocodificación
                 string url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(direccionCompleta)}&format=json&limit=1";
 

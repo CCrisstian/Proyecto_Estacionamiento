@@ -27,16 +27,25 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         }
 
         // Cargamos los Estacionamientos al cargar la página para poder seleccionar uno por su Nombre
-        private void CargarEstacionamientos()   
+        private void CargarEstacionamientos()
         {
-            using (var db = new ProyectoEstacionamientoEntities())
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
+            using (var context = new ProyectoEstacionamientoEntities())
             {
-                ddlEstacionamiento.DataSource = db.Estacionamiento.ToList();
-                ddlEstacionamiento.DataTextField = "Est_nombre";
+                // Filtrar por Dueño_Legajo
+                var estacionamientos = context.Estacionamiento
+                    .Where(e => e.Dueño_Legajo == legajo)
+                    .Select(e => new { e.Est_id, e.Est_nombre })
+                    .ToList();
+
+                ddlEstacionamiento.DataSource = estacionamientos;
                 ddlEstacionamiento.DataValueField = "Est_id";
+                ddlEstacionamiento.DataTextField = "Est_nombre";
                 ddlEstacionamiento.DataBind();
             }
         }
+
 
         // Cargamos las Categorías de Vehículos al cargar la página para poder seleccionar una por su Descripción
         private void CargarCategorias()
