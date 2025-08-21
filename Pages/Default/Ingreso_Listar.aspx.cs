@@ -21,6 +21,10 @@ namespace Proyecto_Estacionamiento
                 {
                     btnIngreso.Visible = false;
                 }
+                else
+                {
+                    gvIngresos.Columns[0].Visible = false;
+                }
 
                 CargarIngresos();
             }
@@ -74,7 +78,8 @@ namespace Proyecto_Estacionamiento
             public int Plaza_id { get; set; }
             public DateTime Ocu_fecha_Hora_Inicio { get; set; }
             // Más campos para mostrar y uso
-            public string Plaza_Nombre { get; set; } // <-- Nuevo
+            public string Est_nombre { get; set; }
+            public string Plaza_Nombre { get; set; }
             public string Vehiculo_Patente { get; set; }
             public int Tarifa_id { get; set; }
             public int? Pago_id { get; set; }
@@ -122,6 +127,7 @@ namespace Proyecto_Estacionamiento
                     Est_id = o.Est_id,
                     Plaza_id = o.Plaza_id,
                     Ocu_fecha_Hora_Inicio = o.Ocu_fecha_Hora_Inicio,
+                    Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
                     Plaza_Nombre = o.Plaza.Plaza_Nombre,
                     Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
                     Tarifa_id = o.Tarifa_id, // posible que no se use, pero se deja por si acaso

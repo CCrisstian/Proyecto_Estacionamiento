@@ -17,6 +17,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 {
                     // Oculta los elementos si no es Dueño
                     btnAgregar.Visible = false;
+                    gvPlazas.Columns[0].Visible = false;
                 }
             }
         }

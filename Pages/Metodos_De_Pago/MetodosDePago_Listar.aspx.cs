@@ -17,6 +17,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 {
                     // Oculta los elementos si no es Dueño
                     btnAgregar.Visible = false;
+                    gvMetodosPago.Columns[0].Visible = false;
                 }
             }
         }

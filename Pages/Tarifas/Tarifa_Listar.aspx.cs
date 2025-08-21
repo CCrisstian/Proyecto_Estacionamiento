@@ -16,6 +16,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 {
                     // Oculta los elementos si no es Dueño
                     btnAgregarTarifa.Visible = false;
+                    gvTarifas.Columns[0].Visible = false;
                 }
             }
         }

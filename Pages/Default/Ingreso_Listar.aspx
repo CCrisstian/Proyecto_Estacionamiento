@@ -28,6 +28,7 @@
             CssClass="grid" Width="100%">
 
             <Columns>
+                <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />
                 <asp:BoundField DataField="Vehiculo_Patente" HeaderText="Patente" />
                 <asp:BoundField DataField="Plaza_Nombre" HeaderText="Plaza" />
                 <asp:BoundField DataField="Tarifa" HeaderText="Tarifa" />

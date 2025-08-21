@@ -20,6 +20,8 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     lblMontoFin.Visible = false;
                     txtMontoInicio.Visible = false;
                     txtMontoFin.Visible = false;
+                } else {
+                    GridViewTurnos.Columns[0].Visible = false;
                 }
             }
         }
