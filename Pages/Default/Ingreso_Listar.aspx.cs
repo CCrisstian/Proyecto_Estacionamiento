@@ -62,8 +62,8 @@ namespace Proyecto_Estacionamiento
 
                 int plazasDisponibles = plazas.Count(p => p.Plaza_Disponibilidad);
                 int plazasOcupadas = plazas.Count(p => !p.Plaza_Disponibilidad);
-                litPlazasDisponibles.Text = $"Plazas Disponibles: {plazasDisponibles}";
-                litPlazasOcupadas.Text = $"Plazas Ocupadas: {plazasOcupadas}";
+                lblPlazasDisponibles.Text = $"Plazas Disponibles: {plazasDisponibles}";
+                lblPlazasOcupadas.Text = $"Plazas Ocupadas: {plazasOcupadas}";
             }
         }
 

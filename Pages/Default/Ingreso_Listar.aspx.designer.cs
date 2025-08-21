@@ -24,22 +24,22 @@ namespace Proyecto_Estacionamiento
         protected global::System.Web.UI.WebControls.Button btnIngreso;
 
         /// <summary>
-        /// Control litPlazasDisponibles.
+        /// Control lblPlazasDisponibles.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litPlazasDisponibles;
+        protected global::System.Web.UI.WebControls.Label lblPlazasDisponibles;
 
         /// <summary>
-        /// Control litPlazasOcupadas.
+        /// Control lblPlazasOcupadas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litPlazasOcupadas;
+        protected global::System.Web.UI.WebControls.Label lblPlazasOcupadas;
 
         /// <summary>
         /// Control gvIngresos.

@@ -39,6 +39,7 @@
                 <asp:ListItem>Miércoles</asp:ListItem>
                 <asp:ListItem>Jueves</asp:ListItem>
                 <asp:ListItem>Viernes</asp:ListItem>
+                <asp:ListItem>Sábado</asp:ListItem>
             </asp:DropDownList>
             <asp:DropDownList ID="ddlDiaFin" runat="server" CssClass="form-control">
                 <asp:ListItem>Lunes</asp:ListItem>
@@ -46,6 +47,7 @@
                 <asp:ListItem>Miércoles</asp:ListItem>
                 <asp:ListItem>Jueves</asp:ListItem>
                 <asp:ListItem>Viernes</asp:ListItem>
+                <asp:ListItem>Sábado</asp:ListItem>
             </asp:DropDownList>
         </div>
 
@@ -55,18 +57,19 @@
             <asp:DropDownList ID="ddlHoraFin" runat="server" CssClass="form-control"/>
         </div>
 
+
+        <div class="form-group form-inline">
+            <asp:CheckBox ID="chkDomingo" runat="server" AutoPostBack="true" OnCheckedChanged="chkDomingo_CheckedChanged" Text="Atiende los Domingos" />
+        </div>
+
+        <div class="form-group form-inline">
+            <label>Hora Domingo (Inicio - Fin):</label>
+            <asp:DropDownList ID="ddlHoraInicio_Domingo" runat="server" CssClass="form-control"/>
+            <asp:DropDownList ID="ddlHoraFin_Domingo" runat="server" CssClass="form-control"/>
+        </div>
+
         <div class="form-group form-inline">
             <asp:CheckBox ID="chkDiasFeriado" runat="server" Text="Atiende en días feriados" />
-        </div>
-
-        <div class="form-group form-inline">
-            <asp:CheckBox ID="chkFinDeSemana" runat="server" AutoPostBack="true" OnCheckedChanged="chkFinDeSemana_CheckedChanged" Text="Atiende fines de semana" />
-        </div>
-
-        <div class="form-group form-inline">
-            <label>Hora Fin de Semana (Inicio - Fin):</label>
-            <asp:DropDownList ID="ddlHoraInicio_FinDeSemana" runat="server" CssClass="form-control"/>
-            <asp:DropDownList ID="ddlHoraFin_FinDeSemana" runat="server" CssClass="form-control"/>
         </div>
 
         <div class="form-group">

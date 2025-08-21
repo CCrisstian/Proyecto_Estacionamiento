@@ -3,7 +3,7 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Estacionamientos</h2>
 
-    <asp:Button ID="btnCrear" runat="server" Text="Crear Estacionamiento (➕)" OnClick="btnCrear_Click" CssClass="btn btn-success" />
+    <asp:Button ID="btnAgregar" runat="server" Text="Agregar Estacionamiento" OnClick="btnAgregar_Click" CssClass="btn btn-success" />
     <br />
     <br />
 

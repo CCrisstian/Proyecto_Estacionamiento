@@ -5,13 +5,14 @@
 
     <div class="ingreso-layout">
         <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />
+
         <div class="dashboard">
-            <div class="dashboard-card disponibles">
-                <asp:Literal ID="litPlazasDisponibles" runat="server" />
+            <div class="dashboard-card">
+                <asp:Label ID="lblPlazasDisponibles" runat="server" CssClass="disponibles" />
             </div>
 
-            <div class="dashboard-card ocupadas">
-                <asp:Literal ID="litPlazasOcupadas" runat="server" />
+            <div class="dashboard-card">
+                <asp:Label ID="lblPlazasOcupadas" runat="server" CssClass="ocupadas" />
             </div>
         </div>
     </div>

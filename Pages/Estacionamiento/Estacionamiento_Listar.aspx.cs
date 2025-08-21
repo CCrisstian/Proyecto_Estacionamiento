@@ -44,7 +44,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             }
         }
 
-        protected void btnCrear_Click(object sender, EventArgs e)
+        protected void btnAgregar_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Pages/Estacionamiento/Estacionamiento_CrearEditar.aspx");
         }

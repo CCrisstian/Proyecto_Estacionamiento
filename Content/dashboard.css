@@ -1,40 +1,22 @@
-﻿.ingreso-layout {
-    display: flex;
-    align-items: center;
-    gap: 150px; /* Espacio entre dashboard y botón */
-    margin-top: 20px;
-}
-
-.dashboard {
+﻿.dashboard {
     display: flex;
     gap: 20px;
 }
 
+/* Estilo general de las tarjetas */
 .dashboard-card {
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
     padding: 15px 20px;
-    border-radius: 12px;
-    width: 230px;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    min-width: 180px;
-    /* transición para hover opcional */
-    transition: background-color 0.3s ease;
+    font-size: 1.2em;
+    font-weight: bold;
 }
-.dashboard-number {
-    font-size: 16px;
-    font-weight: normal;
-    color: white;
-    white-space: normal; /* Permite que el texto se envuelva si es largo */
-    display: block;
-    text-align: center;
-}
-    .dashboard-card.disponibles {
-        background-color: #28a745; /* verde */
-    }
 
-    .dashboard-card.ocupadas {
-        background-color: #dc3545; /* rojo */
-    }
+/* Colores del texto */
+.disponibles {
+    color: green;
+}
+
+.ocupadas {
+    color: red;
+}
