@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Antlr.Runtime.Misc;
+using System;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -308,6 +309,8 @@ namespace Proyecto_Estacionamiento.Pages.Default
             {
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
+                    string accion;
+
                     // 🔍 Normalizamos la patente ingresada ingreso "a" y la convertimos en "A"
                     var patenteIngresada = txtPatente.Text.Trim().Replace(" ", "").ToUpper();
 
@@ -323,6 +326,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
 
                     using (var transaction = db.Database.BeginTransaction())
                     {
+
                         try
                         {
                             // Verificar si el vehículo ya existe
@@ -385,7 +389,8 @@ namespace Proyecto_Estacionamiento.Pages.Default
 
                             // Confirmar
                             transaction.Commit();
-                            Response.Redirect("~/Pages/Default/Ingreso_Listar.aspx");
+                            accion = "ingreso";
+                            Response.Redirect($"~/Pages/Default/Ingreso_Listar.aspx?exito=1&accion={accion}");
                         }
                         catch (Exception ex)
                         {

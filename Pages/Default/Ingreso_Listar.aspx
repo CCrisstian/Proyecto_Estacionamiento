@@ -3,6 +3,7 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Ingresos</h2>
 
+
     <div class="ingreso-layout">
         <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />
 
@@ -15,9 +16,9 @@
                 <asp:Label ID="lblPlazasOcupadas" runat="server" CssClass="ocupadas" />
             </div>
         </div>
+
     </div>
 
-    <br />
     <br />
 
     <div class="grid-wrapper">
@@ -42,12 +43,58 @@
                             CommandName="Egreso"
                             CommandArgument='<%# Container.DataItemIndex %>'
                             Enabled='<%# String.IsNullOrEmpty(Eval("Salida") as string) 
-                       && (Session["Usu_tipo"] as string) == "Playero" %>'
-                            CssClass="btn btn-danger btn-grid" />
+               && (Session["Usu_tipo"] as string) == "Playero" %>'
+                            CssClass="btn btn-danger btn-grid"
+                            OnClientClick="return confirmarEgreso(this);" />
                     </ItemTemplate>
                 </asp:TemplateField>
 
             </Columns>
         </asp:GridView>
     </div>
+
+    <%-- SweetAlert2 para mensajes de exito --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function confirmarEgreso(btn) {
+            // Siempre evitar el postback inicial
+            event.preventDefault();
+
+            Swal.fire({
+                title: "¿Deseás registrar el 'Egreso'?",
+                showDenyButton: true,
+                confirmButtonText: "Guardar",
+                denyButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Ejecutar el postback del botón manualmente
+                    __doPostBack(btn.name, "");
+                } else if (result.isDenied) {
+                    Swal.fire("'Egreso' no registrado", "", "info");
+                }
+            });
+
+            return false; // Impide el postback automático
+        }
+    </script>
+
+    <% 
+        if (Request.QueryString["exito"] == "1")
+        {
+            string accion = Request.QueryString["accion"];
+            string titulo = accion == "ingreso"
+                ? "'Ingreso' registrado correctamente"
+                : "'Egreso' registrado correctamente";
+    %>
+    <script>
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "<%= titulo %>",
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>
+    <% } %>
 </asp:Content>

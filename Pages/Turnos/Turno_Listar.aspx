@@ -14,7 +14,10 @@
                 <asp:TextBox ID="txtMontoInicio" runat="server" CssClass="form-control" />
             </div>
 
-            <asp:Button ID="btnInicioTurno" runat="server" Text="Inicio de Turno" CssClass="btn btn-success" OnClick="btnInicioTurno_Click" />
+            <asp:Button ID="btnInicioTurno" runat="server" Text="Inicio de Turno"
+                CssClass="btn btn-success"
+                OnClick="btnInicioTurno_Click"
+                OnClientClick="return confirmarAccion(this, 'inicio');" />
         </div>
 
         <div class="form-row">
@@ -24,7 +27,10 @@
                 <asp:TextBox ID="txtMontoFin" runat="server" CssClass="form-control" />
             </div>
 
-            <asp:Button ID="btnFinTurno" runat="server" Text="Fin de Turno" CssClass="btn btn-danger" OnClick="btnFinTurno_Click" />
+            <asp:Button ID="btnFinTurno" runat="server" Text="Fin de Turno"
+                CssClass="btn btn-danger"
+                OnClick="btnFinTurno_Click"
+                OnClientClick="return confirmarAccion(this, 'fin');" />
         </div>
     </div>
 
@@ -58,4 +64,46 @@
 
         </asp:GridView>
     </div>
+
+    <%-- SweetAlert2 para mensajes de confirmación --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarAccion(btn, tipo) {
+            let mensaje = tipo === "inicio"
+                ? "¿Deseás 'Iniciar' el Turno?"
+                : "¿Deseás 'Finalizar' el Turno?";
+
+            Swal.fire({
+                title: mensaje,
+                icon: "question",
+                showDenyButton: true,
+                confirmButtonText: "Sí",
+                denyButtonText: "No"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    __doPostBack(btn.name, "");
+                }
+            });
+
+            return false; // siempre detenemos el postback original
+        }
+    </script>
+    <% 
+        if (Request.QueryString["exito"] == "1")
+        {
+            string accion = Request.QueryString["accion"] ?? "";
+            string titulo = accion == "inicio"
+                ? "El Turno fue 'Iniciado' correctamente"
+                : "El Turno fue 'Finalizado' correctamente";
+    %>
+    <script>
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "<%= titulo %>",
+        showConfirmButton: false,
+        timer: 3000
+    });
+    </script>
+    <% } %>
 </asp:Content>

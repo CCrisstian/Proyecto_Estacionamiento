@@ -21,6 +21,16 @@
 
     <%-- SWEETALERT2 --%>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function mostrarAlerta(titulo, mensaje, icono) {
+        Swal.fire({
+            title: titulo,
+            text: mensaje,
+            icon: icono,
+            confirmButtonText: 'OK'
+        });
+    }
+    </script>
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>

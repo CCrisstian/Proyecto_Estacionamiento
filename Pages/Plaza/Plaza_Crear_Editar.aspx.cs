@@ -109,7 +109,8 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 plaza.Plaza_Disponibilidad = ddlDisponible.SelectedValue == "true";
 
                 db.SaveChanges(); // Guardado en la Base de Datos
-                Response.Redirect("~/Pages/Plaza/Plaza_Listar.aspx");
+                string accion = Request.QueryString["id"] == null ? "agregado" : "editado";
+                Response.Redirect($"Plaza_Listar.aspx?exito=1&accion={accion}");
             }
         }
 

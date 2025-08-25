@@ -77,7 +77,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
                 if (relacion != null)
                 {
-                    txtHasta.Text = relacion.AMP_Hasta?.ToString("yyyy-MM-dd") ?? "";
+                    txtHasta.Text = relacion.AMP_Hasta?.ToString("dd-MM-yyyy") ?? "";
                 }
             }
         }
@@ -90,9 +90,23 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
             DateTime desde = DateTime.Now;
             DateTime? hasta = null;
 
-            if (DateTime.TryParse(txtHasta.Text, out DateTime fechaHasta))
+            // Si el campo está vacío, lo dejamos como null
+            if (!string.IsNullOrWhiteSpace(txtHasta.Text))
             {
-                hasta = fechaHasta;
+                // Validamos que tenga formato válido de fecha
+                if (DateTime.TryParseExact(txtHasta.Text, "dd-MM-yyyy",
+                                           System.Globalization.CultureInfo.InvariantCulture,
+                                           System.Globalization.DateTimeStyles.None,
+                                           out DateTime fechaHasta))
+                {
+                    hasta = fechaHasta;
+                }
+                else
+                {
+                    lblError.Text = "Debe seleccionar una fecha válida usando el calendario.";
+                    lblError.Visible = true;
+                    return;
+                }
             }
 
             if (hasta.HasValue && desde > hasta.Value)
@@ -129,7 +143,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
                 context.SaveChanges();
 
-                string accion = existente == null ? "Agregado" : "Editado";
+                string accion = existente == null ? "agregado" : "editado";
 
                 // variable exito se usa para mostrar mensaje de éxito (SweetAlert)
                 Response.Redirect($"MetodosDePago_Listar.aspx?exito=1&accion={accion}");  

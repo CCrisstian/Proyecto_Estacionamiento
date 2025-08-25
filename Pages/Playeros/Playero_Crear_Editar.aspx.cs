@@ -168,7 +168,8 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                         }
 
                         transaction.Commit();
-                        Response.Redirect("Playero_Listar.aspx");
+                        string accion = esAlta == true ? "agregado" : "editado";
+                        Response.Redirect($"Playero_Listar.aspx?exito=1&accion={accion}");
                     }
                     catch (Exception ex)
                     {

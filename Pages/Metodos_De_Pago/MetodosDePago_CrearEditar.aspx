@@ -32,15 +32,25 @@
             <label for="txtHasta">Hasta:</label>
             <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control" />
             <ajaxToolkit:CalendarExtender ID="calHasta" runat="server"
-                TargetControlID="txtHasta" Format="yyyy-MM-dd" />
+                TargetControlID="txtHasta" Format="dd-MM-yyyy" />
+
+            <!-- Validación en cliente para solo fechas válidas o vacío -->
+            <asp:RegularExpressionValidator
+                ID="revFechaHasta"
+                runat="server"
+                ControlToValidate="txtHasta"
+                ValidationExpression="^$|^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$"
+                ErrorMessage="Ingrese una fecha válida (dd-MM-yyyy) o seleccione del calendario."
+                CssClass="text-danger"
+                Display="Dynamic" />
+
         </div>
 
         <div class="form-group">
-            <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
-            <ajaxToolkit:ConfirmButtonExtender ID="cbeGuardar" runat="server"
-                TargetControlID="btnGuardar"
-                ConfirmText="¿Estás seguro de que deseas guardar los cambios?" />
-            
+            <asp:Button ID="btnGuardar" runat="server" Text="Guardar"
+                OnClientClick="return confirmarGuardado();"
+                OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
+
             <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click"
                 CausesValidation="False" CssClass="btn btn-danger" />
         </div>
@@ -50,5 +60,25 @@
         </div>
 
     </asp:Panel>
+
+    <%-- SweetAlert2 para mensajes de confirmación --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarGuardado() {
+            Swal.fire({
+                title: "¿Deseás guardar los cambios?",
+                showDenyButton: true,
+                confirmButtonText: "Guardar",
+                denyButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    __doPostBack('<%= btnGuardar.UniqueID %>', '');
+                } else if (result.isDenied) {
+                    Swal.fire("Los cambios no se guardaron", "", "info");
+                }
+            });
+            return false;
+        }
+    </script>
 
 </asp:Content>

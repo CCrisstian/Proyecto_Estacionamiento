@@ -80,6 +80,7 @@
         <div class="form-group">
             <asp:Label ID="lblMensaje" runat="server" ForeColor="Red" />
         </div>
+        <!-- Mensajes de Error -->
 
         <div class="form-group">
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClientClick="return confirmarGuardado();" OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
@@ -97,10 +98,8 @@
             Swal.fire({
                 title: "¿Deseás guardar los cambios?",
                 showDenyButton: true,
-                showCancelButton: true,
                 confirmButtonText: "Guardar",
-                denyButtonText: "No guardar",
-                cancelButtonText: "Cancelar"
+                denyButtonText: "Cancelar"
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Evitar loop infinito llamando el click del botón

@@ -49,9 +49,31 @@
     <br />
 
     <div class="form-group form-inline">
-        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
+        <asp:Button ID="btnGuardar" runat="server" Text="Guardar"
+            OnClientClick="return confirmarGuardado();"
+            OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
+
         <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" CausesValidation="False" CssClass="btn btn-danger" />
     </div>
 
+    <%-- SweetAlert2 para mensajes de confirmación --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarGuardado() {
+            Swal.fire({
+                title: "¿Deseás guardar los cambios?",
+                showDenyButton: true,
+                confirmButtonText: "Guardar",
+                denyButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    __doPostBack('<%= btnGuardar.UniqueID %>', '');
+                } else if (result.isDenied) {
+                    Swal.fire("Los cambios no se guardaron", "", "info");
+                }
+            });
+            return false;
+        }
+    </script>
 </asp:Content>
 

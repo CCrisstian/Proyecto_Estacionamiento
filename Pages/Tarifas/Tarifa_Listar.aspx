@@ -27,11 +27,32 @@
 
                 <asp:TemplateField>
                     <ItemTemplate>
-                        <asp:Button ID="btnEditar" runat="server" Text="Editar" CommandName="Editar" CommandArgument='<%# Eval("Tarifa_id") %>' CssClass="btn btn-primary btn-grid"/>
+                        <asp:Button ID="btnEditar" runat="server" Text="Editar" CommandName="Editar" CommandArgument='<%# Eval("Tarifa_id") %>' CssClass="btn btn-primary btn-grid" />
                     </ItemTemplate>
                 </asp:TemplateField>
 
             </Columns>
         </asp:GridView>
     </div>
+
+    <%-- SweetAlert2 para mensajes de exito --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <% 
+        if (Request.QueryString["exito"] == "1")
+        {
+            string accion = Request.QueryString["accion"] ?? "guardado";
+            string titulo = accion == "agregado"
+                ? "La 'Tarifa' fue 'Agregada' correctamente"
+                : "La 'Tarifa' fue 'Editada' correctamente";
+    %>
+    <script>
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "<%= titulo %>",
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>
+    <% } %>
 </asp:Content>

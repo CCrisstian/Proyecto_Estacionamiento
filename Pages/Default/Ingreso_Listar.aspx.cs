@@ -8,6 +8,7 @@ namespace Proyecto_Estacionamiento
 {
     public partial class Ingreso_Listar : System.Web.UI.Page
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
             // Proteger acceso a páginas
@@ -17,6 +18,7 @@ namespace Proyecto_Estacionamiento
                 CargarDashboard();
 
                 string tipoUsuario = Session["Usu_tipo"] as string;
+                int legajo = Convert.ToInt32(Session["Usu_legajo"]);
                 if (tipoUsuario != "Playero")
                 {
                     btnIngreso.Visible = false;
@@ -257,9 +259,7 @@ namespace Proyecto_Estacionamiento
 
                 }
             }
-            // Recargar el dashboard y la lista de ingresos después de procesar el Egreso
-            CargarDashboard();
-            CargarIngresos();
+            Response.Redirect($"~/Pages/Default/Ingreso_Listar.aspx?exito=1&accion=egreso");
         }
 
 

@@ -43,4 +43,25 @@
 
         </asp:GridView>
     </div>
+
+    <%-- SweetAlert2 para mensajes de exito --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <% 
+        if (Request.QueryString["exito"] == "1")
+        {
+            string accion = Request.QueryString["accion"] ?? "guardado";
+            string titulo = accion == "agregado"
+                ? "La 'Plaza' fue 'Agregada' correctamente"
+                : "La 'Plaza' fue 'Editada' correctamente";
+    %>
+    <script>
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "<%= titulo %>",
+            showConfirmButton: false,
+            timer: 3000
+        });
+    </script>
+    <% } %>
 </asp:Content>

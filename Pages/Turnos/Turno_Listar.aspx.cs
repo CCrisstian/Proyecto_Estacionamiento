@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 
 namespace Proyecto_Estacionamiento.Pages.Turnos
@@ -20,7 +21,9 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     lblMontoFin.Visible = false;
                     txtMontoInicio.Visible = false;
                     txtMontoFin.Visible = false;
-                } else {
+                }
+                else
+                {
                     GridViewTurnos.Columns[0].Visible = false;
                 }
             }
@@ -89,7 +92,11 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
             {
                 if (!double.TryParse(txtMontoInicio.Text, out double montoInicio) || montoInicio < 0)
                 {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Ingrese un monto de inicio válido y no negativo.');", true);
+                    ScriptManager.RegisterStartupScript(
+                        this, this.GetType(), "alertaMontoInicio",
+                        "mostrarAlerta('Atención', 'Ingrese un monto de inicio válido y no negativo.', 'warning');",
+                        true
+                    );
                     return;
                 }
 
@@ -110,7 +117,11 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
                     if (hayTurnoAbierto)
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Ya hay un turno abierto.');", true);
+                        ScriptManager.RegisterStartupScript(
+                            this, this.GetType(), "alertaTurnoAbierto",
+                            "mostrarAlerta('Atención', 'Ya hay un turno abierto.', 'warning');",
+                            true
+                        );
                         return;
                     }
 
@@ -130,11 +141,17 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 }
 
                 txtMontoInicio.Text = "";
-                CargarTurnos();
+                string accion = "inicio";
+                Response.Redirect($"Turno_Listar.aspx?exito=1&accion={accion}");
             }
             catch (Exception ex)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", $"alert('Error: {ex.Message}');", true);
+                var safe = HttpUtility.JavaScriptStringEncode(ex.Message);
+                ScriptManager.RegisterStartupScript(
+                    this, this.GetType(), "alertaErrorInicio",
+                    $"mostrarAlerta('Error', 'Error al iniciar turno: {safe}', 'error');",
+                    true
+                );
             }
         }
 
@@ -144,7 +161,11 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
             {
                 if (!double.TryParse(txtMontoFin.Text, out double montoFin) || montoFin < 0)
                 {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Ingrese un monto de fin válido y no negativo.');", true);
+                    ScriptManager.RegisterStartupScript(
+                        this, this.GetType(), "alertaMontoFin",
+                        "mostrarAlerta('Atención', 'Ingrese un monto de fin válido y no negativo.', 'warning');",
+                        true
+                    );
                     return;
                 }
 
@@ -165,7 +186,11 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
                     if (turnoAbierto == null)
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('No hay Turno abierto para finalizar.');", true);
+                        ScriptManager.RegisterStartupScript(
+                            this, this.GetType(), "alertaSinTurno",
+                            "mostrarAlerta('Atención', 'No hay Turno abierto para finalizar.', 'warning');",
+                            true
+                        );
                         return;
                     }
 
@@ -181,11 +206,17 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 }
 
                 txtMontoFin.Text = "";
-                CargarTurnos();
+                string accion = "fin";
+                Response.Redirect($"Turno_Listar.aspx?exito=1&accion={accion}");
             }
             catch (Exception ex)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", $"alert('Error al finalizar turno: {ex.Message}');", true);
+                var safe = HttpUtility.JavaScriptStringEncode(ex.Message);
+                ScriptManager.RegisterStartupScript(
+                    this, this.GetType(), "alertaErrorFin",
+                    $"mostrarAlerta('Error', 'Error al finalizar turno: {safe}', 'error');",
+                    true
+                );
             }
         }
     }

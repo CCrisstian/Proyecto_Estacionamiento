@@ -87,6 +87,15 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
         protected global::AjaxControlToolkit.CalendarExtender calHasta;
 
         /// <summary>
+        /// Control revFechaHasta.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revFechaHasta;
+
+        /// <summary>
         /// Control btnGuardar.
         /// </summary>
         /// <remarks>
@@ -94,15 +103,6 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnGuardar;
-
-        /// <summary>
-        /// Control cbeGuardar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::AjaxControlToolkit.ConfirmButtonExtender cbeGuardar;
 
         /// <summary>
         /// Control btnCancelar.

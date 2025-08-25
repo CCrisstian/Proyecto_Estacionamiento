@@ -98,6 +98,8 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 ddlCategorias.SelectedIndex == 0 ||
                 string.IsNullOrWhiteSpace(txtTarifaMonto.Text))
             {
+                lblTitulo.Text = "Todos los campos son obligatorios.";
+                lblTitulo.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
@@ -111,22 +113,45 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
+                int estacionamientoId = int.Parse(ddlEstacionamientos.SelectedValue);
+                int tipoTarifaId = int.Parse(ddlTiposTarifa.SelectedValue);
+                int categoriaId = int.Parse(ddlCategorias.SelectedValue);
+
+                int? idTarifaEditando = null;
+                if (Request.QueryString["id"] != null)
+                {
+                    idTarifaEditando = int.Parse(Request.QueryString["id"]);
+                }
+
+                // Validar duplicados (otra tarifa con mismo Est, Tipo y Categoria)
+                bool existeDuplicado = db.Tarifa.Any(t =>
+                    t.Est_id == estacionamientoId &&
+                    t.Tipos_Tarifa_Id == tipoTarifaId &&
+                    t.Categoria_id == categoriaId &&
+                    (idTarifaEditando == null || t.Tarifa_id != idTarifaEditando));
+
+                if (existeDuplicado)
+                {
+                    lblTitulo.Text = "Ya existe una tarifa con ese Estacionamiento, Tipo de Tarifa y Categoría.";
+                    lblTitulo.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
                 Tarifa tarifa = new Tarifa
                 {
-                    Est_id = int.Parse(ddlEstacionamientos.SelectedValue),
-                    Tipos_Tarifa_Id = int.Parse(ddlTiposTarifa.SelectedValue),
-                    Categoria_id = int.Parse(ddlCategorias.SelectedValue),
+                    Est_id = estacionamientoId,
+                    Tipos_Tarifa_Id = tipoTarifaId,
+                    Categoria_id = categoriaId,
                     Tarifa_Monto = (double)monto,
                     Tarifa_Desde = DateTime.Now
                 };
 
-                if (Request.QueryString["id"] != null)
+                if (idTarifaEditando != null) // Editar
                 {
-                    int id = int.Parse(Request.QueryString["id"]);
-                    tarifa.Tarifa_id = id;
+                    tarifa.Tarifa_id = idTarifaEditando.Value;
                     db.Entry(tarifa).State = System.Data.Entity.EntityState.Modified;
                 }
-                else
+                else // Agregar
                 {
                     db.Tarifa.Add(tarifa);
                 }
@@ -134,7 +159,8 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 try
                 {
                     db.SaveChanges();
-                    Response.Redirect("Tarifa_Listar.aspx");
+                    string accion = idTarifaEditando == null ? "agregado" : "editado";
+                    Response.Redirect($"Tarifa_Listar.aspx?exito=1&accion={accion}");
                 }
                 catch (Exception ex)
                 {

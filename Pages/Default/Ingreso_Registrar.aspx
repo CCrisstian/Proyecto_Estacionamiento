@@ -62,6 +62,7 @@
         <div class="form-group">
             <asp:Label ID="lblMensaje" runat="server" ForeColor="Red" />
         </div>
+        <!-- Mensajes de Error -->
 
         <div class="form-group">
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClientClick="return confirmarGuardado();" OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
@@ -69,4 +70,27 @@
             <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" CssClass="btn btn-danger" />
         </div>
     </asp:Panel>
+
+     <%-- SweetAlert2 para mensajes de confirmación --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarGuardado() {
+            Swal.fire({
+                title: "¿Deseás registrar el 'Ingreso'?",
+                showDenyButton: true,
+                confirmButtonText: "Guardar",
+                denyButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Evitar loop infinito llamando el click del botón
+                    // Usar __doPostBack para disparar postback sin recursión
+                    __doPostBack('<%= btnGuardar.UniqueID %>', '');
+                } else if (result.isDenied) {
+                    Swal.fire("'Ingreso' no registrado", "", "info");
+                }
+                // Si canceló, no hacemos nada
+            });
+            return false; // Esto previene el postback original hasta que confirmemos
+        }
+    </script>
 </asp:Content>
