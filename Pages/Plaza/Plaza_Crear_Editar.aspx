@@ -38,11 +38,11 @@
         </div>
 
         <div class="form-group form-inline">
+            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" CausesValidation="false" CssClass="btn btn-danger" />
+            
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" 
                 OnClientClick="return confirmarGuardado();"
                 OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
-
-            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" OnClick="btnCancelar_Click" CausesValidation="false" CssClass="btn btn-danger" />
         </div>
 
     </asp:Panel>

@@ -96,15 +96,6 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revFechaHasta;
 
         /// <summary>
-        /// Control btnGuardar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnGuardar;
-
-        /// <summary>
         /// Control btnCancelar.
         /// </summary>
         /// <remarks>
@@ -112,6 +103,15 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnCancelar;
+
+        /// <summary>
+        /// Control btnGuardar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnGuardar;
 
         /// <summary>
         /// Control lblError.
