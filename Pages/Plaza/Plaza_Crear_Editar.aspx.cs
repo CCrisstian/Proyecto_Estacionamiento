@@ -33,9 +33,9 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
 
             using (var context = new ProyectoEstacionamientoEntities())
             {
-                // Filtrar por Dueño_Legajo
+                // Filtrar por Dueño_Legajo y que estén disponibles
                 var estacionamientos = context.Estacionamiento
-                    .Where(e => e.Dueño_Legajo == legajo)
+                    .Where(e => e.Dueño_Legajo == legajo && e.Est_Disponibilidad == true)
                     .Select(e => new { e.Est_id, e.Est_nombre })
                     .ToList();
 
