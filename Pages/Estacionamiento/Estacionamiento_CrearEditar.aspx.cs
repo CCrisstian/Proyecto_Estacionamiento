@@ -2,6 +2,7 @@
 using System.Web.UI.WebControls;
 using System.Threading.Tasks;
 using Proyecto_Estacionamiento.Servicios;
+using System.Linq;
 
 namespace Proyecto_Estacionamiento.Pages.Estacionamiento
 {
@@ -33,9 +34,13 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                 ToggleHoraControls(false);
 
                 // Modo Editar
-                if (Request.QueryString["id"] != null)
+                if (Request.QueryString["Est_id"] != null)
                 {
-                    int id = int.Parse(Request.QueryString["id"]);
+                    int id = int.Parse(Request.QueryString["Est_id"]);
+
+                    // Guardamos el id en el hidden field
+                    hdnEstId.Value = id.ToString();
+
                     CargarEstacionamiento(id);
                     btnGuardar.Text = "Actualizar";
                 }
@@ -65,46 +70,144 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             ddlHoraFin_Domingo.Visible = visible;
         }
 
-        protected async void btnGuardar_Click(object sender, EventArgs e)
+        private void LimpiarMensaje()
         {
-            lblMensaje.Text = ""; // Limpiar Mensaje de Error previo
+            lblMensaje.Text = "";
+            lblMensaje.ForeColor = System.Drawing.Color.Red;
+        }
 
-            bool domingo = chkDomingo.Checked; // Verificar si se seleccionó Atencion Fin de semana
+        private void MostrarError(string mensaje)
+        {
+            lblMensaje.Text = mensaje;
+            lblMensaje.ForeColor = System.Drawing.Color.Red;
+        }
 
-            // 1. Validación de campos obligatorios
+        private bool ValidarCamposObligatorios()
+        {
             if (string.IsNullOrWhiteSpace(txtNombre.Text) || string.IsNullOrWhiteSpace(txtDireccion.Text))
             {
-                lblMensaje.Text = "Los campos Nombre y Dirección son obligatorios.";
-                return;
+                MostrarError("Los campos Nombre y Dirección son obligatorios.");
+                return false;
             }
 
-            // 2. Validar horario
-            int horaInicio = int.Parse(ddlHoraInicio.SelectedValue.Substring(0, 2));
-            int horaFin = int.Parse(ddlHoraFin.SelectedValue.Substring(0, 2));
+            if (ddlProvincia.SelectedIndex == 0 || ddlLocalidad.SelectedIndex == 0)
+            {
+                MostrarError("Los campos Provincia y Localidad son obligatorios.");
+                return false;
+            }
+
+            return true;
+        }
+        private bool ValidarHorario(DropDownList ddlInicio, DropDownList ddlFin, string mensajeError)
+        {
+            int horaInicio = int.Parse(ddlInicio.SelectedValue.Substring(0, 2));
+            int horaFin = int.Parse(ddlFin.SelectedValue.Substring(0, 2));
+
             if (horaInicio >= horaFin)
             {
-                lblMensaje.Text = "La hora de inicio debe ser menor que la hora de fin.";
-                return;
+                MostrarError(mensajeError);
+                return false;
             }
+            return true;
+        }
 
-            // 3. Validar horario fin de semana
-            string horaDomingo = null; // valor por defecto
+        private bool ExisteDuplicado(
+            ProyectoEstacionamientoEntities db,
+            int? id,
+            string provincia,
+            string localidad,
+            string direccion,
+            double? latitud,
+            double? longitud)
+        {
+            // Buscamos candidatos con mismos datos clave
+            var coincidencias = db.Estacionamiento.Where(est =>
+                (est.Est_provincia == provincia &&
+                 est.Est_localidad == localidad &&
+                 est.Est_direccion == direccion)
+                ||
+                (est.Est_Latitud == latitud &&
+                 est.Est_Longitud == longitud)
+            ).ToList();
 
-            if (domingo)
+            foreach (var est in coincidencias)
             {
-                int horaInicioFinde = int.Parse(ddlHoraInicio_Domingo.SelectedValue.Substring(0, 2));
-                int horaFinFinde = int.Parse(ddlHoraFin_Domingo.SelectedValue.Substring(0, 2));
-
-                if (horaInicioFinde >= horaFinFinde)
+                // ---------------------------
+                // Caso 1: mismo ID y mismos datos -> no es duplicado
+                // ---------------------------
+                if (id.HasValue && est.Est_id == id.Value &&
+                    est.Est_provincia == provincia &&
+                    est.Est_localidad == localidad &&
+                    est.Est_direccion == direccion &&
+                    est.Est_Latitud == latitud &&
+                    est.Est_Longitud == longitud)
                 {
-                    lblMensaje.Text = "La hora de inicio de fin de semana debe ser menor que la hora de fin.";
-                    return;
+                    return false;
                 }
 
-                // Si todo está bien, armamos el string horario
-                horaDomingo = ddlHoraInicio_Domingo.SelectedValue + " - " + ddlHoraFin_Domingo.SelectedValue;
+                // ---------------------------
+                // Caso 2: mismo ID pero datos distintos -> verificar duplicados
+                // Si existe OTRO estacionamiento con mismos datos, es duplicado.
+                // ---------------------------
+                if (id.HasValue && est.Est_id == id.Value)
+                {
+                    bool existeDuplicado = db.Estacionamiento.Any(e =>
+                        e.Est_id != id.Value &&
+                        ((e.Est_provincia == provincia &&
+                          e.Est_localidad == localidad &&
+                          e.Est_direccion == direccion)
+                         || (e.Est_Latitud == latitud && e.Est_Longitud == longitud))
+                    );
+
+                    if (existeDuplicado)
+                        return true;
+                    else
+                        return false;
+                }
+
+                // ---------------------------
+                // Caso 3: distinto ID con mismos datos -> es duplicado
+                // ---------------------------
+                if (!id.HasValue || est.Est_id != id.Value)
+                {
+                    bool existeDuplicado = db.Estacionamiento.Any(e =>
+                        (e.Est_provincia == provincia &&
+                        e.Est_localidad == localidad &&
+                        e.Est_direccion == direccion)
+                        || (e.Est_Latitud == latitud && e.Est_Longitud == longitud)
+                    );
+
+                    if (existeDuplicado)
+                        return true;
+                    else
+                        return false;
+                }
             }
 
+            // No hubo duplicados
+            return false;
+        }
+
+
+        protected async void btnGuardar_Click(object sender, EventArgs e)
+        {
+            LimpiarMensaje();
+
+            // 1. Validar campos obligatorios
+            if (!ValidarCamposObligatorios()) return;
+
+            // 2. Validar horario semanal
+            if (!ValidarHorario(ddlHoraInicio, ddlHoraFin, "La hora de inicio debe ser menor que la hora de fin.")) return;
+
+            // 3. Validar horario de fin de semana (si corresponde)
+            string horaDomingo = null;
+            bool domingo = chkDomingo.Checked;
+            if (domingo)
+            {
+                if (!ValidarHorario(ddlHoraInicio_Domingo, ddlHoraFin_Domingo, "La hora de inicio de fin de semana debe ser menor que la hora de fin.")) return;
+
+                horaDomingo = ddlHoraInicio_Domingo.SelectedValue + " - " + ddlHoraFin_Domingo.SelectedValue;
+            }
 
             // 4. Leer datos del formulario
             string nombre = txtNombre.Text.Trim();
@@ -116,7 +219,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             bool diasFeriado = chkDiasFeriado.Checked;
             bool disponibilidad = chkDisponibilidad.Checked;
 
-            // 5. Validar y Obtener el legajo del Dueño desde la Sesión
+            // 5. Validar sesión
             if (Session["Usu_legajo"] == null)
             {
                 Response.Redirect("~/Pages/Login/Login.aspx");
@@ -124,37 +227,43 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             }
             int legajoDueño = (int)Session["Usu_legajo"];
 
-            // 6. (Crear/Editar) y Guardar el nuevo Estacionamiento en la Base de Datos
             try
             {
+                // 6. Geocodificación
                 var servicioGeo = new ServicioGeocodificacion();
                 var coordenadas = await servicioGeo.ObtenerCoordenadasAsync(direccion, localidad, provincia);
 
-                // Validar que se obtuvieron coordenadas válidas
                 if (!coordenadas.EsValida)
                 {
-                    lblMensaje.Text = "No se pudo obtener la ubicación geográfica. Verifica la dirección.";
+                    MostrarError("No se pudo obtener la ubicación geográfica. Verifica la dirección.");
                     return;
                 }
 
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
-                    string accion;
-
-                    if (ViewState["Est_id"] != null)    // Editar un Estacionamiento existente
+                    // 7. Validar duplicados por dirección o coordenadas
+                    int? estId = string.IsNullOrEmpty(hdnEstId.Value) ? (int?)null : int.Parse(hdnEstId.Value);
+                    bool duplicado = ExisteDuplicado(db, estId, provincia, localidad, direccion, coordenadas.Latitud, coordenadas.Longitud);
+                    if (duplicado)
                     {
-                        int id = (int)ViewState["Est_id"];
-                        var est = db.Estacionamiento.Find(id);
+                        MostrarError("Ya existe un Estacionamiento registrado en esa dirección o ubicación.");
+                        return;
+                    }
+
+                    // 8. Verificar si es edición o alta nueva
+                    int? id = string.IsNullOrEmpty(hdnEstId.Value) ? (int?)null : int.Parse(hdnEstId.Value);
+                    string accion;
+                    if (id.HasValue)
+                    {
+                        var est = db.Estacionamiento.Find(id.Value);
                         if (est != null)
                         {
                             est.Est_nombre = nombre;
                             est.Est_provincia = provincia;
                             est.Est_localidad = localidad;
                             est.Est_direccion = direccion;
-
                             est.Est_Latitud = coordenadas.Latitud;
                             est.Est_Longitud = coordenadas.Longitud;
-
                             est.Est_Hra_Atencion = horario;
                             est.Est_Dias_Atencion = diasAtencion;
                             est.Est_Dias_Feriado_Atencion = diasFeriado;
@@ -166,11 +275,11 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                         }
                         else
                         {
-                            lblMensaje.Text = "No se encontró el estacionamiento a actualizar.";
+                            MostrarError("No se encontró el estacionamiento a actualizar.");
                             return;
                         }
                     }
-                    else // Crear un nuevo Estacionamiento
+                    else
                     {
                         var nuevoEstacionamiento = new Proyecto_Estacionamiento.Estacionamiento
                         {
@@ -179,10 +288,8 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                             Est_provincia = provincia,
                             Est_localidad = localidad,
                             Est_direccion = direccion,
-
                             Est_Latitud = coordenadas.Latitud,
                             Est_Longitud = coordenadas.Longitud,
-
                             Est_Hra_Atencion = horario,
                             Est_puntaje = 0,
                             Est_Dias_Atencion = diasAtencion,
@@ -194,13 +301,14 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                         db.Estacionamiento.Add(nuevoEstacionamiento);
                         accion = "agregado";
                     }
+
                     db.SaveChanges();
                     Response.Redirect($"Estacionamiento_Listar.aspx?exito=1&accion={accion}");
                 }
             }
             catch (Exception ex)
             {
-                lblMensaje.Text = "Error al guardar: " + ex.Message;
+                MostrarError("Error al guardar: " + ex.Message);
             }
         }
 

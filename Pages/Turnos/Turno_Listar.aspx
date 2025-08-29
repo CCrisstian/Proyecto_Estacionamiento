@@ -78,7 +78,8 @@
                 icon: "question",
                 showDenyButton: true,
                 confirmButtonText: "Sí",
-                denyButtonText: "No"
+                denyButtonText: "No",
+                reverseButtons: true // 👈 Esto invierte el orden de los botones
             }).then((result) => {
                 if (result.isConfirmed) {
                     __doPostBack(btn.name, "");

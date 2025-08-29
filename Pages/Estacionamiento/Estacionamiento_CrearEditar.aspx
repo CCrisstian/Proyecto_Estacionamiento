@@ -9,6 +9,7 @@
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-estacionamiento">
         <h3>Ingrese los Datos del Estacionamiento:</h3>
 
+        <asp:HiddenField ID="hdnEstId" runat="server" />
 
         <div class="form-group form-inline">
             <label for="txtNombre">Nombre:</label>
@@ -98,7 +99,8 @@
                 title: "¿Deseás guardar los cambios?",
                 showDenyButton: true,
                 confirmButtonText: "Guardar",
-                denyButtonText: "Cancelar"
+                denyButtonText: "Cancelar",
+                reverseButtons: true // 👈 Esto invierte el orden de los botones
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Evitar loop infinito llamando el click del botón

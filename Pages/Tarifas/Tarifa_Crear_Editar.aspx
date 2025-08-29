@@ -65,6 +65,7 @@
                 showDenyButton: true,
                 confirmButtonText: "Guardar",
                 denyButtonText: "Cancelar",
+                reverseButtons: true // 👈 Esto invierte el orden de los botones
             }).then((result) => {
                 if (result.isConfirmed) {
                     __doPostBack('<%= btnGuardar.UniqueID %>', '');

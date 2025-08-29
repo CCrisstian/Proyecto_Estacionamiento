@@ -56,7 +56,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
             {
                 int index = Convert.ToInt32(e.CommandArgument);
                 int est_id = Convert.ToInt32(gvEstacionamientos.DataKeys[index].Value);
-                Response.Redirect($"Estacionamiento_CrearEditar.aspx?id={est_id}");
+                Response.Redirect($"Estacionamiento_CrearEditar.aspx?Est_id={est_id}");
             }
         }
 

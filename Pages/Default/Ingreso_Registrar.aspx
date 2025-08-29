@@ -79,7 +79,8 @@
                 title: "¿Deseás registrar el 'Ingreso'?",
                 showDenyButton: true,
                 confirmButtonText: "Guardar",
-                denyButtonText: "Cancelar"
+                denyButtonText: "Cancelar",
+                reverseButtons: true // 👈 Esto invierte el orden de los botones
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Evitar loop infinito llamando el click del botón
