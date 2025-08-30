@@ -132,6 +132,7 @@
     <Content Include="Content\tabs.css" />
     <Content Include="Images\EnConstruccion.png" />
     <Content Include="Images\LogoACE_SinFondo.PNG" />
+    <Content Include="Pages\Abonados\Abonados_Listar.aspx" />
     <Content Include="Pages\Default\Ingreso_Listar.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -228,6 +229,13 @@
     </Compile>
     <Compile Include="Ocupacion.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Abonados\Abonados_Listar.aspx.cs">
+      <DependentUpon>Abonados_Listar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Abonados\Abonados_Listar.aspx.designer.cs">
+      <DependentUpon>Abonados_Listar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Default\Ingreso_Listar.aspx.cs">
       <DependentUpon>Ingreso_Listar.aspx</DependentUpon>

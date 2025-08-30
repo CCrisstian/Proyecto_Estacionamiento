@@ -108,7 +108,11 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
             }
 
             // Obtener valores
-            int estId = int.Parse(ddlEstacionamientos.SelectedValue);
+            if (string.IsNullOrEmpty(ddlEstacionamientos.SelectedValue) || !int.TryParse(ddlEstacionamientos.SelectedValue, out int estId))
+            {
+                lblError.Text = "Debe seleccionar un Estacionamiento.";
+                return;
+            }
             string pass = txtPass.Text;
             string apellido = txtApellido.Text;
             string nombre = txtNombre.Text;

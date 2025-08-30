@@ -80,10 +80,11 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            using (var db = new ProyectoEstacionamientoEntities()) // Conexión a la Base de Datos
+            using (var db = new ProyectoEstacionamientoEntities())
             {
-                Proyecto_Estacionamiento.Plaza plaza;   // Creamos una nueva Plaza
-                if (Request.QueryString["id"] != null)  // Si existe el parámetro id, significa que se está Editando.
+                Proyecto_Estacionamiento.Plaza plaza;
+
+                if (Request.QueryString["id"] != null)
                 {
                     // Editar
                     int plazaId = int.Parse(Request.QueryString["id"]);
@@ -97,18 +98,50 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 else
                 {
                     // Agregar
+                    if (string.IsNullOrEmpty(ddlEstacionamiento.SelectedValue))
+                    {
+                        lblMensaje.Text = "Debe seleccionar un estacionamiento.";
+                        return;
+                    }
+
                     plaza = new Proyecto_Estacionamiento.Plaza();
-                    plaza.Est_id = int.Parse(ddlEstacionamiento.SelectedValue); // Solo en Agregar
-                    db.Plaza.Add(plaza);    // Se agrega al contexto de la Base de Datos, pero aún no se guarda nada.
+                    plaza.Est_id = int.Parse(ddlEstacionamiento.SelectedValue);
+                    db.Plaza.Add(plaza);
                 }
 
-                // Toma los valores seleccionados por el usuario o ya presentes en los campos de la página y los asigna a la entidad Plaza.
+                // Validaciones
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    lblMensaje.Text = "El nombre de la plaza es obligatorio.";
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtTipo.Text))
+                {
+                    lblMensaje.Text = "El tipo de plaza es obligatorio.";
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(ddlCategoria.SelectedValue))
+                {
+                    lblMensaje.Text = "Debe seleccionar una categoría.";
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(ddlDisponible.SelectedValue))
+                {
+                    lblMensaje.Text = "Debe seleccionar la disponibilidad.";
+                    return;
+                }
+
+                // Asignación de valores
                 plaza.Categoria_id = int.Parse(ddlCategoria.SelectedValue);
-                plaza.Plaza_Nombre = txtNombre.Text;
-                plaza.Plaza_Tipo = txtTipo.Text;
+                plaza.Plaza_Nombre = txtNombre.Text.Trim();
+                plaza.Plaza_Tipo = txtTipo.Text.Trim();
                 plaza.Plaza_Disponibilidad = ddlDisponible.SelectedValue == "true";
 
-                db.SaveChanges(); // Guardado en la Base de Datos
+                db.SaveChanges();
+
                 string accion = Request.QueryString["id"] == null ? "agregado" : "editado";
                 Response.Redirect($"Plaza_Listar.aspx?exito=1&accion={accion}");
             }

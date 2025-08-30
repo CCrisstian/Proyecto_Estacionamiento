@@ -92,7 +92,7 @@
                 <a runat="server" href="~/Pages/Turnos/Turno_Listar">TURNOS</a>
             </li>
             <li id="menuAbonado" runat="server" class="tab">
-                <a runat="server" href="">ABONADOS</a>
+                <a runat="server" href="~/Pages/Abonados/Abonados_Listar.aspx">ABONADOS</a>
             </li>
             <li>
                 <asp:Button ID="btnLogout" runat="server" Text="Cerrar Sesión ❌" OnClick="btnLogout_Click" CssClass="btn btn-danger" />
