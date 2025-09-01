@@ -65,7 +65,8 @@
                 title: "¿Deseás registrar el 'Egreso'?",
                 showDenyButton: true,
                 confirmButtonText: "Guardar",
-                denyButtonText: "Cancelar"
+                denyButtonText: "Cancelar",
+                reverseButtons: true // 👈 Esto invierte el orden de los botones
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Ejecutar el postback del botón manualmente
