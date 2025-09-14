@@ -11,7 +11,6 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         {
             if (!IsPostBack)
             {
-                CargarPlazas(); // Cargamos las Plazas al cargar la página Plaza
                 string tipoUsuario = Session["Usu_tipo"] as string;
                 if (tipoUsuario != "Dueño")
                 {
@@ -19,6 +18,17 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                     btnAgregar.Visible = false;
                     gvPlazas.Columns[0].Visible = false;
                 }
+                else
+                {
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        gvPlazas.Columns[0].Visible = false;
+                    }
+                }
+
+                string estacionamiento = Session["Usu_estacionamiento"] as string;
+                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+                CargarPlazas(); // Cargamos las Plazas al cargar la página Plaza
             }
         }
 
@@ -31,44 +41,50 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
             {
                 List<Proyecto_Estacionamiento.Plaza> plazas = new List<Proyecto_Estacionamiento.Plaza>();
 
-
                 if (tipoUsuario == "Dueño")
                 {
-                    // Obtener los Est_id asociados al legajo del Dueño
-                    var estIds = db.Estacionamiento
-                                   .Where(e => e.Dueño_Legajo == legajo)
-                                   .Select(e => e.Est_id)
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        // Dueño eligió un estacionamiento
+                        int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                        plazas = db.Plaza
+                                   .Include("Categoria_Vehiculo")
+                                   .Include("Estacionamiento")
+                                   .Where(p => p.Est_id == estIdSeleccionado)
+                                   .OrderBy(p => p.Estacionamiento.Est_nombre)
                                    .ToList();
+                    }
+                    else
+                    {
+                        // No eligió → mostramos todas las plazas de sus estacionamientos
+                        var estIds = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id)
+                                       .ToList();
 
-                    plazas = db.Plaza
-                        .Include("Categoria_Vehiculo")
-                        .Include("Estacionamiento")
-                        .Where(p => estIds.Contains(p.Est_id))
-                        .OrderBy(p => p.Estacionamiento.Est_nombre)
-                        .ToList();
+                        plazas = db.Plaza
+                                   .Include("Categoria_Vehiculo")
+                                   .Include("Estacionamiento")
+                                   .Where(p => estIds.Contains(p.Est_id))
+                                   .OrderBy(p => p.Estacionamiento.Est_nombre)
+                                   .ToList();
+                    }
                 }
                 else if (tipoUsuario == "Playero")
                 {
-                    // Obtener el Est_id asignado al Playero
-                    var estId = db.Playero
-                                  .Where(p => p.Playero_legajo == legajo)
-                                  .Select(p => p.Est_id)
-                                  .FirstOrDefault();
-
+                    int estId = (int)Session["Playero_EstId"];
                     plazas = db.Plaza
-                        .Include("Categoria_Vehiculo")
-                        .Include("Estacionamiento")
-                        .Where(p => p.Est_id == estId)
-                        .OrderBy(p => p.Estacionamiento.Est_nombre)
-                        .ToList();
+                               .Include("Categoria_Vehiculo")
+                               .Include("Estacionamiento")
+                               .Where(p => p.Est_id == estId)
+                               .OrderBy(p => p.Estacionamiento.Est_nombre)
+                               .ToList();
                 }
 
-                // Mostrar las plazas si se encontraron
                 gvPlazas.DataSource = plazas;
                 gvPlazas.DataBind();
             }
         }
-
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {
@@ -80,7 +96,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
             if (e.CommandName == "Editar")
             {
                 int plazaId = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect("~/Pages/Plaza/Plaza_Crear_Editar.aspx?id=" + plazaId);   
+                Response.Redirect("~/Pages/Plaza/Plaza_Crear_Editar.aspx?id=" + plazaId);
                 // Redirigimos a la página de edición de Plaza con el ID de la Plaza seleccionada
             }
         }

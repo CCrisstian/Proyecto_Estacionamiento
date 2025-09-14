@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Web.UI;
@@ -35,11 +36,27 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
             using (var context = new ProyectoEstacionamientoEntities())
             {
-                // Filtrar por Dueño_Legajo
-                var estacionamientos = context.Estacionamiento
-                    .Where(e => e.Dueño_Legajo == legajo)
-                    .Select(e => new { e.Est_id, e.Est_nombre })
-                    .ToList();
+                List<object> estacionamientos;
+
+                if (Session["Dueño_EstId"] != null && Session["Usu_estacionamiento"] != null)
+                {
+                    // Ya hay un estacionamiento elegido → mostrar solo ese
+                    int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                    string estNombre = Session["Usu_estacionamiento"].ToString();
+
+                    estacionamientos = new List<object>
+            {
+                new { Est_id = estIdSeleccionado, Est_nombre = estNombre }
+            };
+                }
+                else
+                {
+                    // Mostrar todos los estacionamientos disponibles del Dueño
+                    estacionamientos = context.Estacionamiento
+                        .Where(e => e.Dueño_Legajo == legajo && e.Est_Disponibilidad == true)
+                        .Select(e => new { e.Est_id, e.Est_nombre })
+                        .ToList<object>();
+                }
 
                 ddlEstacionamientos.DataSource = estacionamientos;
                 ddlEstacionamientos.DataValueField = "Est_id";
@@ -47,6 +64,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 ddlEstacionamientos.DataBind();
             }
         }
+
 
         private void CargarMetodosDePago()
         {
@@ -82,39 +100,42 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
             }
         }
 
+        protected void cvFechaHasta_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = ValidarFechaHasta(args.Value);
+        }
+
+        private bool ValidarFechaHasta(string fechaTexto)
+        {
+            if (string.IsNullOrWhiteSpace(fechaTexto))
+                return true; // Campo vacío permitido
+
+            if (!DateTime.TryParseExact(fechaTexto, "dd-MM-yyyy",
+                                        System.Globalization.CultureInfo.InvariantCulture,
+                                        System.Globalization.DateTimeStyles.None,
+                                        out DateTime fechaHasta))
+            {
+                return false; // Formato inválido
+            }
+
+            if (fechaHasta < DateTime.Now.Date)
+                return false; // No puede ser menor que la fecha actual
+
+            return true;
+        }
+
+
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            // Chequeamos el Validador
             if (!Page.IsValid)
                 return;
 
             DateTime desde = DateTime.Now;
             DateTime? hasta = null;
 
-            // Si el campo está vacío, lo dejamos como null
             if (!string.IsNullOrWhiteSpace(txtHasta.Text))
-            {
-                // Validamos que tenga formato válido de fecha
-                if (DateTime.TryParseExact(txtHasta.Text, "dd-MM-yyyy",
-                                           System.Globalization.CultureInfo.InvariantCulture,
-                                           System.Globalization.DateTimeStyles.None,
-                                           out DateTime fechaHasta))
-                {
-                    hasta = fechaHasta;
-                }
-                else
-                {
-                    lblError.Text = "Debe seleccionar una fecha válida usando el calendario.";
-                    lblError.Visible = true;
-                    return;
-                }
-            }
-
-            if (hasta.HasValue && desde > hasta.Value)
-            {
-                lblError.Text = "La Fecha 'Desde' no puede ser mayor que la Fecha 'Hasta'.";
-                lblError.Visible = true;
-                return;
-            }
+                hasta = DateTime.ParseExact(txtHasta.Text, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
             int estId = int.Parse(ddlEstacionamientos.SelectedValue);
             int metodoId = int.Parse(ddlMetodoDePago.SelectedValue);

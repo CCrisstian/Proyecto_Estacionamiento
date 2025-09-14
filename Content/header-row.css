@@ -1,0 +1,11 @@
+﻿.header-row {
+    display: flex;
+    align-items: center; /* alinea verticalmente */
+    justify-content: space-between; /* separa h1 a la izquierda y p a la derecha */
+    width: 100%;
+}
+
+.right-text {
+    margin: 0; /* elimina margenes del <p> */
+    font-size: 20px; /* ajustá tamaño si querés */
+}

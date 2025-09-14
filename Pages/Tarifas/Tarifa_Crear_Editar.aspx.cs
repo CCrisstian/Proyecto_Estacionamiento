@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -44,25 +46,49 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         }
 
         // Método para cargar Estacionamiento en los dropdowns
+        // Método para cargar Estacionamiento en los dropdowns
         private void CargarEstacionamientos()
         {
             int legajo = Convert.ToInt32(Session["Usu_legajo"]);
 
             using (var context = new ProyectoEstacionamientoEntities())
             {
-                // Filtrar por Dueño_Legajo
-                var estacionamientos = context.Estacionamiento
-                    .Where(e => e.Dueño_Legajo == legajo)
-                    .Select(e => new { e.Est_id, e.Est_nombre })
-                    .ToList();
+                List<object> estacionamientos;
 
-                ddlEstacionamientos.DataSource = estacionamientos;
-                ddlEstacionamientos.DataValueField = "Est_id";
-                ddlEstacionamientos.DataTextField = "Est_nombre";
-                ddlEstacionamientos.DataBind();                                            // Vincular la lista al dropdown
-                ddlEstacionamientos.Items.Insert(0, new ListItem("-- Seleccione --", ""));  // Insertar un item por defecto
+                if (Session["Dueño_EstId"] != null)
+                {
+                    // Mostrar solo el estacionamiento seleccionado
+                    int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                    estacionamientos = context.Estacionamiento
+                        .Where(e => e.Est_id == estIdSeleccionado)
+                        .Select(e => new { e.Est_id, e.Est_nombre })
+                        .ToList<object>();
+
+                    ddlEstacionamientos.DataSource = estacionamientos;
+                    ddlEstacionamientos.DataValueField = "Est_id";
+                    ddlEstacionamientos.DataTextField = "Est_nombre";
+                    ddlEstacionamientos.DataBind();
+                }
+                else
+                {
+                    // Mostrar todos los estacionamientos disponibles del Dueño
+                    estacionamientos = context.Estacionamiento
+                        .Where(e => e.Dueño_Legajo == legajo && e.Est_Disponibilidad == true)
+                        .Select(e => new { e.Est_id, e.Est_nombre })
+                        .ToList<object>();
+
+                    ddlEstacionamientos.DataSource = estacionamientos;
+                    ddlEstacionamientos.DataValueField = "Est_id";
+                    ddlEstacionamientos.DataTextField = "Est_nombre";
+                    ddlEstacionamientos.DataBind();
+
+                    // Insertar opción por defecto solo si mostramos todos
+                    ddlEstacionamientos.Items.Insert(0, new ListItem("-- Seleccione --", ""));
+                }
             }
         }
+
+
 
         // Método para cargar Tipos de Tarifa en el dropdown
         private void CargarTiposTarifa()
@@ -73,7 +99,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 ddlTiposTarifa.DataTextField = "Tipos_tarifa_descripcion";
                 ddlTiposTarifa.DataValueField = "Tipos_tarifa_id";
                 ddlTiposTarifa.DataBind();
-                ddlTiposTarifa.Items.Insert(0, new ListItem("-- Seleccione --", ""));
+                ddlTiposTarifa.Items.Insert(0, new ListItem("-- Seleccione una Tarifa--", ""));
             }
         }
 
@@ -86,31 +112,124 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 ddlCategorias.DataTextField = "Categoria_descripcion";
                 ddlCategorias.DataValueField = "Categoria_id";
                 ddlCategorias.DataBind();
-                ddlCategorias.Items.Insert(0, new ListItem("-- Seleccione --", ""));
+                ddlCategorias.Items.Insert(0, new ListItem("-- Seleccione una Categoía --", ""));
             }
         }
 
+        // Validación Estacionamiento
+        protected void cvEstacionamientos_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            // Caso 1: el Dueño ya eligió antes → solo un item en la lista
+            if (Session["Dueño_EstId"] != null)
+            {
+                args.IsValid = true;
+                return;
+            }
+
+            // Caso 2: no eligió antes → validar que no esté en "-- Seleccione --"
+            if (ddlEstacionamientos.SelectedIndex == 0)
+            {
+                args.IsValid = false;
+                cvEstacionamientos.ErrorMessage = "Debe seleccionar un Estacionamiento.";
+            }
+            else
+            {
+                args.IsValid = true;
+            }
+        }
+
+
+
+        // Validación Tarifa
+        protected void cvTiposTarifa_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if (ddlTiposTarifa.SelectedIndex == 0)
+            {
+                args.IsValid = false;
+                cvTiposTarifa.ErrorMessage = "Debe seleccionar un Tipo de Tarifa.";
+            }
+            else
+            {
+                args.IsValid = true;
+            }
+        }
+
+        // Validación Categoria
+        protected void cvCategorias_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            if (ddlCategorias.SelectedIndex == 0)
+            {
+                args.IsValid = false;
+                cvCategorias.ErrorMessage = "Debe seleccionar una Categoría.";
+            }
+            else
+            {
+                args.IsValid = true;
+            }
+        }
+
+        // Validación Monto
+        protected void cvMonto_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string valor = txtTarifaMonto.Text; // sin usar args.Value
+
+            // 1. Requerido
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                args.IsValid = false;
+                cvMonto.ErrorMessage = "Debe ingresar un Monto.";
+                return;
+            }
+
+            // 2. Validar que sea numérico
+            if (!decimal.TryParse(valor, out decimal monto))
+            {
+                args.IsValid = false;
+                cvMonto.ErrorMessage = "El monto debe ser un número válido.";
+                return;
+            }
+
+            // 3. Validar máximo 2 decimales
+            if (valor.Contains("."))
+            {
+                int decimales = valor.Split('.')[1].Length;
+                if (decimales > 2)
+                {
+                    args.IsValid = false;
+                    cvMonto.ErrorMessage = "El monto no puede tener más de 2 decimales.";
+                    return;
+                }
+            }
+
+            // 4. Validar positivo
+            if (monto < 0)
+            {
+                args.IsValid = false;
+                cvMonto.ErrorMessage = "El monto debe ser un valor positivo.";
+                return;
+            }
+
+            args.IsValid = true;
+        }
+
+
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            // Validación Estacionamiento, Tarifa y Categoria
-            if (ddlEstacionamientos.SelectedIndex == 0 ||
-                ddlTiposTarifa.SelectedIndex == 0 ||
-                ddlCategorias.SelectedIndex == 0 ||
-                string.IsNullOrWhiteSpace(txtTarifaMonto.Text))
+            Page.Validate();
+            if (!Page.IsValid)
             {
-                lblTitulo.Text = "Todos los campos son obligatorios.";
-                lblTitulo.ForeColor = System.Drawing.Color.Red;
+                // Algún validador falló, se muestran los mensajes.
                 return;
             }
 
-            // Validar formato del Monto
-            if (!decimal.TryParse(txtTarifaMonto.Text, out decimal monto) || monto < 0)
+            // Convertir monto ya validado
+            if (!decimal.TryParse(txtTarifaMonto.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal monto))
             {
-                lblTitulo.Text = "El Monto debe ser un número válido y positivo.";
+                // Esto es solo de seguridad extra
+                lblTitulo.Text = "El Monto ingresado no es válido.";
                 lblTitulo.ForeColor = System.Drawing.Color.Red;
                 return;
             }
-
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 int estacionamientoId = int.Parse(ddlEstacionamientos.SelectedValue);

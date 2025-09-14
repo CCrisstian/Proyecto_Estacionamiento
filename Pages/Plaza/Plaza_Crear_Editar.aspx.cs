@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Plaza
 {
@@ -22,6 +24,9 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 else
                 {
                     lblTitulo.Text = "Agregar Plaza";
+                    // Modo Alta
+                    chkDisponibilidad.Checked = true;  // marcado por defecto
+                    chkDisponibilidad.Visible = false; // no se muestra
                 }
             }
         }
@@ -33,11 +38,25 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
 
             using (var context = new ProyectoEstacionamientoEntities())
             {
-                // Filtrar por Dueño_Legajo y que estén disponibles
-                var estacionamientos = context.Estacionamiento
-                    .Where(e => e.Dueño_Legajo == legajo && e.Est_Disponibilidad == true)
-                    .Select(e => new { e.Est_id, e.Est_nombre })
-                    .ToList();
+                List<object> estacionamientos;
+
+                if (Session["Dueño_EstId"] != null)
+                {
+                    // Dueño eligió un estacionamiento → solo ese
+                    int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                    estacionamientos = context.Estacionamiento
+                        .Where(e => e.Est_id == estIdSeleccionado && e.Est_Disponibilidad == true)
+                        .Select(e => new { e.Est_id, e.Est_nombre })
+                        .ToList<object>();
+                }
+                else
+                {
+                    // No eligió → mostramos todos sus estacionamientos disponibles
+                    estacionamientos = context.Estacionamiento
+                        .Where(e => e.Dueño_Legajo == legajo && e.Est_Disponibilidad == true)
+                        .Select(e => new { e.Est_id, e.Est_nombre })
+                        .ToList<object>();
+                }
 
                 ddlEstacionamiento.DataSource = estacionamientos;
                 ddlEstacionamiento.DataValueField = "Est_id";
@@ -45,7 +64,6 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 ddlEstacionamiento.DataBind();
             }
         }
-
 
         // Cargamos las Categorías de Vehículos al cargar la página para poder seleccionar una por su Descripción
         private void CargarCategorias()
@@ -73,13 +91,38 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                     ddlCategoria.SelectedValue = plaza.Categoria_id.ToString();
                     txtNombre.Text = plaza.Plaza_Nombre;
                     txtTipo.Text = plaza.Plaza_Tipo;
-                    ddlDisponible.SelectedValue = plaza.Plaza_Disponibilidad ? "true" : "false";
+                    chkDisponibilidad.Checked = plaza.Plaza_Disponibilidad;
                 }
             }
         }
 
+        // ------------------ VALIDADORES ------------------
+        protected void cvEstacionamiento_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = !string.IsNullOrEmpty(ddlEstacionamiento.SelectedValue);
+        }
+
+        protected void cvCategoria_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = !string.IsNullOrEmpty(ddlCategoria.SelectedValue);
+        }
+
+        protected void cvNombre_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = !string.IsNullOrWhiteSpace(txtNombre.Text);
+        }
+
+        protected void cvTipo_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = !string.IsNullOrWhiteSpace(txtTipo.Text);
+        }
+
+        // ------------------ GUARDAR ------------------
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            if (!Page.IsValid)
+                return;
+
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 Proyecto_Estacionamiento.Plaza plaza;
@@ -91,54 +134,25 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                     plaza = db.Plaza.FirstOrDefault(p => p.Plaza_id == plazaId);
                     if (plaza == null)
                     {
-                        lblMensaje.Text = "Plaza no encontrada.";
+                        // mostramos error en un validador existente en vez de lblMensaje
+                        cvNombre.IsValid = false;
+                        cvNombre.ErrorMessage = "Plaza no encontrada.";
                         return;
                     }
                 }
                 else
                 {
                     // Agregar
-                    if (string.IsNullOrEmpty(ddlEstacionamiento.SelectedValue))
-                    {
-                        lblMensaje.Text = "Debe seleccionar un estacionamiento.";
-                        return;
-                    }
-
                     plaza = new Proyecto_Estacionamiento.Plaza();
                     plaza.Est_id = int.Parse(ddlEstacionamiento.SelectedValue);
                     db.Plaza.Add(plaza);
-                }
-
-                // Validaciones
-                if (string.IsNullOrWhiteSpace(txtNombre.Text))
-                {
-                    lblMensaje.Text = "El nombre de la plaza es obligatorio.";
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(txtTipo.Text))
-                {
-                    lblMensaje.Text = "El tipo de plaza es obligatorio.";
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(ddlCategoria.SelectedValue))
-                {
-                    lblMensaje.Text = "Debe seleccionar una categoría.";
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(ddlDisponible.SelectedValue))
-                {
-                    lblMensaje.Text = "Debe seleccionar la disponibilidad.";
-                    return;
                 }
 
                 // Asignación de valores
                 plaza.Categoria_id = int.Parse(ddlCategoria.SelectedValue);
                 plaza.Plaza_Nombre = txtNombre.Text.Trim();
                 plaza.Plaza_Tipo = txtTipo.Text.Trim();
-                plaza.Plaza_Disponibilidad = ddlDisponible.SelectedValue == "true";
+                plaza.Plaza_Disponibilidad = chkDisponibilidad.Checked;
 
                 db.SaveChanges();
 

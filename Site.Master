@@ -16,20 +16,22 @@
     <%-- CSS --%>
     <link href="~/Content/planilla.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/tabs.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/header-row.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/menu-list.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/formularios.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/dashboard.css" rel="stylesheet" type="text/css" />
 
     <%-- SWEETALERT2 --%>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    function mostrarAlerta(titulo, mensaje, icono) {
-        Swal.fire({
-            title: titulo,
-            text: mensaje,
-            icon: icono,
-            confirmButtonText: 'OK'
-        });
-    }
+        function mostrarAlerta(titulo, mensaje, icono) {
+            Swal.fire({
+                title: titulo,
+                text: mensaje,
+                icon: icono,
+                confirmButtonText: 'OK'
+            });
+        }
     </script>
 
     <asp:PlaceHolder runat="server">
@@ -62,44 +64,47 @@
             </Scripts>
         </asp:ScriptManager>
 
-       <!-- HEADER de la página -->
-<div class="container" style="background-color: #009900; color: #FFFFFF;">
-    <!-- Icono sobre el MENU -->
-    <asp:Image ID="Image1" runat="server" Height="79px" ImageUrl="~/Images/LogoACE_SinFondo.PNG" Width="90px" />
+        <!-- HEADER de la página -->
+        <div class="header-container">
 
-    <!-- Menú con estilo de pestañas -->
-    <asp:Panel ID="PanelMenu" runat="server" CssClass="tabs">
-        <ul style="display: flex; list-style: none; padding: 0; margin: 0;">
-            <li id="menuInicio" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Default/Ingreso_Listar.aspx">INICIO</a>
-            </li>
-            <li id="menuEstacionamiento" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Estacionamiento/Estacionamiento_Listar.aspx">ESTACIONAMIENTO</a>
-            </li>
-            <li id="menuPlaza" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Plaza/Plaza_Listar.aspx">PLAZAS</a>
-            </li>
-            <li id="menuTarifa" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Tarifas/Tarifa_Listar.aspx">TARIFAS</a>
-            </li>
-            <li id="menuMetodosDePago" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Metodos_De_Pago/MetodosDePago_Listar.aspx">METODOS DE PAGO</a>
-            </li>
-            <li id="menuPlayero" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Playeros/Playero_Listar.aspx">PLAYERO</a>
-            </li>
-            <li id="menuTurno" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Turnos/Turno_Listar">TURNOS</a>
-            </li>
-            <li id="menuAbonado" runat="server" class="tab">
-                <a runat="server" href="~/Pages/Abonados/Abonados_Listar.aspx">ABONADOS</a>
-            </li>
-            <li>
-                <asp:Button ID="btnLogout" runat="server" Text="Cerrar Sesión ❌" OnClick="btnLogout_Click" CssClass="btn btn-danger" />
-            </li>
-        </ul>
-    </asp:Panel>
-</div>
+            <!-- Parte superior -->
+            <div class="header-top">
+                <asp:Image ID="Image2" runat="server" Height="59px" ImageUrl="~/Images/LogoACE_SinFondo.PNG" Width="60px" />
+                <asp:Label ID="lblUsuario" runat="server" CssClass="usuario-logueado"></asp:Label>
+            </div>
+
+            <!-- Parte inferior -->
+            <div class="header-bottom">
+                <asp:Panel ID="PanelMenu" runat="server" CssClass="tabs">
+                    <ul class="menu-list">
+                        <li id="menuInicio" runat="server" class="tab"><a runat="server" href="~/Pages/Default/Inicio.aspx">INICIO</a></li>
+
+                        <li id="menuIngresos" runat="server" class="tab"><a runat="server" href="~/Pages/Ingresos/Ingreso_Listar.aspx">INGRESOS</a></li>
+
+                        <li id="menuEstacionamiento" runat="server" class="tab">
+                            <a runat="server" href="~/Pages/Estacionamiento/Estacionamiento_Listar.aspx">ESTACIONAMIENTOS</a>
+                        </li>
+
+                        <li id="menuPlaza" runat="server" class="tab"><a runat="server" href="~/Pages/Plaza/Plaza_Listar.aspx">PLAZAS</a></li>
+
+                        <li id="menuTarifa" runat="server" class="tab"><a runat="server" href="~/Pages/Tarifas/Tarifa_Listar.aspx">TARIFAS</a></li>
+
+                        <li id="menuMetodosDePago" runat="server" class="tab"><a runat="server" href="~/Pages/Metodos_De_Pago/MetodosDePago_Listar.aspx">METODOS DE PAGO</a></li>
+
+                        <li id="menuPlayero" runat="server" class="tab"><a runat="server" href="~/Pages/Playeros/Playero_Listar.aspx">PLAYEROS</a></li>
+
+                        <li id="menuTurno" runat="server" class="tab"><a runat="server" href="~/Pages/Turnos/Turno_Listar">TURNOS</a></li>
+
+                        <li id="menuAbonado" runat="server" class="tab"><a runat="server" href="~/Pages/Abonados/Abonados_Listar.aspx">ABONADOS</a></li>
+
+                        <li id="menuLogout" runat="server" class="logout">
+                            <asp:Button ID="btnLogout" runat="server" Text="Cerrar Sesión" OnClick="BtnLogout_Click" CssClass="btn btn-danger" />
+                        </li>
+                    </ul>
+                </asp:Panel>
+
+            </div>
+        </div>
 
 
         <div class="container body-content">
@@ -108,7 +113,9 @@
 
             <!-- FOOTER de la pagina -->
             <footer>
-                <p>&copy;- Grupo4 - Proyecto_Estacionamiento_ACE</p>
+                <!-- Logo -->
+                <asp:Image ID="Image1" runat="server" Height="59px" ImageUrl="~/Images/LogoACE_SinFondo.PNG" Width="60px" />
+                <p>&copy; Grupo4 - Proyecto_Estacionamiento_ACE</p>
             </footer>
 
         </div>

@@ -72,3 +72,45 @@
         color: var(--text-primary);
         background-color: rgba(255, 255, 255, 0.15);
     }
+
+    /* El li que tiene submenú debe tener posición relativa */
+    .tab.dropdown {
+        position: relative;
+    }
+
+    /* El submenú oculto por defecto */
+    .tab .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%; /* justo debajo del li padre */
+        left: 0;
+        background-color: var(--secondary);
+        min-width: 180px;
+        box-shadow: var(--shadow);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        z-index: 999;
+    }
+
+        /* Items del submenú */
+        .tab .dropdown-content li {
+            padding: 0.75rem 1rem;
+            white-space: nowrap;
+        }
+
+            .tab .dropdown-content li a {
+                color: var(--text-primary);
+                text-decoration: none;
+                display: block;
+                transition: var(--transition);
+            }
+
+                .tab .dropdown-content li a:hover {
+                    background-color: rgba(255, 255, 255, 0.15);
+                }
+
+    /* Mostrar el submenu al hacer hover */
+    .tab.dropdown:hover > .dropdown-content {
+        display: block;
+    }

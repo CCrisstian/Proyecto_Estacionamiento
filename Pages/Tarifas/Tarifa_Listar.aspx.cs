@@ -10,7 +10,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         {
             if (!IsPostBack)    // Verifica si es la primera vez que se carga la página
             {
-                CargarTarifas(); // Llama al método para cargar las Tarifas
                 string tipoUsuario = Session["Usu_tipo"] as string;
                 if (tipoUsuario != "Dueño")
                 {
@@ -18,6 +17,17 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                     btnAgregarTarifa.Visible = false;
                     gvTarifas.Columns[0].Visible = false;
                 }
+                else
+                {
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        gvTarifas.Columns[0].Visible = false;
+                    }
+                }
+
+                string estacionamiento = Session["Usu_estacionamiento"] as string;
+                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+                CargarTarifas(); // Llama al método para cargar las Tarifas
             }
         }
 
@@ -28,33 +38,30 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                // Filtro para que los Dueños y los Playeros vean solo sus Tarifas
                 IQueryable<Tarifa> query = db.Tarifa;
 
                 if (tipoUsuario == "Dueño")
                 {
-                    var estIdList = db.Estacionamiento
-                                       .Where(e => e.Dueño_Legajo == legajo)
-                                       .Select(e => e.Est_id);
-
-                    query = query.Where(t => t.Est_id.HasValue && estIdList.Contains(t.Est_id.Value));
-                }
-                else if (tipoUsuario == "Playero")
-                {
-                    var estId = db.Playero
-                                  .Where(p => p.Playero_legajo == legajo)
-                                  .Select(p => p.Est_id)
-                                  .FirstOrDefault();
-
-                    if (estId.HasValue)
+                    if (Session["Dueño_EstId"] != null)
                     {
-                        query = query.Where(t => t.Est_id == estId.Value);
+                        // Dueño eligió un estacionamiento → solo ese
+                        int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                        query = query.Where(t => t.Est_id.HasValue && t.Est_id.Value == estIdSeleccionado);
                     }
                     else
                     {
-                        // Por seguridad, que no devuelva nada si no se encuentra Est_id
-                        query = query.Where(t => false);
+                        // No eligió → mostrar tarifas de todos sus estacionamientos
+                        var estIdList = db.Estacionamiento
+                                         .Where(e => e.Dueño_Legajo == legajo)
+                                         .Select(e => e.Est_id);
+
+                        query = query.Where(t => t.Est_id.HasValue && estIdList.Contains(t.Est_id.Value));
                     }
+                }
+                else if (tipoUsuario == "Playero")
+                {
+                    int estId = (int)Session["Playero_EstId"];
+                    query = query.Where(t => t.Est_id.HasValue && t.Est_id.Value == estId);
                 }
 
                 var tarifas = query
@@ -75,6 +82,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
             }
         }
 
+
         protected void btnAgregarTarifa_Click(object sender, EventArgs e)
         {
             Response.Redirect("Tarifa_Crear_Editar.aspx");
@@ -87,7 +95,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 string tarifaId = e.CommandArgument.ToString();
                 Response.Redirect($"Tarifa_Crear_Editar.aspx?id={tarifaId}");
             }
-            
+
         }
 
         protected void gvTarifas_RowDataBound(object sender, GridViewRowEventArgs e)

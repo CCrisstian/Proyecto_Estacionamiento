@@ -127,16 +127,19 @@
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\dashboard.css" />
     <Content Include="Content\formularios.css" />
+    <Content Include="Content\header-row.css" />
+    <Content Include="Content\menu-list.css" />
     <Content Include="Content\planilla.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\tabs.css" />
     <Content Include="Images\EnConstruccion.png" />
     <Content Include="Images\LogoACE_SinFondo.PNG" />
     <Content Include="Pages\Abonados\Abonados_Listar.aspx" />
-    <Content Include="Pages\Default\Ingreso_Listar.aspx" />
+    <Content Include="Pages\Default\Inicio.aspx" />
+    <Content Include="Pages\Ingresos\Ingreso_Listar.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Pages\Default\Ingreso_Registrar.aspx" />
+    <Content Include="Pages\Ingresos\Ingreso_Registrar.aspx" />
     <Content Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx" />
     <Content Include="Pages\Estacionamiento\Estacionamiento_Listar.aspx" />
     <Content Include="Pages\Login\Login.aspx" />
@@ -237,21 +240,28 @@
     <Compile Include="Pages\Abonados\Abonados_Listar.aspx.designer.cs">
       <DependentUpon>Abonados_Listar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Default\Ingreso_Listar.aspx.cs">
+    <Compile Include="Pages\Default\Inicio.aspx.cs">
+      <DependentUpon>Inicio.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Default\Inicio.aspx.designer.cs">
+      <DependentUpon>Inicio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Ingresos\Ingreso_Listar.aspx.cs">
       <DependentUpon>Ingreso_Listar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Default\Ingreso_Listar.aspx.designer.cs">
+    <Compile Include="Pages\Ingresos\Ingreso_Listar.aspx.designer.cs">
       <DependentUpon>Ingreso_Listar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Default\Ingreso_Registrar.aspx.cs">
+    <Compile Include="Pages\Ingresos\Ingreso_Registrar.aspx.cs">
       <DependentUpon>Ingreso_Registrar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Default\Ingreso_Registrar.aspx.designer.cs">
+    <Compile Include="Pages\Ingresos\Ingreso_Registrar.aspx.designer.cs">
       <DependentUpon>Ingreso_Registrar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx.cs">

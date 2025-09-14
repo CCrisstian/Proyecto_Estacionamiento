@@ -2,46 +2,45 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h2>
-        <asp:Label ID="lblTitulo" runat="server" Text="Agregar Tarifa" />
-    </h2>
-
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-tarifa">
+    <h1>
+        <asp:Label ID="lblTitulo" runat="server" Text="Agregar Tarifa" />
+    </h1>
 
         <div class="form-group form-inline">
             <label for="ddlEstacionamientos">Estacionamiento:</label>
             <asp:DropDownList ID="ddlEstacionamientos" runat="server" CssClass="form-control" />
-            <asp:RequiredFieldValidator ID="rfvEstacionamientos" runat="server"
-                ControlToValidate="ddlEstacionamientos" InitialValue=""
-                ErrorMessage="Debe seleccionar un Estacionamiento" ForeColor="Red" Display="Dynamic" />
+            <asp:CustomValidator ID="cvEstacionamientos" runat="server"
+                OnServerValidate="cvEstacionamientos_ServerValidate"
+                Display="Dynamic" ForeColor="Red" 
+                ValidationGroup="Tarifa"/>
         </div>
 
         <div class="form-group form-inline">
             <label for="ddlTiposTarifa">Tipos de Tarifa:</label>
             <asp:DropDownList ID="ddlTiposTarifa" runat="server" CssClass="form-control" />
-            <asp:RequiredFieldValidator ID="rfvTiposTarifa" runat="server"
-                ControlToValidate="ddlTiposTarifa" InitialValue=""
-                ErrorMessage="Debe seleccionar un Tipo de Tarifa" ForeColor="Red" Display="Dynamic" />
+            <asp:CustomValidator ID="cvTiposTarifa" runat="server"
+                OnServerValidate="cvTiposTarifa_ServerValidate"
+                Display="Dynamic" ForeColor="Red" 
+                ValidationGroup="Tarifa"/>
         </div>
 
         <div class="form-group form-inline">
             <label for="ddlCategorias">Categoría de Vehículo:</label>
             <asp:DropDownList ID="ddlCategorias" runat="server" CssClass="form-control" />
-            <asp:RequiredFieldValidator ID="rfvCategorias" runat="server"
-                ControlToValidate="ddlCategorias" InitialValue=""
-                ErrorMessage="Debe seleccionar una Categoría" ForeColor="Red" Display="Dynamic" />
+            <asp:CustomValidator ID="cvCategorias" runat="server"
+                OnServerValidate="cvCategorias_ServerValidate"
+                Display="Dynamic" ForeColor="Red" 
+                ValidationGroup="Tarifa"/>
         </div>
 
         <div class="form-group form-inline">
             <label for="txtTarifaMonto">Monto:</label>
             <asp:TextBox ID="txtTarifaMonto" runat="server" CssClass="form-control" />
-            <asp:RequiredFieldValidator ID="rfvMonto" runat="server"
-                ControlToValidate="txtTarifaMonto"
-                ErrorMessage="Debe ingresar un Monto" ForeColor="Red" Display="Dynamic" />
-            <asp:RegularExpressionValidator ID="revMonto" runat="server"
-                ControlToValidate="txtTarifaMonto"
-                ValidationExpression="^\d+(\.\d{1,2})?$"
-                ErrorMessage="El monto debe ser un número válido" ForeColor="Red" Display="Dynamic" />
+            <asp:CustomValidator ID="cvMonto" runat="server"
+                OnServerValidate="cvMonto_ServerValidate"
+                Display="Dynamic" ForeColor="Red" 
+                ValidationGroup="Tarifa"/>
         </div>
 
     </asp:Panel>
@@ -53,7 +52,8 @@
 
         <asp:Button ID="btnGuardar" runat="server" Text="Guardar"
             OnClientClick="return confirmarGuardado();"
-            OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
+            OnClick="btnGuardar_Click" CssClass="btn btn-primary" 
+            ValidationGroup="Tarifa"/>
     </div>
 
     <%-- SweetAlert2 para mensajes de confirmación --%>

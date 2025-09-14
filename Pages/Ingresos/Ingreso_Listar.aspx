@@ -1,8 +1,11 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Ingreso_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Ingreso_Listar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>Ingresos</h2>
-
+    
+    <div class="header-row">
+        <h1>Ingresos</h1>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
+    </div>
 
     <div class="ingreso-layout">
         <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />
@@ -30,10 +33,10 @@
 
             <Columns>
                 <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />
+                <asp:BoundField DataField="Entrada" HeaderText="Entrada" />
                 <asp:BoundField DataField="Vehiculo_Patente" HeaderText="Patente" />
                 <asp:BoundField DataField="Plaza_Nombre" HeaderText="Plaza" />
                 <asp:BoundField DataField="Tarifa" HeaderText="Tarifa" />
-                <asp:BoundField DataField="Entrada" HeaderText="Entrada" />
                 <asp:BoundField DataField="Salida" HeaderText="Salida" />
                 <asp:BoundField DataField="Monto" HeaderText="Monto" />
 

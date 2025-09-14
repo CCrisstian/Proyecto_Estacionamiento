@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Web.Security;
 
 namespace Proyecto_Estacionamiento.Pages.Login
@@ -13,6 +14,12 @@ namespace Proyecto_Estacionamiento.Pages.Login
             {
                 Session.Clear(); // Limpia la sesión previa
             }
+        }
+
+        public class EstacionamientoDTO
+        {
+            public int Est_id { get; set; }
+            public string Est_nombre { get; set; }
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
@@ -55,8 +62,73 @@ namespace Proyecto_Estacionamiento.Pages.Login
                     // Autenticación con Forms
                     FormsAuthentication.SetAuthCookie(legajoStr, false);
 
-                    // Redirigir a la página por defecto
-                    FormsAuthentication.RedirectFromLoginPage(legajoStr, false);
+                    // 🔀 Redirigir según tipo
+                    if (tipo.Equals("Dueño", StringComparison.OrdinalIgnoreCase))
+                    {
+                        reader.Close();
+
+                        string queryEst = @"SELECT Est_id, Est_nombre 
+                        FROM Estacionamiento 
+                        WHERE Dueño_Legajo = @legajo";
+
+                        SqlCommand cmdEst = new SqlCommand(queryEst, conn);
+                        cmdEst.Parameters.AddWithValue("@legajo", legajo);
+
+                        List<EstacionamientoDTO> estacionamientos = new List<EstacionamientoDTO>();
+
+                        using (SqlDataReader readerEst = cmdEst.ExecuteReader())
+                        {
+                            while (readerEst.Read())
+                            {
+                                estacionamientos.Add(new EstacionamientoDTO
+                                {
+                                    Est_id = readerEst.GetInt32(0),
+                                    Est_nombre = readerEst.GetString(1)
+                                });
+                            }
+                        }
+
+                        // Guardamos en sesión
+                        Session["EstacionamientosDueño"] = estacionamientos;
+
+                        // ✅ Validar si el dueño NO tiene estacionamientos
+                        if (estacionamientos.Count == 0)
+                        {
+                            // Redirigir a la página para crear su primer estacionamiento
+                            Response.Redirect("~/Pages/Estacionamiento/Estacionamiento_CrearEditar.aspx");
+                        }
+                        else
+                        {
+                            // Caso normal: ya tiene estacionamientos
+                            Response.Redirect("~/Pages/Default/Inicio.aspx");
+                        }
+                    }
+                    else
+                    {
+                        // Cerramos el reader anterior
+                        reader.Close();
+
+                        string queryEst = @"SELECT e.Est_id, e.Est_nombre 
+                        FROM Playero p 
+                        INNER JOIN Estacionamiento e ON p.Est_id = e.Est_id
+                        WHERE p.Playero_legajo = @legajo";
+
+                        SqlCommand cmdEst = new SqlCommand(queryEst, conn);
+                        cmdEst.Parameters.AddWithValue("@legajo", legajo);
+
+                        using (SqlDataReader readerEst = cmdEst.ExecuteReader())
+                        {
+                            if (readerEst.Read())
+                            {
+                                // Guardamos en sesión el ID y el nombre del estacionamiento para el Playero
+                                Session["Playero_EstId"] = readerEst.GetInt32(0);
+                                Session["Usu_estacionamiento"] = readerEst.GetString(1);
+                            }
+                        }
+
+                        Response.Redirect("~/Pages/Ingresos/Ingreso_Listar.aspx");
+                    }
+
                 }
                 else
                 {

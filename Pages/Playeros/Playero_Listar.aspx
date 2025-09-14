@@ -4,7 +4,10 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h2>Lista de Playeros</h2>
+    <div class="header-row">
+        <h1>Lista de Playeros</h1>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
+    </div>
 
     <asp:Button ID="btnAgregarPlayero" runat="server" Text="Agregar Playero"
         CssClass="btn btn-success" OnClick="btnAgregarPlayero_Click" />

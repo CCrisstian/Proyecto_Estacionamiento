@@ -37,10 +37,47 @@ button.btn-danger {
     color: white;
 }
 
+.formulario-playero,
 .formulario-estacionamiento,
+.formulario-plaza,
+.formulario-tarifa,
 .formulario-ingreso,
 .formulario-metodospago {
     background-color: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
+}
+
+
+/* Campos en línea con labels a la izquierda */
+.form-group.form-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* espacio entre campos */
+}
+
+.campo-inline {
+    display: flex;
+    flex-direction: column; /* columna para que label y control queden juntos */
+    flex: 1;
+    min-width: 200px;
+}
+
+    /* Label a la izquierda del input */
+    .campo-inline label {
+        font-weight: bold;
+        margin-bottom: 4px; /* separación con el control */
+    }
+
+    /* Control ocupa todo el espacio disponible */
+    .campo-inline .form-control {
+        width: 100%;
+    }
+
+/* Mensaje de error debajo del campo */
+.error-message {
+    display: block;
+    margin-top: 4px;
+    color: red;
+    font-size: 0.9em;
 }

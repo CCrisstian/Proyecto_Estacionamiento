@@ -1,7 +1,11 @@
 ﻿<%@ Page Title="Estacionamiento" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Estacionamiento_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Estacionamiento.Estacionamiento_Listar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>Estacionamientos</h2>
+    
+    <div class="header-row">
+        <h1>Estacionamientos</h1>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
+    </div>
 
     <asp:Button ID="btnAgregar" runat="server" Text="Agregar Estacionamiento" OnClick="btnAgregar_Click" CssClass="btn btn-success" />
     <br />
@@ -15,10 +19,10 @@
             CssClass="grid" Width="100%">
 
             <Columns>
+                <asp:BoundField DataField="Est_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="Est_provincia" HeaderText="Provincia" />
                 <asp:BoundField DataField="Est_localidad" HeaderText="Localidad" />
                 <asp:BoundField DataField="Est_direccion" HeaderText="Dirección" />
-                <asp:BoundField DataField="Est_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="Est_puntaje" HeaderText="Puntaje" />
                 <asp:TemplateField HeaderText="Disponible">
                     <ItemTemplate>

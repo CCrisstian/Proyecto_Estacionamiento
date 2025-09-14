@@ -13,9 +13,18 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         {
             if (!IsPostBack)
             {
+                if (Session["Dueño_EstId"] != null)
+                {
+                    gvPlayeros.Columns[0].Visible = false;
+                }
+
+                string estacionamiento = Session["Usu_estacionamiento"] as string;
+                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
                 CargarGrilla();
             }
         }
+
         private void CargarGrilla()
         {
             string tipoUsuario = Session["Usu_tipo"] as string;
@@ -25,11 +34,21 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
             {
                 IQueryable<Playero> query = db.Playero;
 
-                var estIdList = db.Estacionamiento
-                                   .Where(e => e.Dueño_Legajo == legajo)
-                                   .Select(e => e.Est_id);
+                if (Session["Dueño_EstId"] != null)
+                {
+                    // Filtrar solo por el estacionamiento previamente elegido
+                    int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                    query = query.Where(pl => pl.Est_id == estIdSeleccionado);
+                }
+                else
+                {
+                    // Filtrar por todos los estacionamientos del Dueño
+                    var estIdList = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id);
 
-                query = query.Where(pl => pl.Est_id.HasValue && estIdList.Contains(pl.Est_id.Value));
+                    query = query.Where(pl => pl.Est_id.HasValue && estIdList.Contains(pl.Est_id.Value));
+                }
 
                 var playeros = query
                     .Select(p => new
@@ -49,6 +68,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 gvPlayeros.DataBind();
             }
         }
+
 
         protected void btnAgregarPlayero_Click(object sender, EventArgs e)
         {

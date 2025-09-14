@@ -15,13 +15,13 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
     {
 
         /// <summary>
-        /// Control lblError.
+        /// Control pnlFormulario.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblError;
+        protected global::System.Web.UI.WebControls.Panel pnlFormulario;
 
         /// <summary>
         /// Control ddlEstacionamientos.
@@ -33,6 +33,15 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         protected global::System.Web.UI.WebControls.DropDownList ddlEstacionamientos;
 
         /// <summary>
+        /// Control cvEstacionamiento.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvEstacionamiento;
+
+        /// <summary>
         /// Control txtDni.
         /// </summary>
         /// <remarks>
@@ -42,13 +51,13 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         protected global::System.Web.UI.WebControls.TextBox txtDni;
 
         /// <summary>
-        /// Control rfvDNI.
+        /// Control cvDni.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDNI;
+        protected global::System.Web.UI.WebControls.CustomValidator cvDni;
 
         /// <summary>
         /// Control txtPass.
@@ -78,13 +87,13 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         protected global::System.Web.UI.WebControls.TextBox txtApellido;
 
         /// <summary>
-        /// Control rfvApellido.
+        /// Control cvApellido.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvApellido;
+        protected global::System.Web.UI.WebControls.CustomValidator cvApellido;
 
         /// <summary>
         /// Control txtNombre.
@@ -96,13 +105,13 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         protected global::System.Web.UI.WebControls.TextBox txtNombre;
 
         /// <summary>
-        /// Control rfvNombre.
+        /// Control cvNombre.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvNombre;
+        protected global::System.Web.UI.WebControls.CustomValidator cvNombre;
 
         /// <summary>
         /// Control chkActivo.

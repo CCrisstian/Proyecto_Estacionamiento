@@ -15,15 +15,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
     {
 
         /// <summary>
-        /// Control lblTitulo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTitulo;
-
-        /// <summary>
         /// Control pnlFormulario.
         /// </summary>
         /// <remarks>
@@ -31,6 +22,15 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlFormulario;
+
+        /// <summary>
+        /// Control lblTitulo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTitulo;
 
         /// <summary>
         /// Control ddlEstacionamientos.
@@ -42,13 +42,13 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         protected global::System.Web.UI.WebControls.DropDownList ddlEstacionamientos;
 
         /// <summary>
-        /// Control rfvEstacionamientos.
+        /// Control cvEstacionamientos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEstacionamientos;
+        protected global::System.Web.UI.WebControls.CustomValidator cvEstacionamientos;
 
         /// <summary>
         /// Control ddlTiposTarifa.
@@ -60,13 +60,13 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         protected global::System.Web.UI.WebControls.DropDownList ddlTiposTarifa;
 
         /// <summary>
-        /// Control rfvTiposTarifa.
+        /// Control cvTiposTarifa.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTiposTarifa;
+        protected global::System.Web.UI.WebControls.CustomValidator cvTiposTarifa;
 
         /// <summary>
         /// Control ddlCategorias.
@@ -78,13 +78,13 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         protected global::System.Web.UI.WebControls.DropDownList ddlCategorias;
 
         /// <summary>
-        /// Control rfvCategorias.
+        /// Control cvCategorias.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvCategorias;
+        protected global::System.Web.UI.WebControls.CustomValidator cvCategorias;
 
         /// <summary>
         /// Control txtTarifaMonto.
@@ -96,22 +96,13 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         protected global::System.Web.UI.WebControls.TextBox txtTarifaMonto;
 
         /// <summary>
-        /// Control rfvMonto.
+        /// Control cvMonto.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvMonto;
-
-        /// <summary>
-        /// Control revMonto.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revMonto;
+        protected global::System.Web.UI.WebControls.CustomValidator cvMonto;
 
         /// <summary>
         /// Control btnCancelar.

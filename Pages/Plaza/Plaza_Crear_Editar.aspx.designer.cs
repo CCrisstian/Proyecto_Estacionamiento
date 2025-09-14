@@ -15,15 +15,6 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
     {
 
         /// <summary>
-        /// Control lblTitulo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTitulo;
-
-        /// <summary>
         /// Control pnlFormulario.
         /// </summary>
         /// <remarks>
@@ -31,6 +22,15 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlFormulario;
+
+        /// <summary>
+        /// Control lblTitulo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTitulo;
 
         /// <summary>
         /// Control ddlEstacionamiento.
@@ -42,6 +42,15 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         protected global::System.Web.UI.WebControls.DropDownList ddlEstacionamiento;
 
         /// <summary>
+        /// Control cvEstacionamiento.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvEstacionamiento;
+
+        /// <summary>
         /// Control ddlCategoria.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlCategoria;
+
+        /// <summary>
+        /// Control cvCategoria.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvCategoria;
 
         /// <summary>
         /// Control txtNombre.
@@ -60,6 +78,15 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         protected global::System.Web.UI.WebControls.TextBox txtNombre;
 
         /// <summary>
+        /// Control cvNombre.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvNombre;
+
+        /// <summary>
         /// Control txtTipo.
         /// </summary>
         /// <remarks>
@@ -69,22 +96,22 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         protected global::System.Web.UI.WebControls.TextBox txtTipo;
 
         /// <summary>
-        /// Control ddlDisponible.
+        /// Control cvTipo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDisponible;
+        protected global::System.Web.UI.WebControls.CustomValidator cvTipo;
 
         /// <summary>
-        /// Control lblMensaje.
+        /// Control chkDisponibilidad.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMensaje;
+        protected global::System.Web.UI.WebControls.CheckBox chkDisponibilidad;
 
         /// <summary>
         /// Control btnCancelar.

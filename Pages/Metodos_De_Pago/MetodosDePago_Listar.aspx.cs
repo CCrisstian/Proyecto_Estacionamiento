@@ -11,7 +11,6 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
         {
             if (!IsPostBack)
             {
-                CargarGrilla();
                 string tipoUsuario = Session["Usu_tipo"] as string;
                 if (tipoUsuario != "Dueño")
                 {
@@ -19,6 +18,16 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                     btnAgregar.Visible = false;
                     gvMetodosPago.Columns[0].Visible = false;
                 }
+                else
+                {
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        gvMetodosPago.Columns[0].Visible = false;
+                    }
+                }
+                string estacionamiento = Session["Usu_estacionamiento"] as string;
+                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+                CargarGrilla();
             }
         }
 
@@ -33,14 +42,21 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                     .Include("Estacionamiento")
                     .Include("Metodos_De_Pago");
 
-                // Filtrar para que los Dueños y Playeros vean sus Metodos de Pago
                 if (tipoUsuario == "Dueño")
                 {
-                    var estIdList = db.Estacionamiento
-                                       .Where(e => e.Dueño_Legajo == legajo)
-                                       .Select(e => e.Est_id);
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                        query = query.Where(amp => amp.Est_id == estIdSeleccionado);
+                    }
+                    else
+                    {
+                        var estIdList = db.Estacionamiento
+                                           .Where(e => e.Dueño_Legajo == legajo)
+                                           .Select(e => e.Est_id);
 
-                    query = query.Where(amp => estIdList.Contains(amp.Est_id));
+                        query = query.Where(amp => estIdList.Contains(amp.Est_id));
+                    }
                 }
                 else if (tipoUsuario == "Playero")
                 {
@@ -55,7 +71,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                     }
                     else
                     {
-                        query = query.Where(amp => false); // no mostrar resultados si no hay Est_id
+                        query = query.Where(amp => false); // no mostrar resultados
                     }
                 }
 
@@ -76,6 +92,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 gvMetodosPago.DataBind();
             }
         }
+
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {

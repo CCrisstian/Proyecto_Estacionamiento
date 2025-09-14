@@ -1,7 +1,11 @@
 ﻿<%@ Page Title="Plazas" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Plaza_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Plaza.Plaza_Listar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <h2>Plazas</h2>
+
+    <div class="header-row">
+        <h1>Plazas</h1>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
+    </div>
 
     <asp:Button ID="btnAgregar" runat="server" Text="Agregar Plaza"
         OnClick="btnAgregar_Click"

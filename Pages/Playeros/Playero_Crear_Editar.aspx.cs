@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Playeros
 {
@@ -22,6 +24,9 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 {
                     // Modo alta: limpiar los campos
                     LimpiarCampos();
+                    // Modo Alta
+                    chkActivo.Checked = true;  // marcado por defecto
+                    chkActivo.Visible = false; // no se muestra
                 }
             }
         }
@@ -50,11 +55,26 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
             using (var context = new ProyectoEstacionamientoEntities())
             {
-                // Filtrar por Dueño_Legajo
-                var estacionamientos = context.Estacionamiento
-                    .Where(e => e.Dueño_Legajo == legajo)
-                    .Select(e => new { e.Est_id, e.Est_nombre })
-                    .ToList();
+                List<object> estacionamientos;
+
+                if (Session["Dueño_EstId"] != null)
+                {
+                    // Mostrar solo el estacionamiento previamente seleccionado
+                    int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                    estacionamientos = context.Estacionamiento
+                        .Where(e => e.Est_id == estIdSeleccionado)
+                        .Select(e => new { e.Est_id, e.Est_nombre })
+                        .ToList<object>();
+                }
+                else
+                {
+                    // Mostrar todos los estacionamientos disponibles del Dueño
+                    estacionamientos = context.Estacionamiento
+                        .Where(e => e.Dueño_Legajo == legajo && e.Est_Disponibilidad == true)
+                        .Select(e => new { e.Est_id, e.Est_nombre })
+                        .ToList<object>();
+
+                }
 
                 ddlEstacionamientos.DataSource = estacionamientos;
                 ddlEstacionamientos.DataValueField = "Est_id";
@@ -62,6 +82,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 ddlEstacionamientos.DataBind();
             }
         }
+
 
         private void CargarDatos(int legajo)
         {
@@ -80,42 +101,55 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
             }
         }
 
+        //Validadores
+        protected void cvEstacionamiento_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = !string.IsNullOrEmpty(ddlEstacionamientos.SelectedValue);
+        }
+
+        protected void cvDni_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string dniTexto = txtDni.Text;
+
+            args.IsValid = !string.IsNullOrWhiteSpace(dniTexto) &&
+                           int.TryParse(dniTexto, out int dni) &&
+                           dni > 0 &&
+                           dniTexto.Length == 8;
+
+            if (!args.IsValid)
+            {
+                cvDni.ErrorMessage = "El DNI es obligatorio y debe ser un número válido de 8 dígitos.";
+            }
+        }
+
+        protected void cvApellido_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string apellido = txtApellido.Text;
+            args.IsValid = !string.IsNullOrWhiteSpace(apellido) &&
+                           System.Text.RegularExpressions.Regex.IsMatch(apellido, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
+        }
+
+        protected void cvNombre_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string nombre = txtNombre.Text;
+            args.IsValid = !string.IsNullOrWhiteSpace(nombre) &&
+                           System.Text.RegularExpressions.Regex.IsMatch(nombre, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
+        }
+
+        //Guardar
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            lblError.Visible = true;
+            if (!Page.IsValid)
+                return;
 
             bool esAlta = string.IsNullOrEmpty(Request.QueryString["legajo"]);
 
-
-            // DNI obligatorio, numérico, y de exactamente 8 dígitos
-            if (string.IsNullOrWhiteSpace(txtDni.Text) || !int.TryParse(txtDni.Text, out int dni) || dni <= 0 || txtDni.Text.Length != 8)
-            {
-                lblError.Text = "El DNI es obligatorio y debe ser un número válido de exactamente 8 dígitos.";
-                return;
-            }
-
-            // Validar que Apellido y Nombre contengan solo letras
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtApellido.Text, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
-            {
-                lblError.Text = "El Apellido solo debe contener letras.";
-                return;
-            }
-
-            if (!System.Text.RegularExpressions.Regex.IsMatch(txtNombre.Text, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
-            {
-                lblError.Text = "El Nombre solo debe contener letras.";
-                return;
-            }
-
-            // Obtener valores
-            if (string.IsNullOrEmpty(ddlEstacionamientos.SelectedValue) || !int.TryParse(ddlEstacionamientos.SelectedValue, out int estId))
-            {
-                lblError.Text = "Debe seleccionar un Estacionamiento.";
-                return;
-            }
+            int dni = int.Parse(txtDni.Text);
+            int estId = int.Parse(ddlEstacionamientos.SelectedValue);
             string pass = txtPass.Text;
             string apellido = txtApellido.Text;
             string nombre = txtNombre.Text;
+            bool disponibilidad = chkActivo.Checked;
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
@@ -140,7 +174,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                             var nuevoPlayero = new Playero
                             {
                                 Playero_legajo = nuevoUsuario.Usu_legajo, // Usar el legajo recién generado
-                                Playero_activo = chkActivo.Checked,
+                                Playero_activo = disponibilidad,
                                 Est_id = estId
                             };
 
@@ -164,7 +198,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
                             if (playeroEdicion != null)
                             {
-                                playeroEdicion.Playero_activo = chkActivo.Checked;
+                                playeroEdicion.Playero_activo = disponibilidad;
                                 playeroEdicion.Est_id = estId;
                             }
 
@@ -177,7 +211,6 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                     }
                     catch (Exception ex)
                     {
-                        // Solo hacer rollback si transaction y su conexión existen
                         if (transaction != null && transaction.UnderlyingTransaction.Connection != null)
                         {
                             transaction.Rollback();
@@ -187,16 +220,15 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
                         if (mensajeErrorRaiz.Contains("UQ_usuarios_usu_dni"))
                         {
-                            lblError.Text = "Ya existe un Playero con ese DNI. Por favor, ingrese uno diferente.";
-                        }
-                        else
-                        {
-                            lblError.Text = "Ocurrió un error al guardar los datos. Detalles: " + mensajeErrorRaiz;
+                            // Forzar error en el validador del DNI
+                            cvDni.IsValid = false;
+                            cvDni.ErrorMessage = "Ya existe un Playero con ese DNI. Por favor, ingrese uno diferente.";
                         }
                     }
                 }
             }
         }
+
         private string ObtenerMensajeErrorCompleto(Exception ex)
         {
             if (ex.InnerException == null)

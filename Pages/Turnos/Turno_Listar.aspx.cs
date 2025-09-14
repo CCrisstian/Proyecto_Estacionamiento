@@ -11,7 +11,6 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         {
             if (!IsPostBack)
             {
-                CargarTurnos();
                 string tipoUsuario = Session["Usu_tipo"] as string;
                 if (tipoUsuario != "Playero")
                 {
@@ -21,11 +20,21 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     lblMontoFin.Visible = false;
                     txtMontoInicio.Visible = false;
                     txtMontoFin.Visible = false;
+
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        GridViewTurnos.Columns[0].Visible = false;
+                    }
                 }
                 else
                 {
                     GridViewTurnos.Columns[0].Visible = false;
                 }
+
+                string estacionamiento = Session["Usu_estacionamiento"] as string;
+                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                CargarTurnos();
             }
         }
 
@@ -40,12 +49,21 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
                 if (tipoUsuario == "Dueño")
                 {
-                    // Estacionamientos del dueño
-                    var estIds = db.Estacionamiento
-                                   .Where(e => e.Dueño_Legajo == legajo)
-                                   .Select(e => e.Est_id);
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        // Filtrar solo por el estacionamiento seleccionado
+                        int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                        query = query.Where(t => t.Playero.Est_id == estIdSeleccionado);
+                    }
+                    else
+                    {
+                        // Mostrar todos los turnos de los estacionamientos del Dueño
+                        var estIds = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id);
 
-                    query = query.Where(t => t.Playero.Est_id.HasValue && estIds.Contains(t.Playero.Est_id.Value));
+                        query = query.Where(t => t.Playero.Est_id.HasValue && estIds.Contains(t.Playero.Est_id.Value));
+                    }
                 }
                 else if (tipoUsuario == "Playero")
                 {
@@ -85,6 +103,7 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 GridViewTurnos.DataBind();
             }
         }
+
 
         protected void btnInicioTurno_Click(object sender, EventArgs e)
         {

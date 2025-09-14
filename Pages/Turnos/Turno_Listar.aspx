@@ -2,7 +2,10 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h2>Lista de Turnos</h2>
+    <div class="header-row">
+        <h1>Lista de Turnos</h1>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
+    </div>
 
     <br />
 
@@ -58,7 +61,7 @@
                     DataFormatString="{0:C}" HtmlEncode="false" />
                 <asp:BoundField DataField="Caja_Monto_fin" HeaderText="Monto Fin"
                     DataFormatString="{0:C}" HtmlEncode="false" />
-                <asp:BoundField DataField="Caja_Monto_total" HeaderText="Total"
+                <asp:BoundField DataField="Caja_Monto_total" HeaderText="Total Recaudado"
                     DataFormatString="{0:C}" HtmlEncode="false" />
             </Columns>
 
@@ -102,9 +105,9 @@
             position: "center",
             icon: "success",
             title: "<%= titulo %>",
-        showConfirmButton: false,
-        timer: 3000
-    });
+            showConfirmButton: false,
+            timer: 3000
+        });
     </script>
     <% } %>
 </asp:Content>

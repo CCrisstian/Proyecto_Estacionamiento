@@ -87,13 +87,13 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
         protected global::AjaxControlToolkit.CalendarExtender calHasta;
 
         /// <summary>
-        /// Control revFechaHasta.
+        /// Control cvFechaHasta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revFechaHasta;
+        protected global::System.Web.UI.WebControls.CustomValidator cvFechaHasta;
 
         /// <summary>
         /// Control btnCancelar.

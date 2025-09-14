@@ -1,0 +1,74 @@
+﻿/* Contenedor general del header */
+.header-container {
+    width: 100%;
+}
+
+/* Parte superior (usuario logueado) */
+.header-top {
+    background-color: #009900; /* mismo verde */
+    padding: 5px 25px;
+    display: flex; /* fila horizontal */
+    align-items: center; /* centra verticalmente */
+}
+
+/* Parte inferior (menú) */
+.header-bottom {
+    background-color: #009900; /* mismo verde */
+}
+
+/* Panel contenedor del menú */
+.tabs {
+    width: 100%;
+}
+
+/* Menú */
+.menu-list {
+    list-style-type: none; /* sin puntos */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between; /* reparte los botones */
+    align-items: stretch;
+    width: 100%;
+}
+
+    /* Cada ítem */
+    .menu-list li {
+        flex: 1; /* cada item ocupa mismo espacio */
+        text-align: center; /* centra el texto */
+        display: inline-block;
+    }
+
+    /* Links del menú */
+    .menu-list a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        display: block;
+        transition: background-color 0.3s;
+    }
+
+        /* Hover */
+        .menu-list a:hover {
+            background-color: #007700;
+            border-radius: 5px;
+        }
+
+    /* Pestaña activa */
+    .menu-list .tab.active a {
+        background-color: #006600;
+        border-radius: 5px;
+    }
+
+/* Usuario arriba a la derecha */
+.usuario-logueado {
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: auto; /* empuja el label hacia la derecha */
+}
+
+.menu-list li.logout {
+    flex: none; /* el logout no se expande, queda del tamaño del botón */
+}
+

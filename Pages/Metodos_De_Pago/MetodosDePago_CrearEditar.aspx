@@ -4,9 +4,9 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h2>
+    <h1>
         <asp:Label ID="lblTitulo" runat="server" Text="Agregar Método de Pago" />
-    </h2>
+    </h1>
 
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-metodospago">
 
@@ -16,7 +16,7 @@
             <asp:RequiredFieldValidator ID="rfvEstacionamientos" runat="server"
                 ControlToValidate="ddlEstacionamientos"
                 InitialValue=""
-                ErrorMessage="Debe seleccionar un Estacionamiento" ForeColor="Red" Display="Dynamic" />
+                ErrorMessage="Debe seleccionar un Estacionamiento" ForeColor="Red" Display="Dynamic" ValidationGroup="MetodosPago" />
         </div>
 
         <div class="form-group form-inline">
@@ -25,7 +25,7 @@
             <asp:RequiredFieldValidator ID="rfvMetodoPago" runat="server"
                 ControlToValidate="ddlMetodoDePago"
                 InitialValue=""
-                ErrorMessage="Debe seleccionar un Método de Pago" ForeColor="Red" Display="Dynamic" />
+                ErrorMessage="Debe seleccionar un Método de Pago" ForeColor="Red" Display="Dynamic" ValidationGroup="MetodosPago" />
         </div>
 
         <div class="form-group form-inline">
@@ -35,15 +35,14 @@
                 TargetControlID="txtHasta" Format="dd-MM-yyyy" />
 
             <!-- Validación en cliente para solo fechas válidas o vacío -->
-            <asp:RegularExpressionValidator
-                ID="revFechaHasta"
-                runat="server"
+
+            <asp:CustomValidator ID="cvFechaHasta" runat="server"
                 ControlToValidate="txtHasta"
                 ValidationExpression="^$|^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$"
-                ErrorMessage="Ingrese una fecha válida (dd-MM-yyyy) o seleccione del calendario."
-                CssClass="text-danger"
-                Display="Dynamic" />
-
+                OnServerValidate="cvFechaHasta_ServerValidate"
+                ErrorMessage="Debe seleccionar una Fecha válida (dd-MM-yyyy) y mayor o igual a hoy."
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="MetodosPago" />
         </div>
 
         <div class="form-group">
@@ -52,7 +51,7 @@
 
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar"
                 OnClientClick="return confirmarGuardado();"
-                OnClick="btnGuardar_Click" CssClass="btn btn-primary" />
+                OnClick="btnGuardar_Click" CssClass="btn btn-primary" ValidationGroup="MetodosPago" />
         </div>
 
         <div class="form-group">

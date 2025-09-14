@@ -22,11 +22,22 @@ namespace Proyecto_Estacionamiento
                 if (tipoUsuario != "Playero")
                 {
                     btnIngreso.Visible = false;
+
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        gvIngresos.Columns[0].Visible = false;
+                    }
+
+                    gvIngresos.Columns[7].Visible = false;
                 }
                 else
                 {
                     gvIngresos.Columns[0].Visible = false;
+                    gvIngresos.Columns[5].Visible = false;
                 }
+
+                string estacionamiento = Session["Usu_estacionamiento"] as string;
+                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
 
                 CargarIngresos();
             }
@@ -43,27 +54,34 @@ namespace Proyecto_Estacionamiento
 
                 if (tipoUsuario == "Dueño")
                 {
-                    // Obtener los Est_id asociados al legajo del Dueño
-                    var estIds = db.Estacionamiento
-                                   .Where(e => e.Dueño_Legajo == legajo)
-                                   .Select(e => e.Est_id)
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        // Caso 1: Dueño eligió un estacionamiento
+                        int estId = (int)Session["Dueño_EstId"];
+                        plazas = db.Plaza
+                                   .Where(p => p.Est_id == estId)
                                    .ToList();
+                    }
+                    else
+                    {
+                        // Caso 2: No eligió → mostramos todos sus estacionamientos
+                        var estIds = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id)
+                                       .ToList();
 
-                    plazas = db.Plaza
-                        .Where(p => estIds.Contains(p.Est_id))
-                        .ToList();
+                        plazas = db.Plaza
+                                   .Where(p => estIds.Contains(p.Est_id))
+                                   .ToList();
+                    }
                 }
                 else if (tipoUsuario == "Playero")
                 {
                     // Obtener el Est_id asignado al Playero
-                    var estId = db.Playero
-                                  .Where(p => p.Playero_legajo == legajo)
-                                  .Select(p => p.Est_id)
-                                  .FirstOrDefault();
-
+                    int estId = (int)Session["Playero_EstId"];
                     plazas = db.Plaza
-                        .Where(p => p.Est_id == estId)
-                        .ToList();
+                               .Where(p => p.Est_id == estId)
+                               .ToList();
                 }
 
                 int plazasDisponibles = plazas.Count(p => p.Plaza_Disponibilidad);
@@ -72,7 +90,6 @@ namespace Proyecto_Estacionamiento
                 lblPlazasOcupadas.Text = $"Plazas Ocupadas: {plazasOcupadas}";
             }
         }
-
 
         public class Ocupacion_DTO
         {
@@ -106,23 +123,28 @@ namespace Proyecto_Estacionamiento
 
                 if (tipoUsuario == "Dueño")
                 {
-                    var estIds = db.Estacionamiento
-                                   .Where(e => e.Dueño_Legajo == legajo)
-                                   .Select(e => e.Est_id);
-
-                    query = query.Where(o => estIds.Contains(o.Est_id));
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        // Caso 1: Dueño eligió un estacionamiento
+                        int estId = (int)Session["Dueño_EstId"];
+                        query = query.Where(o => o.Est_id == estId);
+                    }
+                    else
+                    {
+                        // Caso 2: No eligió → mostramos todos sus estacionamientos
+                        var estIds = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id);
+                        query = query.Where(o => estIds.Contains(o.Est_id));
+                    }
                 }
                 else if (tipoUsuario == "Playero")
                 {
-                    var estId = db.Playero
-                                  .Where(p => p.Playero_legajo == legajo)
-                                  .Select(p => p.Est_id)
-                                  .FirstOrDefault();
-
+                    int estId = (int)Session["Playero_EstId"];
                     query = query.Where(o => o.Est_id == estId);
                 }
 
-                var ocupaciones = query.ToList(); // Ejecuta la consulta SQL
+                var ocupaciones = query.ToList();
 
                 var ingresos = ocupaciones.Select(o => new Ocupacion_DTO
                 {
@@ -132,22 +154,22 @@ namespace Proyecto_Estacionamiento
                     Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
                     Plaza_Nombre = o.Plaza.Plaza_Nombre,
                     Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
-                    Tarifa_id = o.Tarifa_id, // posible que no se use, pero se deja por si acaso
+                    Tarifa_id = o.Tarifa_id,
                     Pago_id = o.Pago_id,
                     Tarifa = o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
-                    Entrada = o.Ocu_fecha_Hora_Inicio.ToString("HH:mm"),
-                    Salida = o.Ocu_fecha_Hora_Fin.HasValue ? o.Ocu_fecha_Hora_Fin.Value.ToString("HH:mm") : "",
+                    Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
+                    Salida = o.Ocu_fecha_Hora_Fin.HasValue ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm") : "",
                     Monto = o.Pago_Ocupacion?.Pago_Importe
                 })
-                    .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
-                    .ToList();
+                .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
+                .ToList();
 
                 gvIngresos.DataSource = ingresos;
                 gvIngresos.DataKeyNames = new string[] { "Est_id", "Plaza_id", "Ocu_fecha_Hora_Inicio" };
                 gvIngresos.DataBind();
-
             }
         }
+
 
         protected void btnIngreso_Click(object sender, EventArgs e)
         {

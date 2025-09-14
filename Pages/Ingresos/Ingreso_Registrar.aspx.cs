@@ -233,183 +233,201 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
-
         // Validaciones
-        private bool ValidarFormulario()
+        protected void cvPatente_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            // Validar que los campos de texto no estén vacíos
+            // Validar que se ingresado una Patente
             if (string.IsNullOrWhiteSpace(txtPatente.Text))
             {
-                lblMensaje.Text = "La Patente no puede estar vacía.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
+                args.IsValid = false;
+                cvPatente.ErrorMessage = "La Patente no puede estar vacía.";
             }
+            else
+            {
+                args.IsValid = true;
+            }
+        }
 
+        protected void cvMarca_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            // Validar que se haya ingresado una Marca
             if (string.IsNullOrWhiteSpace(txtMarca.Text))
             {
-                lblMensaje.Text = "La Marca no puede estar vacía.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
+                args.IsValid = false;
+                cvMarca.ErrorMessage = "La Marca no puede estar vacía.";
             }
+            else
+            {
+                args.IsValid = true;
+            }
+        }
 
+        protected void cvModelo_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            // Validar que se haya ingresado un Modelo
             if (!int.TryParse(txtModelo.Text.Trim(), out int modelo) || modelo < 1900 || modelo > DateTime.Now.Year)
             {
-                lblMensaje.Text = "El Modelo debe ser un número válido entre 1900 y el año actual.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
+                args.IsValid = false;
+                cvModelo.ErrorMessage = "El Modelo debe ser un número válido entre 1900 y el año actual.";
             }
+            else
+            {
+                args.IsValid = true;
+            }
+        }
 
+        protected void cvCategoria_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            // Validar que se haya seleccionado una Categoría
             if (ddlCategoria.SelectedValue == "0")
             {
-                lblMensaje.Text = "Debe seleccionar una Categoría.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
+                args.IsValid = false;
+                cvCategoria.ErrorMessage = "Debe seleccionar una Categoría.";
+                return;
             }
+        }
 
+        protected void cvColor_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            // Validar que se haya seleccionado un Color
             if (ddlColor.SelectedValue == "0")
             {
-                lblMensaje.Text = "Debe seleccionar un Color.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
+                args.IsValid = false;
+                cvColor.ErrorMessage = "Debe seleccionar un Color.";
+                return;
             }
+        }
 
+        protected void cvPlaza_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            // Validar que se haya seleccionado una plaza
             if (ddlPlaza.SelectedValue == "0")
             {
-                lblMensaje.Text = "Debe seleccionar una Plaza.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
+                args.IsValid = false;
+                cvPlaza.ErrorMessage = "Debe seleccionar una Plaza.";
+                return;
             }
-
-            if (ddlTarifa.SelectedValue == "0")
-            {
-                lblMensaje.Text = "Debe seleccionar una Tarifa.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
-
-            if (ddlMetodoDePago.SelectedValue == "0")
-            {
-                lblMensaje.Text = "Debe seleccionar un Método de Pago.";
-                lblMensaje.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
-
-            // Si todo está correcto
-            lblMensaje.Text = ""; // Limpia el mensaje
-            return true;
         }
 
 
+        protected void cvTarifa_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = ddlTarifa.SelectedValue != "0";
+            if (!args.IsValid) cvTarifa.ErrorMessage = "Debe seleccionar una Tarifa.";
+        }
+
+        protected void cvMetodoDePago_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = ddlMetodoDePago.SelectedValue != "0";
+            if (!args.IsValid) cvMetodoDePago.ErrorMessage = "Debe seleccionar un Método de Pago.";
+        }
+
+        // Guardar
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (!ValidarFormulario())
-                return;
+            // 1️⃣ Validar todos los CustomValidators del grupo "Ingreso"
+            Page.Validate("Ingreso");
+            if (!Page.IsValid) return;
 
-            try
+            var patenteIngresada = txtPatente.Text.Trim().Replace(" ", "").ToUpper();
+
+            using (var db = new ProyectoEstacionamientoEntities())
             {
-                using (var db = new ProyectoEstacionamientoEntities())
+                using (var transaction = db.Database.BeginTransaction())
                 {
-                    string accion;
-
-                    // 🔍 Normalizamos la patente ingresada ingreso "a" y la convertimos en "A"
-                    var patenteIngresada = txtPatente.Text.Trim().Replace(" ", "").ToUpper();
-
-                    var ocupacionActiva = db.Ocupacion
-                        .FirstOrDefault(o => o.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada
-                                           && o.Ocu_fecha_Hora_Fin == null);
-
-                    if (ocupacionActiva != null)
+                    try
                     {
-                        lblMensaje.Text = $"El vehículo con patente {patenteIngresada} ya se encuentra dentro del estacionamiento.";
-                        return;
-                    }
+                        // 🔍 Validar ocupación activa
+                        var ocupacionActiva = db.Ocupacion
+                            .FirstOrDefault(o => o.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada
+                                               && o.Ocu_fecha_Hora_Fin == null);
 
-                    using (var transaction = db.Database.BeginTransaction())
-                    {
-
-                        try
+                        if (ocupacionActiva != null)
                         {
-                            // Verificar si el vehículo ya existe
-                            var vehiculoExistente = db.Vehiculo
-                                .FirstOrDefault(v => v.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada);
+                            cvPatente.ErrorMessage = $"El vehículo con patente {patenteIngresada} ya se encuentra dentro del estacionamiento.";
+                            return; // Detener ejecución antes de modificar la BD
+                        }
 
-                            if (vehiculoExistente == null)
+                        // 🔍 Validar existencia de Vehículo
+                        var vehiculoExistente = db.Vehiculo
+                            .FirstOrDefault(v => v.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada);
+
+                        if (vehiculoExistente == null)
+                        {
+                            var nuevoVehiculo = new Vehiculo
                             {
-                                var nuevoVehiculo = new Vehiculo
-                                {
-                                    Vehiculo_Patente = patenteIngresada,
-                                    Categoria_id = int.Parse(ddlCategoria.SelectedValue),
-                                    Vehiculo_Marca = txtMarca.Text.Trim(),
-                                    Vehiculo_Modelo = int.Parse(txtModelo.Text.Trim()),
-                                    Vehiculo_Color = ddlColor.SelectedValue
-                                };
-
-                                db.Vehiculo.Add(nuevoVehiculo);
-                                db.SaveChanges();
-                            }
-
-                            // Crear Pago_Ocupacion
-                            int? estId = ObtenerEstacionamientoId();
-                            int metodoPagoId = Convert.ToInt32(ddlMetodoDePago.SelectedValue);
-                            int tarifaId = Convert.ToInt32(ddlTarifa.SelectedValue);
-                            var tarifa = db.Tarifa.FirstOrDefault(t => t.Tarifa_id == tarifaId);
-                            double importe = tarifa.Tarifa_Monto;
-
-                            var nuevoPago = new Pago_Ocupacion
-                            {
-                                Est_id = (int)estId,
-                                Metodo_Pago_id = metodoPagoId,
-                                Pago_Importe = importe,
-                                Pago_Fecha = null
-                            };
-
-                            db.Pago_Ocupacion.Add(nuevoPago);
-                            db.SaveChanges();
-                            int nuevoPago_id = nuevoPago.Pago_id;
-
-                            // Cambiar disponibilidad de Plaza
-                            int plazaIdSeleccionada = int.Parse(ddlPlaza.SelectedValue);
-                            var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaIdSeleccionada);
-                            plaza.Plaza_Disponibilidad = false;
-                            db.SaveChanges();
-
-                            // Crear Ocupacion
-                            var nuevaOcupacion = new Ocupacion
-                            {
-                                Est_id = (int)estId,
-                                Plaza_id = plazaIdSeleccionada,
-                                Ocu_fecha_Hora_Inicio = DateTime.Now,
                                 Vehiculo_Patente = patenteIngresada,
-                                Tarifa_id = tarifaId,
-                                Pago_id = nuevoPago_id
+                                Categoria_id = int.Parse(ddlCategoria.SelectedValue),
+                                Vehiculo_Marca = txtMarca.Text.Trim(),
+                                Vehiculo_Modelo = int.Parse(txtModelo.Text.Trim()),
+                                Vehiculo_Color = ddlColor.SelectedValue
                             };
-
-                            db.Ocupacion.Add(nuevaOcupacion);
+                            db.Vehiculo.Add(nuevoVehiculo);
                             db.SaveChanges();
+                        }
 
-                            // Confirmar
-                            transaction.Commit();
-                            accion = "ingreso";
-                            Response.Redirect($"~/Pages/Default/Ingreso_Listar.aspx?exito=1&accion={accion}");
-                        }
-                        catch (Exception ex)
+                        // 🔍 Obtener datos necesarios para Pago y Ocupación
+                        int? estId = ObtenerEstacionamientoId();
+
+                        int tarifaId = int.Parse(ddlTarifa.SelectedValue);
+                        var tarifa = db.Tarifa.FirstOrDefault(t => t.Tarifa_id == tarifaId);
+
+                        int plazaIdSeleccionada = int.Parse(ddlPlaza.SelectedValue);
+                        var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaIdSeleccionada);
+
+                        // 🔹 Crear Pago_Ocupacion
+                        var nuevoPago = new Pago_Ocupacion
                         {
-                            transaction.Rollback();
-                            lblMensaje.Text = "Error al guardar: " + ex.Message;
-                        }
+                            Est_id = (int)estId,
+                            Metodo_Pago_id = int.Parse(ddlMetodoDePago.SelectedValue),
+                            Pago_Importe = tarifa.Tarifa_Monto,
+                            Pago_Fecha = null
+                        };
+                        db.Pago_Ocupacion.Add(nuevoPago);
+                        db.SaveChanges();
+                        int nuevoPago_id = nuevoPago.Pago_id;
+
+                        // 🔹 Cambiar disponibilidad de Plaza
+                        plaza.Plaza_Disponibilidad = false;
+                        db.SaveChanges();
+
+                        // 🔹 Crear Ocupacion
+                        var nuevaOcupacion = new Ocupacion
+                        {
+                            Est_id = (int)estId,
+                            Plaza_id = plazaIdSeleccionada,
+                            Ocu_fecha_Hora_Inicio = DateTime.Now,
+                            Vehiculo_Patente = patenteIngresada,
+                            Tarifa_id = tarifaId,
+                            Pago_id = nuevoPago_id
+                        };
+                        db.Ocupacion.Add(nuevaOcupacion);
+                        db.SaveChanges();
+
+                        // 🔹 Confirmar transacción
+                        transaction.Commit();
+
+                        // 🔹 Redirigir después de confirmar
+                        Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=ingreso");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Solo rollback si la transacción está activa y la conexión válida
+                        if (db.Database.CurrentTransaction != null)
+                            db.Database.CurrentTransaction.Rollback();
+
+                        // Opcional: mostrar error en algún CustomValidator o log
+                        cvPlaza.ErrorMessage = "Error al guardar el ingreso: " + ex.Message;
+                        cvPlaza.IsValid = false;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                lblMensaje.Text = "Error de conexión o transacción: " + ex.Message;
             }
         }
 
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Default/Ingreso_Listar.aspx");
+            Response.Redirect("~/Pages/Ingresos/Ingreso_Listar.aspx");
         }
 
     }

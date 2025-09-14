@@ -7,11 +7,11 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace Proyecto_Estacionamiento.Pages.Playeros
+namespace Proyecto_Estacionamiento.Pages.Default
 {
 
 
-    public partial class Playero_Listar
+    public partial class Inicio
     {
 
         /// <summary>
@@ -24,21 +24,12 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
         protected global::System.Web.UI.WebControls.Label Estacionamiento_Nombre;
 
         /// <summary>
-        /// Control btnAgregarPlayero.
+        /// Control gvEstacionamientos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAgregarPlayero;
-
-        /// <summary>
-        /// Control gvPlayeros.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPlayeros;
+        protected global::System.Web.UI.WebControls.GridView gvEstacionamientos;
     }
 }
