@@ -1,9 +1,9 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Ingreso_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Ingreso_Listar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    
+
     <div class="header-row">
-        <h1>Ingresos</h1>
+        <h1>Ingresos de Vehículos</h1>
         <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
 
@@ -23,6 +23,9 @@
     </div>
 
     <br />
+
+    <asp:DropDownList ID="ddlMetodoDePago" runat="server" Visible="false" />
+    <asp:HiddenField ID="hfMetodoPago" runat="server" />
 
     <div class="grid-wrapper">
 
@@ -61,25 +64,45 @@
 
     <script>
         function confirmarEgreso(btn) {
-            // Siempre evitar el postback inicial
             event.preventDefault();
 
+            // Traemos los métodos de pago renderizados desde el servidor
+            var opciones = '<option value="0">Seleccione Método de Pago</option>';
+        <% foreach (var mp in ddlMetodoDePago.Items.Cast<ListItem>())
+        { %>
+            opciones += '<option value="<%= mp.Value %>"><%= mp.Text %></option>';
+        <% } %>
+
             Swal.fire({
-                title: "¿Deseás registrar el 'Egreso'?",
+                title: "Registrar Egreso",
+                html: `
+                <label>Método de Pago:</label>
+                <select id="swalMetodoPago" class="swal2-input">
+                    ${opciones}
+                </select>
+            `,
+                focusConfirm: false,
                 showDenyButton: true,
                 confirmButtonText: "Guardar",
                 denyButtonText: "Cancelar",
-                reverseButtons: true // 👈 Esto invierte el orden de los botones
+                reverseButtons: true, // 👈 Esto invierte el orden de los botones
+                preConfirm: () => {
+                    const metodo = document.getElementById('swalMetodoPago').value;
+                    if (metodo === "0") {
+                        Swal.showValidationMessage("Debe seleccionar un método de pago");
+                        return false;
+                    }
+                    return metodo;
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Ejecutar el postback del botón manualmente
-                    __doPostBack(btn.name, "");
-                } else if (result.isDenied) {
-                    Swal.fire("'Egreso' no registrado", "", "info");
-                }
-            });
+                    // Guardamos en el HiddenField antes de postback
+                    document.getElementById('<%= hfMetodoPago.ClientID %>').value = result.value;
+                __doPostBack(btn.name, "");
+            }
+        });
 
-            return false; // Impide el postback automático
+            return false;
         }
     </script>
 

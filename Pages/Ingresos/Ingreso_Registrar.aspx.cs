@@ -13,9 +13,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
             {
                 CargarCategoriasFiltradas();
                 ddlPlaza.Enabled = false;
-                ddlTarifa.Enabled = false;
-                CargarMetodosDePagoFiltrados();
-            }
+                ddlTarifa.Enabled = false;            }
         }
 
         private int? ObtenerEstacionamientoId()
@@ -48,15 +46,9 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 {
                     // Autocompletamos los campos
                     ddlCategoria.SelectedValue = vehiculo.Categoria_id.ToString();
-                    txtMarca.Text = vehiculo.Vehiculo_Marca;
-                    txtModelo.Text = vehiculo.Vehiculo_Modelo.ToString();
-                    ddlColor.SelectedValue = vehiculo.Vehiculo_Color;
 
                     // Bloqueamos edición de los campos
                     ddlCategoria.Enabled = false;
-                    txtMarca.ReadOnly = true;
-                    txtModelo.ReadOnly = true;
-                    ddlColor.Enabled = false;
 
                     // Filtrar automáticamente Plazas y Tarifas según categoría
                     ddlCategoria_SelectedIndexChanged(null, null);
@@ -65,14 +57,8 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 {
                     // Si la patente se borra o es nueva, desbloqueamos campos y limpiamos
                     ddlCategoria.Enabled = true;
-                    txtMarca.ReadOnly = false;
-                    txtModelo.ReadOnly = false;
-                    ddlColor.Enabled = true;
 
                     ddlCategoria.SelectedValue = "0";
-                    txtMarca.Text = "";
-                    txtModelo.Text = "";
-                    ddlColor.SelectedValue = "0";
                 }
             }
         }
@@ -201,38 +187,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
-
-        private void CargarMetodosDePagoFiltrados()
-        {
-
-            using (var db = new ProyectoEstacionamientoEntities())
-            {
-
-                // Obtenemos el Estacionamiento
-                int? estacionamientoId = ObtenerEstacionamientoId();
-
-                // Filtramos Métodos de Pago aceptados por ese estacionamiento
-                var metodosPago = db.Acepta_Metodo_De_Pago
-                    .Where(a => a.Est_id == estacionamientoId)
-                    .Select(a => a.Metodos_De_Pago)
-                    .Distinct()
-                    .ToList();
-                if (metodosPago.Any())
-                {
-                    // Vinculamos al DropDownList
-                    ddlMetodoDePago.DataSource = metodosPago;
-                    ddlMetodoDePago.DataTextField = "Metodo_pago_descripcion";
-                    ddlMetodoDePago.DataValueField = "Metodo_pago_id";
-                    ddlMetodoDePago.DataBind();
-                    ddlMetodoDePago.Items.Insert(0, new ListItem("--Seleccione Método de Pago--", "0"));
-                }
-                else
-                {
-                    LimpiarDropDown(ddlMetodoDePago, "--Seleccione Método de Pago--");
-                }
-            }
-        }
-
         // Validaciones
         protected void cvPatente_ServerValidate(object source, ServerValidateEventArgs args)
         {
@@ -248,34 +202,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
-        protected void cvMarca_ServerValidate(object source, ServerValidateEventArgs args)
-        {
-            // Validar que se haya ingresado una Marca
-            if (string.IsNullOrWhiteSpace(txtMarca.Text))
-            {
-                args.IsValid = false;
-                cvMarca.ErrorMessage = "La Marca no puede estar vacía.";
-            }
-            else
-            {
-                args.IsValid = true;
-            }
-        }
-
-        protected void cvModelo_ServerValidate(object source, ServerValidateEventArgs args)
-        {
-            // Validar que se haya ingresado un Modelo
-            if (!int.TryParse(txtModelo.Text.Trim(), out int modelo) || modelo < 1900 || modelo > DateTime.Now.Year)
-            {
-                args.IsValid = false;
-                cvModelo.ErrorMessage = "El Modelo debe ser un número válido entre 1900 y el año actual.";
-            }
-            else
-            {
-                args.IsValid = true;
-            }
-        }
-
         protected void cvCategoria_ServerValidate(object source, ServerValidateEventArgs args)
         {
             // Validar que se haya seleccionado una Categoría
@@ -283,17 +209,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
             {
                 args.IsValid = false;
                 cvCategoria.ErrorMessage = "Debe seleccionar una Categoría.";
-                return;
-            }
-        }
-
-        protected void cvColor_ServerValidate(object source, ServerValidateEventArgs args)
-        {
-            // Validar que se haya seleccionado un Color
-            if (ddlColor.SelectedValue == "0")
-            {
-                args.IsValid = false;
-                cvColor.ErrorMessage = "Debe seleccionar un Color.";
                 return;
             }
         }
@@ -314,12 +229,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
         {
             args.IsValid = ddlTarifa.SelectedValue != "0";
             if (!args.IsValid) cvTarifa.ErrorMessage = "Debe seleccionar una Tarifa.";
-        }
-
-        protected void cvMetodoDePago_ServerValidate(object source, ServerValidateEventArgs args)
-        {
-            args.IsValid = ddlMetodoDePago.SelectedValue != "0";
-            if (!args.IsValid) cvMetodoDePago.ErrorMessage = "Debe seleccionar un Método de Pago.";
         }
 
         // Guardar
@@ -358,9 +267,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
                             {
                                 Vehiculo_Patente = patenteIngresada,
                                 Categoria_id = int.Parse(ddlCategoria.SelectedValue),
-                                Vehiculo_Marca = txtMarca.Text.Trim(),
-                                Vehiculo_Modelo = int.Parse(txtModelo.Text.Trim()),
-                                Vehiculo_Color = ddlColor.SelectedValue
                             };
                             db.Vehiculo.Add(nuevoVehiculo);
                             db.SaveChanges();
@@ -375,18 +281,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
                         int plazaIdSeleccionada = int.Parse(ddlPlaza.SelectedValue);
                         var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaIdSeleccionada);
 
-                        // 🔹 Crear Pago_Ocupacion
-                        var nuevoPago = new Pago_Ocupacion
-                        {
-                            Est_id = (int)estId,
-                            Metodo_Pago_id = int.Parse(ddlMetodoDePago.SelectedValue),
-                            Pago_Importe = tarifa.Tarifa_Monto,
-                            Pago_Fecha = null
-                        };
-                        db.Pago_Ocupacion.Add(nuevoPago);
-                        db.SaveChanges();
-                        int nuevoPago_id = nuevoPago.Pago_id;
-
                         // 🔹 Cambiar disponibilidad de Plaza
                         plaza.Plaza_Disponibilidad = false;
                         db.SaveChanges();
@@ -399,7 +293,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
                             Ocu_fecha_Hora_Inicio = DateTime.Now,
                             Vehiculo_Patente = patenteIngresada,
                             Tarifa_id = tarifaId,
-                            Pago_id = nuevoPago_id
+                            Pago_id = null   // Se asignará en el Egreso
                         };
                         db.Ocupacion.Add(nuevaOcupacion);
                         db.SaveChanges();
@@ -423,7 +317,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 }
             }
         }
-
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {

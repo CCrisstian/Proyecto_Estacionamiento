@@ -24,39 +24,6 @@
         </div>
 
         <div class="form-group form-inline">
-            <label for="txtMarca">Marca:</label>
-            <asp:TextBox ID="txtMarca" runat="server" MaxLength="100" CssClass="form-control" />
-            <asp:CustomValidator ID="cvMarca" runat="server"
-                OnServerValidate="cvMarca_ServerValidate" Display="Dynamic" ForeColor="Red" ValidationGroup="Ingreso" />
-        </div>
-
-        <div class="form-group form-inline">
-            <label for="txtModelo">Modelo:</label>
-            <asp:TextBox ID="txtModelo" runat="server" MaxLength="100" CssClass="form-control" />
-            <asp:CustomValidator ID="cvModelo" runat="server"
-                OnServerValidate="cvModelo_ServerValidate" Display="Dynamic" ForeColor="Red" ValidationGroup="Ingreso" />
-        </div>
-
-        <div class="form-group form-inline">
-            <label>Color:</label>
-            <asp:DropDownList ID="ddlColor" runat="server" CssClass="form-control">
-                <asp:ListItem Text="--Seleccione Color--" Value="0" />
-                <asp:ListItem>Blanco</asp:ListItem>
-                <asp:ListItem>Negro</asp:ListItem>
-                <asp:ListItem>Gris / Plata</asp:ListItem>
-                <asp:ListItem>Azul</asp:ListItem>
-                <asp:ListItem>Rojo</asp:ListItem>
-                <asp:ListItem>Beige / Champagne</asp:ListItem>
-                <asp:ListItem>Marrón / Café</asp:ListItem>
-                <asp:ListItem>Verde</asp:ListItem>
-                <asp:ListItem>Amarillo</asp:ListItem>
-                <asp:ListItem>Naranja</asp:ListItem>
-            </asp:DropDownList>
-            <asp:CustomValidator ID="cvColor" runat="server"
-                OnServerValidate="cvColor_ServerValidate" Display="Dynamic" ForeColor="Red" ValidationGroup="Ingreso" />
-        </div>
-
-        <div class="form-group form-inline">
             <label for="ddlPlaza">Plaza:</label>
             <asp:DropDownList ID="ddlPlaza" runat="server" CssClass="form-control">
                 <asp:ListItem Text="--Seleccione Plaza--" Value="0" />
@@ -72,15 +39,6 @@
             </asp:DropDownList>
             <asp:CustomValidator ID="cvTarifa" runat="server"
                 OnServerValidate="cvTarifa_ServerValidate" Display="Dynamic" ForeColor="Red" ValidationGroup="Ingreso" />
-        </div>
-
-        <div class="form-group form-inline">
-            <label for="ddlMetodoDePago">Método de Pago:</label>
-            <asp:DropDownList ID="ddlMetodoDePago" runat="server" CssClass="form-control">
-                <asp:ListItem Text="--Seleccione Método de Pago--" Value="0" />
-            </asp:DropDownList>
-            <asp:CustomValidator ID="cvMetodoDePago" runat="server"
-                OnServerValidate="cvMetodoDePago_ServerValidate" Display="Dynamic" ForeColor="Red" ValidationGroup="Ingreso" />
         </div>
 
         <div class="form-group">

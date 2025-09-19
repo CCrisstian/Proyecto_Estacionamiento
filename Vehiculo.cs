@@ -24,7 +24,7 @@ namespace Proyecto_Estacionamiento
         public string Vehiculo_Patente { get; set; }
         public int Categoria_id { get; set; }
         public string Vehiculo_Marca { get; set; }
-        public int Vehiculo_Modelo { get; set; }
+        public Nullable<int> Vehiculo_Modelo { get; set; }
         public string Vehiculo_Color { get; set; }
     
         public virtual Categoria_Vehiculo Categoria_Vehiculo { get; set; }

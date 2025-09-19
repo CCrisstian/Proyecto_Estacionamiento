@@ -113,9 +113,7 @@
 
             <!-- FOOTER de la pagina -->
             <footer>
-                <!-- Logo -->
-                <asp:Image ID="Image1" runat="server" Height="59px" ImageUrl="~/Images/LogoACE_SinFondo.PNG" Width="60px" />
-                <p>&copy; Grupo4 - Proyecto_Estacionamiento_ACE</p>
+                <p>&copy; Grupo 4 - <b>Estacionamiento_ACE</b></p>
             </footer>
 
         </div>

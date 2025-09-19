@@ -155,9 +155,9 @@
           </Key>
           <Property Name="Vehiculo_Patente" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="Categoria_id" Type="int" Nullable="false" />
-          <Property Name="Vehiculo_Marca" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Vehiculo_Modelo" Type="int" Nullable="false" />
-          <Property Name="Vehiculo_Color" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Vehiculo_Marca" Type="varchar" MaxLength="50" />
+          <Property Name="Vehiculo_Modelo" Type="int" />
+          <Property Name="Vehiculo_Color" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Vehiculo_Abonado">
           <Key>
@@ -732,9 +732,9 @@
           </Key>
           <Property Name="Vehiculo_Patente" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Categoria_id" Type="Int32" Nullable="false" />
-          <Property Name="Vehiculo_Marca" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Vehiculo_Modelo" Type="Int32" Nullable="false" />
-          <Property Name="Vehiculo_Color" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Vehiculo_Marca" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Vehiculo_Modelo" Type="Int32" />
+          <Property Name="Vehiculo_Color" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Categoria_Vehiculo" Relationship="Self.FK_Vehiculo_Categoria_Vehiculo" FromRole="Vehiculo" ToRole="Categoria_Vehiculo" />
           <NavigationProperty Name="Ocupacion" Relationship="Self.FK_Ocupacion_Vehiculo" FromRole="Vehiculo" ToRole="Ocupacion" />
           <NavigationProperty Name="Vehiculo_Abonado" Relationship="Self.FK_Vehiculo_Abonado_Vehiculo" FromRole="Vehiculo" ToRole="Vehiculo_Abonado" />

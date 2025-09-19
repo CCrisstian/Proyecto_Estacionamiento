@@ -40,6 +40,7 @@ namespace Proyecto_Estacionamiento
                 Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
 
                 CargarIngresos();
+                CargarMetodosDePagoFiltrados(); // llena ddlMetodoDePago
             }
         }
 
@@ -101,7 +102,6 @@ namespace Proyecto_Estacionamiento
             public string Plaza_Nombre { get; set; }
             public string Vehiculo_Patente { get; set; }
             public int Tarifa_id { get; set; }
-            public int? Pago_id { get; set; }
             public string Tarifa { get; set; }
             public string Entrada { get; set; }
             public string Salida { get; set; }
@@ -112,21 +112,21 @@ namespace Proyecto_Estacionamiento
         {
             string tipoUsuario = Session["Usu_tipo"] as string;
             int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+            int estId;
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 IQueryable<Ocupacion> query = db.Ocupacion
                     .Include("Vehiculo")
                     .Include("Plaza")
-                    .Include("Tarifa")
-                    .Include("Pago_Ocupacion");
+                    .Include("Tarifa");
 
                 if (tipoUsuario == "Dueño")
                 {
                     if (Session["Dueño_EstId"] != null)
                     {
                         // Caso 1: Dueño eligió un estacionamiento
-                        int estId = (int)Session["Dueño_EstId"];
+                        estId = (int)Session["Dueño_EstId"];
                         query = query.Where(o => o.Est_id == estId);
                     }
                     else
@@ -140,11 +140,29 @@ namespace Proyecto_Estacionamiento
                 }
                 else if (tipoUsuario == "Playero")
                 {
-                    int estId = (int)Session["Playero_EstId"];
+                    estId = (int)Session["Playero_EstId"];
                     query = query.Where(o => o.Est_id == estId);
                 }
 
                 var ocupaciones = query.ToList();
+
+
+                // Cargar métodos de pago disponibles para el Estacionamiento donde trabaja el Playero
+                estId = (int)Session["Playero_EstId"];
+                var metodosPago = db.Acepta_Metodo_De_Pago
+                                    .Where(a => a.Est_id == estId)
+                                    .Select(a => a.Metodos_De_Pago)
+                                    .Distinct()
+                                    .ToList();
+
+                if (metodosPago.Any())
+                {
+                    string options = string.Join("",
+                        metodosPago.Select(m => $"<option value='{m.Metodo_pago_id}'>{m.Metodo_pago_descripcion}</option>")
+                    );
+                    ClientScript.RegisterStartupScript(this.GetType(), "metodosPago",
+                        $"window.metodosPagoOptions = `{options}`;", true);
+                }
 
                 var ingresos = ocupaciones.Select(o => new Ocupacion_DTO
                 {
@@ -155,11 +173,10 @@ namespace Proyecto_Estacionamiento
                     Plaza_Nombre = o.Plaza.Plaza_Nombre,
                     Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
                     Tarifa_id = o.Tarifa_id,
-                    Pago_id = o.Pago_id,
                     Tarifa = o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
                     Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
                     Salida = o.Ocu_fecha_Hora_Fin.HasValue ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm") : "",
-                    Monto = o.Pago_Ocupacion?.Pago_Importe
+                    Monto = o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null
                 })
                 .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
                 .ToList();
@@ -176,6 +193,31 @@ namespace Proyecto_Estacionamiento
             Response.Redirect("Ingreso_Registrar.aspx");
         }
 
+        private void CargarMetodosDePagoFiltrados()
+        {
+
+            using (var db = new ProyectoEstacionamientoEntities())
+            {
+
+                // Obtenemos el Estacionamiento
+                int? estacionamientoId = (int)Session["Playero_EstId"];
+
+                // Filtramos Métodos de Pago aceptados por ese estacionamiento
+                var metodosPago = db.Acepta_Metodo_De_Pago
+                    .Where(a => a.Est_id == estacionamientoId)
+                    .Select(a => a.Metodos_De_Pago)
+                    .Distinct()
+                    .ToList();
+                if (metodosPago.Any())
+                {
+                    // Vinculamos al DropDownList
+                    ddlMetodoDePago.DataSource = metodosPago;
+                    ddlMetodoDePago.DataTextField = "Metodo_pago_descripcion";
+                    ddlMetodoDePago.DataValueField = "Metodo_pago_id";
+                    ddlMetodoDePago.DataBind();
+                }
+            }
+        }
 
         protected void gvIngresos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -187,6 +229,9 @@ namespace Proyecto_Estacionamiento
                 int estId = (int)gvIngresos.DataKeys[index].Values["Est_id"];
                 int plazaId = (int)gvIngresos.DataKeys[index].Values["Plaza_id"];
                 DateTime inicio = (DateTime)gvIngresos.DataKeys[index].Values["Ocu_fecha_Hora_Inicio"];
+
+                //Obtenemos el id del método de pago seleccionado
+                int metodoPagoId = int.Parse(hfMetodoPago.Value);
 
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
@@ -214,23 +259,27 @@ namespace Proyecto_Estacionamiento
                     if (string.IsNullOrEmpty(tarifa))
                         throw new Exception("Descripción de tarifa no encontrada");
 
-                    // 3. Obtener el importe base de Pago_Ocupacion
-                    if (ocupacion.Pago_id == null)
-                        throw new Exception("Pago_id nulo en ocupación");
-
-                    var pago = db.Pago_Ocupacion.FirstOrDefault(p => p.Pago_id == ocupacion.Pago_id);
-
-                    if (pago == null)
-                        throw new Exception($"No se encontró Pago_Ocupacion con Pago_id={ocupacion.Pago_id}");
-
-
-                    decimal tarifaBase = (decimal)pago.Pago_Importe;
-
                     // 4. Calcular el importe final según duración y tipo de tarifa
+                    decimal tarifaBase = Convert.ToDecimal(ocupacion.Tarifa.Tarifa_Monto);
                     DateTime fin = DateTime.Now;
                     TimeSpan duracion = fin - inicio;
-
                     decimal montoFinal = CalcularMonto(tarifa, duracion, tarifaBase);
+
+                    // 3. Obtener el importe base de Pago_Ocupacion
+                    Pago_Ocupacion pago;
+                    pago = new Pago_Ocupacion
+                    {
+                        Est_id = ocupacion.Est_id,
+                        Metodo_Pago_id = metodoPagoId,
+                        Pago_Importe = Convert.ToDouble(montoFinal),
+                        Pago_Fecha = fin.Date
+                    };
+                    db.Pago_Ocupacion.Add(pago);
+                    db.SaveChanges(); // <-- aquí obtenemos pago.Pago_id (identity)
+
+                    // asociar pago a la ocupación
+                    ocupacion.Pago_id = pago.Pago_id;
+                    ocupacion.Ocu_fecha_Hora_Fin = fin;
 
                     // 6. Actualizar disponibilidad de plaza
                     var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaId);
@@ -239,17 +288,10 @@ namespace Proyecto_Estacionamiento
 
                     plaza.Plaza_Disponibilidad = true;
 
-                    // 7. Guardar cambios en la base de datos
-                    ocupacion.Ocu_fecha_Hora_Fin = fin;
-                    pago.Pago_Importe = (double)montoFinal;
-                    pago.Pago_Fecha = fin.Date;
-                    plaza.Plaza_Disponibilidad = true;
-
-
                     // Actualizar en la BD usando SQL directo
                     string sql = @"
                     UPDATE Ocupacion
-                    SET Ocu_fecha_Hora_Fin = @p0
+                    SET Ocu_fecha_Hora_Fin = @p0,Pago_id = @p10
                     WHERE Est_id = @p1 AND Plaza_id = @p2
                         AND CONVERT(DATE, Ocu_fecha_Hora_Inicio) = @p3
                         AND DATEPART(HOUR, Ocu_fecha_Hora_Inicio) = @p4
@@ -276,12 +318,13 @@ namespace Proyecto_Estacionamiento
                         inicio.Second,         // @p6
                         (double)montoFinal,    // @p7
                         fin.Date,               // @p8
-                        ocupacion.Pago_id       // @p9
+                        pago.Pago_id,          // @p9 (Pago_Ocupacion update)
+                        pago.Pago_id           // @p10 (Ocupacion.Pago_id)
                     );
 
                 }
             }
-            Response.Redirect($"~/Pages/Default/Ingreso_Listar.aspx?exito=1&accion=egreso");
+            Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso");
         }
 
 

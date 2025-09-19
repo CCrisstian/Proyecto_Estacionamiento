@@ -51,6 +51,24 @@ namespace Proyecto_Estacionamiento
         protected global::System.Web.UI.WebControls.Label lblPlazasOcupadas;
 
         /// <summary>
+        /// Control ddlMetodoDePago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlMetodoDePago;
+
+        /// <summary>
+        /// Control hfMetodoPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfMetodoPago;
+
+        /// <summary>
         /// Control gvIngresos.
         /// </summary>
         /// <remarks>
