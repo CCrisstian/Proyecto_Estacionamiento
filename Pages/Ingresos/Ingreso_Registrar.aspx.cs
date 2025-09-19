@@ -190,17 +190,34 @@ namespace Proyecto_Estacionamiento.Pages.Default
         // Validaciones
         protected void cvPatente_ServerValidate(object source, ServerValidateEventArgs args)
         {
-            // Validar que se ingresado una Patente
-            if (string.IsNullOrWhiteSpace(txtPatente.Text))
+            string patenteIngresada = txtPatente.Text?.Trim().ToUpper().Replace(" ", "");
+
+            // Validar que se haya ingresado una Patente
+            if (string.IsNullOrWhiteSpace(patenteIngresada))
             {
                 args.IsValid = false;
                 cvPatente.ErrorMessage = "La Patente no puede estar vacía.";
+                return;
             }
-            else
+
+            using (var db = new ProyectoEstacionamientoEntities())
             {
-                args.IsValid = true;
+                // 🔍 Validar ocupación activa
+                var ocupacionActiva = db.Ocupacion
+                    .FirstOrDefault(o => o.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada
+                                       && o.Ocu_fecha_Hora_Fin == null);
+
+                if (ocupacionActiva != null)
+                {
+                    args.IsValid = false;
+                    cvPatente.ErrorMessage = $"El vehículo con patente {txtPatente.Text} ya se encuentra dentro del estacionamiento.";
+                    return; // Detener ejecución antes de modificar la BD
+                }
             }
+
+            args.IsValid = true;
         }
+
 
         protected void cvCategoria_ServerValidate(object source, ServerValidateEventArgs args)
         {
@@ -246,17 +263,6 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 {
                     try
                     {
-                        // 🔍 Validar ocupación activa
-                        var ocupacionActiva = db.Ocupacion
-                            .FirstOrDefault(o => o.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada
-                                               && o.Ocu_fecha_Hora_Fin == null);
-
-                        if (ocupacionActiva != null)
-                        {
-                            cvPatente.ErrorMessage = $"El vehículo con patente {patenteIngresada} ya se encuentra dentro del estacionamiento.";
-                            return; // Detener ejecución antes de modificar la BD
-                        }
-
                         // 🔍 Validar existencia de Vehículo
                         var vehiculoExistente = db.Vehiculo
                             .FirstOrDefault(v => v.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada);
