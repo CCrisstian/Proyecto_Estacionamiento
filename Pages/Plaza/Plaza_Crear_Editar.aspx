@@ -1,9 +1,14 @@
 ﻿<%@ Page Title="Plaza" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Plaza_Crear_Editar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Plaza.Plaza_Crear_Editar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-plaza">
-        <h1>
-            <asp:Label ID="lblTitulo" runat="server" Text="Agregar Plaza" /></h1>
+
+        <h2>
+            <asp:Label ID="lblTitulo" runat="server" Text="Agregar un Estacionamiento" />
+        </h2>
+        
+        <br />
 
         <div class="form-group form-inline">
             <label for="ddlEstacionamiento">Estacionamiento:</label>

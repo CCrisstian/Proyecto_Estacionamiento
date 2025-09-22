@@ -6,8 +6,13 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-estacionamiento">
-        <h1>Ingrese los Datos del Estacionamiento:</h1>
+        <h2>
+            <asp:Label ID="lblTitulo" runat="server" Text="Agregar un Estacionamiento" />
+        </h2>
+        
+        <br />
 
         <asp:HiddenField ID="hdnEstId" runat="server" />
 
@@ -70,7 +75,7 @@
         </div>
 
         <div class="form-group form-inline">
-            <label>Días de Atención (Inicio - Fin):</label>
+            <label>Días de Atención (Inicio):</label>
             <asp:DropDownList ID="ddlDiaInicio" runat="server" CssClass="form-control">
                 <asp:ListItem>Lunes</asp:ListItem>
                 <asp:ListItem>Martes</asp:ListItem>
@@ -79,6 +84,7 @@
                 <asp:ListItem>Viernes</asp:ListItem>
                 <asp:ListItem>Sábado</asp:ListItem>
             </asp:DropDownList>
+            <label>Días de Atención (Fin):</label>
             <asp:DropDownList ID="ddlDiaFin" runat="server" CssClass="form-control">
                 <asp:ListItem>Lunes</asp:ListItem>
                 <asp:ListItem>Martes</asp:ListItem>
@@ -90,8 +96,9 @@
         </div>
 
         <div class="form-group form-inline">
-            <label>Horario (Inicio - Fin):</label>
+            <label>Horario (Inicio):</label>
             <asp:DropDownList ID="ddlHoraInicio" runat="server" CssClass="form-control" />
+            <label>Horario (Fin):</label>
             <asp:DropDownList ID="ddlHoraFin" runat="server" CssClass="form-control" />
             <asp:CustomValidator ID="cvHorario" runat="server"
                 OnServerValidate="cvHorario_ServerValidate"
@@ -106,8 +113,9 @@
         </div>
 
         <div class="form-group form-inline">
-            <label>Hora Domingo (Inicio - Fin):</label>
+            <label>Hora Domingo (Inicio):</label>
             <asp:DropDownList ID="ddlHoraInicio_Domingo" runat="server" CssClass="form-control" />
+            <label>Hora Domingo (Inicio Fin):</label>
             <asp:DropDownList ID="ddlHoraFin_Domingo" runat="server" CssClass="form-control" />
 
             <asp:CustomValidator ID="cvHorarioDomingo" runat="server"
@@ -123,7 +131,7 @@
         </div>
 
         <div class="form-group form-inline">
-            <asp:CheckBox ID="chkDisponibilidad" runat="server" Text="Disponibilidad" />
+            <asp:CheckBox ID="chkDisponibilidad" runat="server" Text="Disponible" />
         </div>
 
         <!-- Mensajes de Error -->

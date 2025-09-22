@@ -4,11 +4,14 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <h1>
-        <asp:Label ID="lblTitulo" runat="server" Text="Agregar Método de Pago" />
-    </h1>
 
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-metodospago">
+
+        <h2>
+            <asp:Label ID="lblTitulo" runat="server" Text="Agregar Método de Pago" />
+        </h2>
+
+        <br />
 
         <div class="form-group form-inline">
             <label for="ddlEstacionamientos">Estacionamiento:</label>

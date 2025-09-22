@@ -1,9 +1,17 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Ingreso_Registrar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Default.Ingreso_Registrar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <h1>Registrar Ingreso</h1>
+
 
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-ingreso">
+
+        <div class="header-row">
+            <h2>
+                <asp:Literal ID="TituloRegistroIngresos" runat="server" />
+            </h2>
+        </div>
+
+        <br />
 
         <div class="form-group form-inline">
             <label for="txtPatente">Patente:</label>

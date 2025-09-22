@@ -38,7 +38,15 @@ namespace Proyecto_Estacionamiento
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
-                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    TituloIngresos.Text = $"Ingresos de Vehículos del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    TituloIngresos.Text = "Ingresos de Vehículos";
+                }
 
                 CargarIngresos();
             }
@@ -142,6 +150,17 @@ namespace Proyecto_Estacionamiento
                 {
                     estId = (int)Session["Playero_EstId"];
                     query = query.Where(o => o.Est_id == estId);
+
+                    // Solo ingresos del día actual y que no hayan egresado
+                    DateTime hoy = DateTime.Today;
+                    DateTime mañana = hoy.AddDays(1);
+
+                    query = query.Where(o =>
+                        o.Est_id == estId &&
+                        o.Ocu_fecha_Hora_Inicio >= hoy &&
+                        o.Ocu_fecha_Hora_Inicio < mañana &&
+                        !o.Ocu_fecha_Hora_Fin.HasValue  // solo los que no han Egresado
+                    );
                 }
 
                 var ocupaciones = query.ToList();

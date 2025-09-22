@@ -5,8 +5,9 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="header-row">
-        <h1>Lista de Playeros</h1>
-        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
+        <h2>
+            <asp:Literal ID="TituloPlayeros" runat="server" />
+        </h2>
     </div>
 
     <asp:Button ID="btnAgregarPlayero" runat="server" Text="Agregar Playero"

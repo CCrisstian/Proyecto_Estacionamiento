@@ -27,7 +27,16 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
-                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    TituloPlazas.Text = $"Plazas del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    TituloPlazas.Text = "Plazas";
+                }
+
                 CargarPlazas(); // Cargamos las Plazas al cargar la página Plaza
             }
         }

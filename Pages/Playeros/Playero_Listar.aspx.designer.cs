@@ -15,13 +15,13 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
     {
 
         /// <summary>
-        /// Control Estacionamiento_Nombre.
+        /// Control TituloPlayeros.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Estacionamiento_Nombre;
+        protected global::System.Web.UI.WebControls.Literal TituloPlayeros;
 
         /// <summary>
         /// Control btnAgregarPlayero.

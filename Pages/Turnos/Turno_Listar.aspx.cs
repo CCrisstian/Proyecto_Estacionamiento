@@ -32,7 +32,15 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
-                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    TituloTurnos.Text = $"Turnos del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    TituloTurnos.Text = "Turnos";
+                }
 
                 CargarTurnos();
             }

@@ -19,7 +19,15 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
-                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    TituloPlayeros.Text = $"Playeros del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    TituloPlayeros.Text = "Playeros";
+                }
 
                 CargarGrilla();
             }

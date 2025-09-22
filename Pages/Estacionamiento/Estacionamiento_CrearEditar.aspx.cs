@@ -43,6 +43,7 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                     hdnEstId.Value = id.ToString();
 
                     CargarEstacionamiento(id);
+                    lblTitulo.Text = "Editar Estacionamiento";
                     btnGuardar.Text = "Actualizar";
                 }
                 else {

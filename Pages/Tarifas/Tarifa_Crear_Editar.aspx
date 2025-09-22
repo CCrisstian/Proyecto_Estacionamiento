@@ -3,17 +3,20 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-tarifa">
-    <h1>
-        <asp:Label ID="lblTitulo" runat="server" Text="Agregar Tarifa" />
-    </h1>
+
+        <h2>
+            <asp:Label ID="lblTitulo" runat="server" Text="Agregar Tarifa" />
+        </h2>
+
+        <br />
 
         <div class="form-group form-inline">
             <label for="ddlEstacionamientos">Estacionamiento:</label>
             <asp:DropDownList ID="ddlEstacionamientos" runat="server" CssClass="form-control" />
             <asp:CustomValidator ID="cvEstacionamientos" runat="server"
                 OnServerValidate="cvEstacionamientos_ServerValidate"
-                Display="Dynamic" ForeColor="Red" 
-                ValidationGroup="Tarifa"/>
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="Tarifa" />
         </div>
 
         <div class="form-group form-inline">
@@ -21,8 +24,8 @@
             <asp:DropDownList ID="ddlTiposTarifa" runat="server" CssClass="form-control" />
             <asp:CustomValidator ID="cvTiposTarifa" runat="server"
                 OnServerValidate="cvTiposTarifa_ServerValidate"
-                Display="Dynamic" ForeColor="Red" 
-                ValidationGroup="Tarifa"/>
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="Tarifa" />
         </div>
 
         <div class="form-group form-inline">
@@ -30,8 +33,8 @@
             <asp:DropDownList ID="ddlCategorias" runat="server" CssClass="form-control" />
             <asp:CustomValidator ID="cvCategorias" runat="server"
                 OnServerValidate="cvCategorias_ServerValidate"
-                Display="Dynamic" ForeColor="Red" 
-                ValidationGroup="Tarifa"/>
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="Tarifa" />
         </div>
 
         <div class="form-group form-inline">
@@ -39,8 +42,8 @@
             <asp:TextBox ID="txtTarifaMonto" runat="server" CssClass="form-control" />
             <asp:CustomValidator ID="cvMonto" runat="server"
                 OnServerValidate="cvMonto_ServerValidate"
-                Display="Dynamic" ForeColor="Red" 
-                ValidationGroup="Tarifa"/>
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="Tarifa" />
         </div>
 
     </asp:Panel>
@@ -52,8 +55,8 @@
 
         <asp:Button ID="btnGuardar" runat="server" Text="Guardar"
             OnClientClick="return confirmarGuardado();"
-            OnClick="btnGuardar_Click" CssClass="btn btn-primary" 
-            ValidationGroup="Tarifa"/>
+            OnClick="btnGuardar_Click" CssClass="btn btn-primary"
+            ValidationGroup="Tarifa" />
     </div>
 
     <%-- SweetAlert2 para mensajes de confirmación --%>

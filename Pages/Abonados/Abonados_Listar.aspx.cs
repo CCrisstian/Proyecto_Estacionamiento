@@ -11,7 +11,16 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            string estacionamiento = Session["Usu_estacionamiento"] as string;
 
+            if (!string.IsNullOrEmpty(estacionamiento))
+            {
+                TituloAbonados.Text = $"Abonados del Estacionamiento '<strong>{estacionamiento}</strong>'";
+            }
+            else
+            {
+                TituloAbonados.Text = "Abonados";
+            }
         }
     }
 }

@@ -26,7 +26,16 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
-                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    TituloTarifas.Text = $"Tarifas del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    TituloTarifas.Text = "Tarifas";
+                }
+
                 CargarTarifas(); // Llama al método para cargar las Tarifas
             }
         }

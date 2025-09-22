@@ -19,12 +19,9 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 if (Request.QueryString["id"] != null)
                 {
                     lblTitulo.Text = "Editar Tarifa";
+                    btnGuardar.Text = "Actualizar";
                     int id = int.Parse(Request.QueryString["id"]);
                     CargarTarifa(id);
-                }
-                else
-                {
-                    lblTitulo.Text = "Agregar Tarifa";
                 }
             }
         }
@@ -46,7 +43,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         }
 
         // Método para cargar Estacionamiento en los dropdowns
-        // Método para cargar Estacionamiento en los dropdowns
         private void CargarEstacionamientos()
         {
             int legajo = Convert.ToInt32(Session["Usu_legajo"]);
@@ -64,6 +60,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                         .Select(e => new { e.Est_id, e.Est_nombre })
                         .ToList<object>();
 
+                    ddlEstacionamientos.Enabled = false;
                     ddlEstacionamientos.DataSource = estacionamientos;
                     ddlEstacionamientos.DataValueField = "Est_id";
                     ddlEstacionamientos.DataTextField = "Est_nombre";
@@ -83,7 +80,7 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                     ddlEstacionamientos.DataBind();
 
                     // Insertar opción por defecto solo si mostramos todos
-                    ddlEstacionamientos.Items.Insert(0, new ListItem("-- Seleccione --", ""));
+                    ddlEstacionamientos.Items.Insert(0, new ListItem("-- Seleccione un Estacionamiento --", ""));
                 }
             }
         }

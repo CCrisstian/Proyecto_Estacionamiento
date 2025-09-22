@@ -17,6 +17,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                     // Oculta los elementos si no es Dueño
                     btnAgregar.Visible = false;
                     gvMetodosPago.Columns[0].Visible = false;
+                    gvMetodosPago.Columns[4].Visible = false;
                 }
                 else
                 {
@@ -25,8 +26,18 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                         gvMetodosPago.Columns[0].Visible = false;
                     }
                 }
+
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
-                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    TituloMetodosDePago.Text = $"Métodos de Pago del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                }         
+                else      
+                {         
+                    TituloMetodosDePago.Text = "Métodos de Pago";
+                }
+
                 CargarGrilla();
             }
         }

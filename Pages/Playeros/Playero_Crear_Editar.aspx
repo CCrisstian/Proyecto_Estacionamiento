@@ -5,8 +5,14 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+
     <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-playero">
-        <h1><%: Request.QueryString["legajo"] == null ? "Agregar Playero" : "Editar Playero" %></h1>
+
+        <h2>
+            <asp:Label ID="lblTitulo" runat="server" Text="Agregar Playero" />
+        </h2>
+
+        <br />
 
         <div class="form-group form-inline">
             <label for="ddlEstacionamientos">Estacionamiento:</label>

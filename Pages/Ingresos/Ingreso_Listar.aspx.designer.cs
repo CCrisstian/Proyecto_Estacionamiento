@@ -15,13 +15,13 @@ namespace Proyecto_Estacionamiento
     {
 
         /// <summary>
-        /// Control Estacionamiento_Nombre.
+        /// Control TituloIngresos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Estacionamiento_Nombre;
+        protected global::System.Web.UI.WebControls.Literal TituloIngresos;
 
         /// <summary>
         /// Control btnIngreso.

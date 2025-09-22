@@ -3,9 +3,11 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="header-row">
-        <h1>Inicio</h1>
+        <h2>Seleccione un Estacionamiento</h2>
         <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
+
+    <br />
 
     <asp:GridView ID="gvEstacionamientos" runat="server" AutoGenerateColumns="False"
         DataKeyNames="Est_id,Est_nombre"

@@ -3,8 +3,9 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="header-row">
-        <h1>Ingresos de Vehículos</h1>
-        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
+        <h2>
+            <asp:Literal ID="TituloIngresos" runat="server" />
+        </h2>
     </div>
 
     <div class="ingreso-layout">
@@ -98,9 +99,9 @@
                 if (result.isConfirmed) {
                     // Guardamos en el HiddenField antes de postback
                     document.getElementById('<%= hfMetodoPago.ClientID %>').value = result.value;
-                __doPostBack(btn.name, "");
-            }
-        });
+                    __doPostBack(btn.name, "");
+                }
+            });
 
             return false;
         }

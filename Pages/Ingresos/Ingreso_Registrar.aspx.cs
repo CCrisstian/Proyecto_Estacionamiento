@@ -11,6 +11,17 @@ namespace Proyecto_Estacionamiento.Pages.Default
         {
             if (!IsPostBack)
             {
+                string estacionamiento = Session["Usu_estacionamiento"] as string;
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    TituloRegistroIngresos.Text = $"Registrar Ingreso en el Estacionamiento '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    TituloRegistroIngresos.Text = "Registrar Ingreso";
+                }
+
                 CargarCategoriasFiltradas();
                 ddlPlaza.Enabled = false;
                 ddlTarifa.Enabled = false;            }

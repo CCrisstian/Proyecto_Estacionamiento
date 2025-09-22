@@ -17,6 +17,8 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
                 if (!string.IsNullOrEmpty(Request.QueryString["legajo"]))
                 {
+                    lblTitulo.Text = "Editar Playero";
+                    btnGuardar.Text = "Actualizar";
                     int legajoEdicion = int.Parse(Request.QueryString["legajo"]);
                     CargarDatos(legajoEdicion);
                 }
@@ -65,6 +67,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                         .Where(e => e.Est_id == estIdSeleccionado)
                         .Select(e => new { e.Est_id, e.Est_nombre })
                         .ToList<object>();
+                    ddlEstacionamientos.Enabled = false; // Deshabilitar el DropDownList
                 }
                 else
                 {

@@ -17,6 +17,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 if (Request.QueryString["id"] != null)  // verificamos si es una Plaza existente mediante el parámetro id en la URL
                 {
                     lblTitulo.Text = "Editar Plaza";
+                    btnGuardar.Text = "Actualizar";
                     int plazaId = int.Parse(Request.QueryString["id"]); // Guardamos el id de la Plaza desde la URL
                     ddlEstacionamiento.Enabled = false; // Deshabilita el campo Estacionamiento
                     CargarPlaza(plazaId);   // Cargamos el id de la Plaza para poder Editarla
@@ -48,6 +49,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                         .Where(e => e.Est_id == estIdSeleccionado && e.Est_Disponibilidad == true)
                         .Select(e => new { e.Est_id, e.Est_nombre })
                         .ToList<object>();
+                    ddlEstacionamiento.Enabled = false; // Deshabilita el campo Estacionamiento
                 }
                 else
                 {

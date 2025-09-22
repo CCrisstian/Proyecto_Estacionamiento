@@ -22,10 +22,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                     int metodoId = int.Parse(Request.QueryString["metodoId"]);
                     CargarDatosParaEditar(estId, metodoId);
                     lblTitulo.Text = "Editar Método de Pago";
-                }
-                else
-                {
-                    lblTitulo.Text = "Agregar Método de Pago";
+                    btnGuardar.Text = "Actualizar";
                 }
             }
         }
@@ -45,9 +42,11 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                     string estNombre = Session["Usu_estacionamiento"].ToString();
 
                     estacionamientos = new List<object>
-            {
-                new { Est_id = estIdSeleccionado, Est_nombre = estNombre }
-            };
+                    {
+                        new { Est_id = estIdSeleccionado, Est_nombre = estNombre }
+                    };
+
+                    ddlEstacionamientos.Enabled = false;
                 }
                 else
                 {
@@ -167,7 +166,7 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 string accion = existente == null ? "agregado" : "editado";
 
                 // variable exito se usa para mostrar mensaje de éxito (SweetAlert)
-                Response.Redirect($"MetodosDePago_Listar.aspx?exito=1&accion={accion}");  
+                Response.Redirect($"MetodosDePago_Listar.aspx?exito=1&accion={accion}");
             }
         }
 
