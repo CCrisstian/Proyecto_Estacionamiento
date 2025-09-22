@@ -32,6 +32,7 @@ namespace Proyecto_Estacionamiento
                 }
                 else
                 {
+                    CargarMetodosDePagoEnDropDown(); // llena ddlMetodoDePago
                     gvIngresos.Columns[0].Visible = false;
                     gvIngresos.Columns[5].Visible = false;
                 }
@@ -40,7 +41,6 @@ namespace Proyecto_Estacionamiento
                 Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
 
                 CargarIngresos();
-                CargarMetodosDePagoFiltrados(); // llena ddlMetodoDePago
             }
         }
 
@@ -146,24 +146,6 @@ namespace Proyecto_Estacionamiento
 
                 var ocupaciones = query.ToList();
 
-
-                // Cargar métodos de pago disponibles para el Estacionamiento donde trabaja el Playero
-                estId = (int)Session["Playero_EstId"];
-                var metodosPago = db.Acepta_Metodo_De_Pago
-                                    .Where(a => a.Est_id == estId)
-                                    .Select(a => a.Metodos_De_Pago)
-                                    .Distinct()
-                                    .ToList();
-
-                if (metodosPago.Any())
-                {
-                    string options = string.Join("",
-                        metodosPago.Select(m => $"<option value='{m.Metodo_pago_id}'>{m.Metodo_pago_descripcion}</option>")
-                    );
-                    ClientScript.RegisterStartupScript(this.GetType(), "metodosPago",
-                        $"window.metodosPagoOptions = `{options}`;", true);
-                }
-
                 var ingresos = ocupaciones.Select(o => new Ocupacion_DTO
                 {
                     Est_id = o.Est_id,
@@ -193,31 +175,54 @@ namespace Proyecto_Estacionamiento
             Response.Redirect("Ingreso_Registrar.aspx");
         }
 
-        private void CargarMetodosDePagoFiltrados()
+        private List<Metodos_De_Pago> ObtenerMetodosDePagoFiltrados()
         {
-
             using (var db = new ProyectoEstacionamientoEntities())
             {
-
-                // Obtenemos el Estacionamiento
                 int? estacionamientoId = (int)Session["Playero_EstId"];
 
-                // Filtramos Métodos de Pago aceptados por ese estacionamiento
                 var metodosPago = db.Acepta_Metodo_De_Pago
                     .Where(a => a.Est_id == estacionamientoId)
                     .Select(a => a.Metodos_De_Pago)
                     .Distinct()
                     .ToList();
-                if (metodosPago.Any())
-                {
-                    // Vinculamos al DropDownList
-                    ddlMetodoDePago.DataSource = metodosPago;
-                    ddlMetodoDePago.DataTextField = "Metodo_pago_descripcion";
-                    ddlMetodoDePago.DataValueField = "Metodo_pago_id";
-                    ddlMetodoDePago.DataBind();
-                }
+
+                return metodosPago;
             }
         }
+
+        private void CargarMetodosDePagoEnDropDown()
+        {
+            var metodosPago = ObtenerMetodosDePagoFiltrados();
+
+            if (metodosPago.Any())
+            {
+                ddlMetodoDePago.DataSource = metodosPago;
+                ddlMetodoDePago.DataTextField = "Metodo_pago_descripcion";
+                ddlMetodoDePago.DataValueField = "Metodo_pago_id";
+                ddlMetodoDePago.DataBind();
+            }
+        }
+
+        private void CargarMetodosDePagoEnJavascript()
+        {
+            var metodosPago = ObtenerMetodosDePagoFiltrados();
+
+            if (metodosPago.Any())
+            {
+                string options = string.Join("",
+                    metodosPago.Select(m => $"<option value='{m.Metodo_pago_id}'>{m.Metodo_pago_descripcion}</option>")
+                );
+
+                ClientScript.RegisterStartupScript(
+                    this.GetType(),
+                    "metodosPago",
+                    $"window.metodosPagoOptions = `{options}`;",
+                    true
+                );
+            }
+        }
+
 
         protected void gvIngresos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
