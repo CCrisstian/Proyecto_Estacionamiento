@@ -10,7 +10,27 @@
 
     <asp:Button ID="btnAgregarTarifa" runat="server" Text="Agregar Tarifa" CssClass="btn btn-success" OnClick="btnAgregarTarifa_Click" />
 
-    <br />
+    <div class="right-align-filters">
+        <div class="filtro-grupo">
+            <asp:Label ID="lblOrdenarPor" runat="server" Text="Ordenar por:" />
+
+            <asp:DropDownList ID="ddlCamposOrden" runat="server" CssClass="form-control">
+                <asp:ListItem Text="Tipo de Tarifa" Value="Tipos_Tarifa_Descripcion" />
+                <asp:ListItem Text="Categoría" Value="Categoria_descripcion" />
+                <asp:ListItem Text="Monto" Value="Tarifa_Monto" />
+                <asp:ListItem Text="Vigente Desde" Value="Tarifa_Desde" />
+            </asp:DropDownList>
+
+            <asp:DropDownList ID="ddlDireccionOrden" runat="server" CssClass="form-control">
+                <asp:ListItem Text="ASC" Value="ASC" />
+                <asp:ListItem Text="DESC" Value="DESC" />
+            </asp:DropDownList>
+
+            <asp:Button ID="btnOrdenar" runat="server" Text="Ordenar" CssClass="btn btn-primary"
+                OnClick="btnOrdenar_Click" />
+        </div>
+    </div>
+
     <br />
 
     <div class="grid-wrapper">

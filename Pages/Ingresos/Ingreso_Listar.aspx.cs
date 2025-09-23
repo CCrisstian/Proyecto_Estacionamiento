@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento
@@ -13,6 +15,7 @@ namespace Proyecto_Estacionamiento
         {
             // Proteger acceso a páginas
             if (!User.Identity.IsAuthenticated) { Response.Redirect("~Pages/Login/Login.aspx"); }
+            
             if (!IsPostBack)    // Verifica si es la primera vez que se carga la página
             {
                 CargarDashboard();
@@ -41,7 +44,7 @@ namespace Proyecto_Estacionamiento
 
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
-                    TituloIngresos.Text = $"Ingresos de Vehículos del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                    TituloIngresos.Text = $"Ingresos de Vehículos, Estacionamiento '<strong>{estacionamiento}</strong>'";
                 }
                 else
                 {
@@ -95,9 +98,108 @@ namespace Proyecto_Estacionamiento
 
                 int plazasDisponibles = plazas.Count(p => p.Plaza_Disponibilidad);
                 int plazasOcupadas = plazas.Count(p => !p.Plaza_Disponibilidad);
-                lblPlazasDisponibles.Text = $"Plazas Disponibles: {plazasDisponibles}";
-                lblPlazasOcupadas.Text = $"Plazas Ocupadas: {plazasOcupadas}";
+                lblPlazasDisponibles.Text = $"Disponibles: {plazasDisponibles}";
+                lblPlazasOcupadas.Text = $"Ocupadas: {plazasOcupadas}";
             }
+        }
+
+        protected void btnOrdenar_Click(object sender, EventArgs e)
+        {
+            if (Session["DatosIngresos"] != null)
+            {
+                var lista = (List<Ocupacion_DTO>)Session["DatosIngresos"];
+
+                string campo = ddlCamposOrden.SelectedValue;
+                string direccion = ddlDireccionOrden.SelectedValue;
+
+                // Orden dinámico usando reflection
+                if (direccion == "ASC")
+                {
+                    lista = lista.OrderBy(x => GetPropertyValue(x, campo)).ToList();
+                }
+                else
+                {
+                    lista = lista.OrderByDescending(x => GetPropertyValue(x, campo)).ToList();
+                }
+
+                gvIngresos.DataSource = lista;
+                gvIngresos.DataBind();
+            }
+        }
+
+        private object GetPropertyValue(object obj, string propertyName)
+        {
+            var prop = obj.GetType().GetProperty(propertyName);
+            if (prop == null) return null;
+            return prop.GetValue(obj, null);
+        }
+
+        protected void btnFiltrarPatente_Click(object sender, EventArgs e)
+        {
+            // Obtener el valor del campo de texto de la patente
+            string patente = txtPatente.Text.Trim();
+
+            // Verificar si el campo de patente está vacío
+            if (string.IsNullOrEmpty(patente))
+            {
+                string script = "Swal.fire({icon: 'error', title: 'Campo vacío', text: 'Por favor, ingrese una patente para buscar.'});";
+                ScriptManager.RegisterStartupScript(this, GetType(), "alert", script, true);
+                return; // Detener la ejecución si el campo está vacío
+            }
+
+            // Llamar al método CargarIngresos, pasando solo la patente
+            CargarIngresos(null, null, patente);
+        }
+
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            // Verificar si ambos campos de texto están vacíos
+            if (string.IsNullOrWhiteSpace(txtDesde.Text) && string.IsNullOrWhiteSpace(txtHasta.Text))
+            {
+                string script = "Swal.fire({icon: 'error', title: 'Error de Búsqueda', text: 'Se debe elegir al menos una fecha .'});";
+                ScriptManager.RegisterStartupScript(this, GetType(), "alert", script, true);
+                return; // Detiene la ejecución del método
+            }
+
+            DateTime? fechaDesde = null; // Cambiado a tipo anulable
+            DateTime? fechaHasta = null; // Cambiado a tipo anulable
+
+            DateTime tempDesde, tempHasta;
+
+            bool desdeValido = DateTime.TryParseExact(txtDesde.Text, "dd/MM/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out tempDesde);
+            bool hastaValido = DateTime.TryParseExact(txtHasta.Text, "dd/MM/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out tempHasta);
+
+
+            if (desdeValido && hastaValido)
+            {
+                if (tempDesde > tempHasta)
+                {
+                    string script = "Swal.fire({icon: 'error', title: 'Error de fecha', text: 'La fecha \"Hasta\" no puede ser anterior a la fecha \"Desde\".'});";
+                    ScriptManager.RegisterStartupScript(this, GetType(), "alert", script, true);
+                    return;
+                }
+
+                fechaDesde = tempDesde;
+                fechaHasta = tempHasta.AddHours(23).AddMinutes(59).AddSeconds(59);
+            }
+            // Si solo la fecha "Desde" es válida, solo la fecha "Desde" se utiliza
+            else if (desdeValido)
+            {
+                fechaDesde = tempDesde;
+            }
+            // Si solo la fecha "Hasta" es válida
+            else if (hastaValido)
+            {
+                fechaHasta = tempHasta.AddHours(23).AddMinutes(59).AddSeconds(59);
+            }
+
+            // **Llamada a la función de carga para aplicar el filtro**
+            // Se pasa 'null' para la patente ya que este botón solo filtra por fecha
+            CargarIngresos(fechaDesde, fechaHasta, null);
         }
 
         public class Ocupacion_DTO
@@ -105,6 +207,7 @@ namespace Proyecto_Estacionamiento
             public int Est_id { get; set; }
             public int Plaza_id { get; set; }
             public DateTime Ocu_fecha_Hora_Inicio { get; set; }
+            public DateTime? Ocu_fecha_Hora_Fin { get; set; }
             // Más campos para mostrar y uso
             public string Est_nombre { get; set; }
             public string Plaza_Nombre { get; set; }
@@ -151,14 +254,8 @@ namespace Proyecto_Estacionamiento
                     estId = (int)Session["Playero_EstId"];
                     query = query.Where(o => o.Est_id == estId);
 
-                    // Solo ingresos del día actual y que no hayan egresado
-                    DateTime hoy = DateTime.Today;
-                    DateTime mañana = hoy.AddDays(1);
-
                     query = query.Where(o =>
                         o.Est_id == estId &&
-                        o.Ocu_fecha_Hora_Inicio >= hoy &&
-                        o.Ocu_fecha_Hora_Inicio < mañana &&
                         !o.Ocu_fecha_Hora_Fin.HasValue  // solo los que no han Egresado
                     );
                 }
@@ -182,6 +279,85 @@ namespace Proyecto_Estacionamiento
                 .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
                 .ToList();
 
+                // Guardamos en sesión para reutilizar al ordenar
+                Session["DatosIngresos"] = ingresos;
+
+                gvIngresos.DataSource = ingresos;
+                gvIngresos.DataKeyNames = new string[] { "Est_id", "Plaza_id", "Ocu_fecha_Hora_Inicio" };
+                gvIngresos.DataBind();
+            }
+        }
+
+        private void CargarIngresos(DateTime? desde = null, DateTime? hasta = null, string patente = null)
+        {
+            string tipoUsuario = Session["Usu_tipo"] as string;
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
+            using (var db = new ProyectoEstacionamientoEntities())
+            {
+                IQueryable<Ocupacion> query = db.Ocupacion
+                    .Include("Vehiculo")
+                    .Include("Plaza")
+                    .Include("Tarifa");
+
+                // Filtros
+                if (desde.HasValue)
+                    query = query.Where(o => o.Ocu_fecha_Hora_Inicio >= desde.Value);
+
+                if (hasta.HasValue)
+                    query = query.Where(o => o.Ocu_fecha_Hora_Inicio <= hasta.Value);
+
+                if (!string.IsNullOrWhiteSpace(patente))
+                    query = query.Where(o => o.Vehiculo.Vehiculo_Patente.Contains(patente));
+
+                // ---- Según tipo de usuario ----
+                if (tipoUsuario == "Dueño")
+                {
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        // Caso 1: Dueño eligió un estacionamiento
+                        int estId = (int)Session["Dueño_EstId"];
+                        query = query.Where(o => o.Est_id == estId);
+                    }
+                    else
+                    {
+                        // Caso 2: No eligió → mostrar todos sus estacionamientos
+                        var estIds = db.Estacionamiento
+                                       .Where(e => e.Dueño_Legajo == legajo)
+                                       .Select(e => e.Est_id);
+                        query = query.Where(o => estIds.Contains(o.Est_id));
+                    }
+                }
+                else if (tipoUsuario == "Playero")
+                {
+                    int estId = (int)Session["Playero_EstId"];
+                    query = query.Where(o => o.Est_id == estId);
+                }
+
+                // Ejecutar consulta
+                var ocupaciones = query.ToList();
+
+                var ingresos = ocupaciones.Select(o => new Ocupacion_DTO
+                {
+                    Est_id = o.Est_id,
+                    Plaza_id = o.Plaza_id,
+                    Ocu_fecha_Hora_Inicio = o.Ocu_fecha_Hora_Inicio,
+                    Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
+                    Plaza_Nombre = o.Plaza.Plaza_Nombre,
+                    Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
+                    Tarifa_id = o.Tarifa_id,
+                    Tarifa = o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
+                    Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
+                    Salida = o.Ocu_fecha_Hora_Fin.HasValue
+                                ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm")
+                                : "",
+                    Monto = o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null
+                })
+                .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
+                .ToList();
+
+                // Guardar en sesión y bindear
+                Session["DatosIngresos"] = ingresos;
                 gvIngresos.DataSource = ingresos;
                 gvIngresos.DataKeyNames = new string[] { "Est_id", "Plaza_id", "Ocu_fecha_Hora_Inicio" };
                 gvIngresos.DataBind();

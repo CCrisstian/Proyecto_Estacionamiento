@@ -215,18 +215,16 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
             Page.Validate();
             if (!Page.IsValid)
             {
-                // Algún validador falló, se muestran los mensajes.
                 return;
             }
 
-            // Convertir monto ya validado
             if (!decimal.TryParse(txtTarifaMonto.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal monto))
             {
-                // Esto es solo de seguridad extra
                 lblTitulo.Text = "El Monto ingresado no es válido.";
                 lblTitulo.ForeColor = System.Drawing.Color.Red;
                 return;
             }
+
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 int estacionamientoId = int.Parse(ddlEstacionamientos.SelectedValue);
@@ -240,11 +238,23 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                 }
 
                 // Validar duplicados (otra tarifa con mismo Est, Tipo y Categoria)
-                bool existeDuplicado = db.Tarifa.Any(t =>
-                    t.Est_id == estacionamientoId &&
-                    t.Tipos_Tarifa_Id == tipoTarifaId &&
-                    t.Categoria_id == categoriaId &&
-                    (idTarifaEditando == null || t.Tarifa_id != idTarifaEditando));
+                bool existeDuplicado;
+                if (idTarifaEditando.HasValue)
+                {
+                    int idEdicion = idTarifaEditando.Value;
+                    existeDuplicado = db.Tarifa.Any(t =>
+                        t.Est_id == estacionamientoId &&
+                        t.Tipos_Tarifa_Id == tipoTarifaId &&
+                        t.Categoria_id == categoriaId &&
+                        t.Tarifa_id != idEdicion); // excluimos la tarifa que estamos editando
+                }
+                else
+                {
+                    existeDuplicado = db.Tarifa.Any(t =>
+                        t.Est_id == estacionamientoId &&
+                        t.Tipos_Tarifa_Id == tipoTarifaId &&
+                        t.Categoria_id == categoriaId);
+                }
 
                 if (existeDuplicado)
                 {
@@ -253,38 +263,38 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
                     return;
                 }
 
-                Tarifa tarifa = new Tarifa
-                {
-                    Est_id = estacionamientoId,
-                    Tipos_Tarifa_Id = tipoTarifaId,
-                    Categoria_id = categoriaId,
-                    Tarifa_Monto = (double)monto,
-                    Tarifa_Desde = DateTime.Now
-                };
-
                 if (idTarifaEditando != null) // Editar
                 {
-                    tarifa.Tarifa_id = idTarifaEditando.Value;
-                    db.Entry(tarifa).State = System.Data.Entity.EntityState.Modified;
+                    // Traemos la entidad existente
+                    Tarifa tarifaExistente = db.Tarifa.Find(idTarifaEditando.Value);
+                    if (tarifaExistente != null)
+                    {
+                        tarifaExistente.Tarifa_Monto = (double)monto;
+                        tarifaExistente.Tarifa_Desde = DateTime.Now;
+
+                        db.SaveChanges();
+                    }
                 }
                 else // Agregar
                 {
-                    db.Tarifa.Add(tarifa);
+                    Tarifa tarifaNueva = new Tarifa
+                    {
+                        Est_id = estacionamientoId,
+                        Tipos_Tarifa_Id = tipoTarifaId,
+                        Categoria_id = categoriaId,
+                        Tarifa_Monto = (double)monto,
+                        Tarifa_Desde = DateTime.Now
+                    };
+
+                    db.Tarifa.Add(tarifaNueva);
+                    db.SaveChanges();
                 }
 
-                try
-                {
-                    db.SaveChanges();
-                    string accion = idTarifaEditando == null ? "agregado" : "editado";
-                    Response.Redirect($"Tarifa_Listar.aspx?exito=1&accion={accion}");
-                }
-                catch (Exception ex)
-                {
-                    lblTitulo.Text = "Error al guardar en la base de datos: " + ex.Message;
-                    lblTitulo.ForeColor = System.Drawing.Color.Red;
-                }
+                string accion = idTarifaEditando == null ? "agregado" : "editado";
+                Response.Redirect($"Tarifa_Listar.aspx?exito=1&accion={accion}");
             }
         }
+
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {

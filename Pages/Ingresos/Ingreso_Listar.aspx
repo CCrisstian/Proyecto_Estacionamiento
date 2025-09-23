@@ -6,10 +6,6 @@
         <h2>
             <asp:Literal ID="TituloIngresos" runat="server" />
         </h2>
-    </div>
-
-    <div class="ingreso-layout">
-        <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />
 
         <div class="dashboard">
             <div class="dashboard-card">
@@ -20,7 +16,52 @@
                 <asp:Label ID="lblPlazasOcupadas" runat="server" CssClass="ocupadas" />
             </div>
         </div>
+    </div>
 
+    <div class="ingreso-layout">
+
+        <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />
+
+        <div class="right-align-filters">
+
+            <div class="filtro-grupo">
+                <asp:Label ID="lblOrdenarPor" runat="server" Text="Ordenar por:" />
+
+                <asp:DropDownList ID="ddlCamposOrden" runat="server" CssClass="form-control">
+                    <asp:ListItem Text="Patente" Value="Vehiculo_Patente" />
+                    <asp:ListItem Text="Entrada" Value="Ocu_fecha_Hora_Inicio" />
+                    <asp:ListItem Text="Salida" Value="Ocu_fecha_Hora_Fin" />
+                    <asp:ListItem Text="Monto" Value="Monto" />
+                    <asp:ListItem Text="Plaza" Value="Plaza_Nombre" />
+                    <asp:ListItem Text="Tarifa" Value="Tarifa" />
+                </asp:DropDownList>
+
+                <asp:DropDownList ID="ddlDireccionOrden" runat="server" CssClass="form-control">
+                    <asp:ListItem Text="ASC" Value="ASC" />
+                    <asp:ListItem Text="DESC" Value="DESC" />
+                </asp:DropDownList>
+
+                <asp:Button ID="btnOrdenar" runat="server" Text="Ordenar" CssClass="btn btn-primary"
+                    OnClick="btnOrdenar_Click" />
+            </div>
+
+            <div class="filtro-grupo">
+                <asp:Label ID="lblDesde" runat="server" Text="Desde:" />
+                <asp:TextBox ID="txtDesde" runat="server" CssClass="form-control filtro-fecha" />
+                <asp:Label ID="lblHasta" runat="server" Text="Hasta:" />
+                <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control filtro-fecha" />
+                <asp:Button ID="btnFiltrarFechas" runat="server" Text="Buscar" OnClick="btnFiltrar_Click"
+                    CssClass="btn btn-primary" />
+            </div>
+
+            <div class="filtro-grupo">
+                <asp:Label ID="lblPatente" runat="server" Text="Patente:" />
+                <asp:TextBox ID="txtPatente" runat="server" CssClass="form-control" placeholder="Buscar por patente" />
+                <asp:Button ID="btnFiltrarPatente" runat="server" Text="Buscar" OnClick="btnFiltrarPatente_Click"
+                    CssClass="btn btn-primary" />
+            </div>
+
+        </div>
     </div>
 
     <br />
@@ -38,7 +79,9 @@
             <Columns>
                 <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />
                 <asp:BoundField DataField="Entrada" HeaderText="Entrada" />
-                <asp:BoundField DataField="Vehiculo_Patente" HeaderText="Patente" />
+
+                <asp:BoundField DataField="Vehiculo_Patente" HeaderText="Patente" SortExpression="Vehiculo_Patente" />
+
                 <asp:BoundField DataField="Plaza_Nombre" HeaderText="Plaza" />
                 <asp:BoundField DataField="Tarifa" HeaderText="Tarifa" />
                 <asp:BoundField DataField="Salida" HeaderText="Salida" />

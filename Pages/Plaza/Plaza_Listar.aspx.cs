@@ -37,9 +37,46 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                     TituloPlazas.Text = "Plazas";
                 }
 
+                // Campos disponibles para ordenar
+                ddlCamposOrden.Items.Clear();
+                ddlCamposOrden.Items.Add(new ListItem("Nombre", "Plaza_Nombre"));
+                ddlCamposOrden.Items.Add(new ListItem("Tipo", "Plaza_Tipo"));
+                ddlCamposOrden.Items.Add(new ListItem("Categoría", "Categoria_id")); // si querés mostrar nombre, se puede mapear
+                ddlCamposOrden.Items.Add(new ListItem("Disponible", "Plaza_Disponibilidad"));
+
                 CargarPlazas(); // Cargamos las Plazas al cargar la página Plaza
             }
         }
+
+        protected void btnOrdenar_Click(object sender, EventArgs e)
+        {
+            if (Session["DatosPlazas"] != null)
+            {
+                var lista = (List<Proyecto_Estacionamiento.Plaza>)Session["DatosPlazas"];
+                string campo = ddlCamposOrden.SelectedValue;
+                string direccion = ddlDireccionOrden.SelectedValue;
+
+                if (direccion == "ASC")
+                {
+                    lista = lista.OrderBy(x => GetPropertyValue(x, campo)).ToList();
+                }
+                else
+                {
+                    lista = lista.OrderByDescending(x => GetPropertyValue(x, campo)).ToList();
+                }
+
+                gvPlazas.DataSource = lista;
+                gvPlazas.DataBind();
+            }
+        }
+
+        private object GetPropertyValue(object obj, string propertyName)
+        {
+            var prop = obj.GetType().GetProperty(propertyName);
+            if (prop == null) return null;
+            return prop.GetValue(obj, null);
+        }
+
 
         private void CargarPlazas()
         {
@@ -92,6 +129,9 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
 
                 gvPlazas.DataSource = plazas;
                 gvPlazas.DataBind();
+
+                // Guardamos para el orden dinámico
+                Session["DatosPlazas"] = plazas; // plazas es List<Proyecto_Estacionamiento.Plaza>
             }
         }
 

@@ -7,6 +7,16 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 {
     public partial class MetodosDePago_Listar : System.Web.UI.Page
     {
+        public class MetodoPagoDTO
+        {
+            public int Est_id { get; set; }
+            public string Est_nombre { get; set; }
+            public int Metodo_Pago_id { get; set; }
+            public string Metodo_pago_descripcion { get; set; }
+            public DateTime? AMP_Desde { get; set; }
+            public DateTime? AMP_Hasta { get; set; }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -37,6 +47,18 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                 {         
                     TituloMetodosDePago.Text = "Métodos de Pago";
                 }
+
+                ddlCamposOrden.Items.Clear();
+
+                if (tipoUsuario == "Dueño")
+                {
+                    ddlCamposOrden.Items.Add(new ListItem("Estacionamiento", "Est_nombre"));
+
+                }
+
+                ddlCamposOrden.Items.Add(new ListItem("Método de Pago", "Metodo_pago_descripcion"));
+                ddlCamposOrden.Items.Add(new ListItem("Desde", "AMP_Desde"));
+                ddlCamposOrden.Items.Add(new ListItem("Hasta", "AMP_Hasta"));
 
                 CargarGrilla();
             }
@@ -82,26 +104,53 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
                     }
                     else
                     {
-                        query = query.Where(amp => false); // no mostrar resultados
+                        query = query.Where(amp => false);
                     }
                 }
 
                 var metodosDePago = query
-                    .Select(a => new
+                    .Select(a => new MetodoPagoDTO
                     {
+                        Est_id = a.Est_id,
                         Est_nombre = a.Estacionamiento.Est_nombre,
+                        Metodo_Pago_id = a.Metodo_Pago_id,
                         Metodo_pago_descripcion = a.Metodos_De_Pago.Metodo_pago_descripcion,
                         AMP_Desde = a.AMP_Desde,
-                        AMP_Hasta = a.AMP_Hasta,
-                        Est_id = a.Est_id,
-                        Metodo_Pago_id = a.Metodo_Pago_id
+                        AMP_Hasta = a.AMP_Hasta
                     })
                     .OrderBy(a => a.Est_nombre)
                     .ToList();
 
+                // Guardar en sesión para ordenar luego
+                Session["DatosMetodosPago"] = metodosDePago;
+
                 gvMetodosPago.DataSource = metodosDePago;
                 gvMetodosPago.DataBind();
             }
+        }
+
+        protected void btnOrdenar_Click(object sender, EventArgs e)
+        {
+            if (Session["DatosMetodosPago"] != null)
+            {
+                var lista = Session["DatosMetodosPago"] as List<MetodoPagoDTO>;
+                string campo = ddlCamposOrden.SelectedValue;
+                string direccion = ddlDireccionOrden.SelectedValue;
+
+                if (direccion == "ASC")
+                    lista = lista.OrderBy(x => GetPropertyValue(x, campo)).ToList();
+                else
+                    lista = lista.OrderByDescending(x => GetPropertyValue(x, campo)).ToList();
+
+                gvMetodosPago.DataSource = lista;
+                gvMetodosPago.DataBind();
+            }
+        }
+
+        // Función para obtener valor de propiedad por nombre
+        private object GetPropertyValue(object obj, string propertyName)
+        {
+            return obj.GetType().GetProperty(propertyName).GetValue(obj, null);
         }
 
 

@@ -21,6 +21,14 @@
         text-align: left;
     }
 
+        /* Encabezados del GridView */
+        .grid th a {
+            color: inherit; /* usar el color de la celda, no azul */
+            text-decoration: none; /* quitar subrayado */
+            font-weight: bold; /* opcional: en negrita */
+            cursor: pointer; /* queda claro que es clickeable */
+        }
+
     /* Celdas de datos */
     .grid td {
         padding: 15px;

@@ -12,7 +12,25 @@
         OnClick="btnAgregar_Click"
         CssClass="btn btn-success" />
 
-    <br />
+    <div class="right-align-filters">
+
+        <div class="filtro-grupo">
+            <asp:Label ID="lblOrdenarPor" runat="server" Text="Ordenar por:" />
+
+            <asp:DropDownList ID="ddlCamposOrden" runat="server" CssClass="form-control">
+
+            </asp:DropDownList>
+
+            <asp:DropDownList ID="ddlDireccionOrden" runat="server" CssClass="form-control">
+                <asp:ListItem Text="ASC" Value="ASC" />
+                <asp:ListItem Text="DESC" Value="DESC" />
+            </asp:DropDownList>
+
+            <asp:Button ID="btnOrdenar" runat="server" Text="Ordenar" CssClass="btn btn-primary"
+                OnClick="btnOrdenar_Click" />
+        </div>
+    </div>
+
     <br />
 
     <div class="grid-wrapper">

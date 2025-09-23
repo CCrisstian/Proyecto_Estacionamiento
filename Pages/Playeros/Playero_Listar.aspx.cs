@@ -8,6 +8,16 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 {
     public partial class Playero_Listar : System.Web.UI.Page
     {
+        public class PlayeroDTO
+        {
+            public string Est_nombre { get; set; }
+            public int Playero_legajo { get; set; }
+            public int Usu_dni { get; set; }
+            public string Usu_pass { get; set; }
+            public string Usu_ap { get; set; }
+            public string Usu_nom { get; set; }
+            public bool Playero_activo { get; set; }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -29,6 +39,14 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                     TituloPlayeros.Text = "Playeros";
                 }
 
+                ddlCamposOrden.Items.Clear();
+                ddlCamposOrden.Items.Add(new ListItem("Estacionamiento", "Est_nombre"));
+                ddlCamposOrden.Items.Add(new ListItem("Legajo", "Playero_legajo"));
+                ddlCamposOrden.Items.Add(new ListItem("DNI", "Usu_dni"));
+                ddlCamposOrden.Items.Add(new ListItem("Apellido", "Usu_ap"));
+                ddlCamposOrden.Items.Add(new ListItem("Nombre", "Usu_nom"));
+                ddlCamposOrden.Items.Add(new ListItem("Activo", "Playero_activo"));
+
                 CargarGrilla();
             }
         }
@@ -44,13 +62,11 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
                 if (Session["Dueño_EstId"] != null)
                 {
-                    // Filtrar solo por el estacionamiento previamente elegido
                     int estIdSeleccionado = (int)Session["Dueño_EstId"];
                     query = query.Where(pl => pl.Est_id == estIdSeleccionado);
                 }
                 else
                 {
-                    // Filtrar por todos los estacionamientos del Dueño
                     var estIdList = db.Estacionamiento
                                        .Where(e => e.Dueño_Legajo == legajo)
                                        .Select(e => e.Est_id);
@@ -59,7 +75,7 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                 }
 
                 var playeros = query
-                    .Select(p => new
+                    .Select(p => new PlayeroDTO
                     {
                         Est_nombre = p.Estacionamiento.Est_nombre,
                         Playero_legajo = p.Playero_legajo,
@@ -72,9 +88,35 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
                     .OrderBy(p => p.Est_nombre)
                     .ToList();
 
+                Session["DatosPlayeros"] = playeros;
+
                 gvPlayeros.DataSource = playeros;
                 gvPlayeros.DataBind();
             }
+        }
+
+        protected void btnOrdenar_Click(object sender, EventArgs e)
+        {
+            if (Session["DatosPlayeros"] != null)
+            {
+                var lista = Session["DatosPlayeros"] as List<PlayeroDTO>;
+                string campo = ddlCamposOrden.SelectedValue;
+                string direccion = ddlDireccionOrden.SelectedValue;
+
+                if (direccion == "ASC")
+                    lista = lista.OrderBy(x => GetPropertyValue(x, campo)).ToList();
+                else
+                    lista = lista.OrderByDescending(x => GetPropertyValue(x, campo)).ToList();
+
+                gvPlayeros.DataSource = lista;
+                gvPlayeros.DataBind();
+            }
+        }
+
+        // Función de utilidad para acceder a propiedades por nombre
+        private object GetPropertyValue(object obj, string propertyName)
+        {
+            return obj.GetType().GetProperty(propertyName).GetValue(obj, null);
         }
 
 
