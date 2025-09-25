@@ -126,6 +126,7 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\dashboard.css" />
+    <Content Include="Content\detalle-tarifa.css" />
     <Content Include="Content\filtro-grupo.css" />
     <Content Include="Content\formularios.css" />
     <Content Include="Content\header-row.css" />
@@ -133,8 +134,16 @@
     <Content Include="Content\planilla.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\tabs.css" />
+    <Content Include="Images\Automóviles y Camionetas.png" />
+    <Content Include="Images\Camiones.png" />
+    <Content Include="Images\Casas rodantes y Motorhomes.png" />
     <Content Include="Images\EnConstruccion.png" />
     <Content Include="Images\LogoACE_SinFondo.PNG" />
+    <Content Include="Images\Motocicletas.png" />
+    <Content Include="Images\Remolques y acoplados.png" />
+    <Content Include="Images\Vehículo para personas con discapacidad.png" />
+    <Content Include="Images\Vehículos agrícolas.png" />
+    <Content Include="Images\Ómnibus y Minibuses.png" />
     <Content Include="Pages\Abonados\Abonados_Listar.aspx" />
     <Content Include="Pages\Default\Inicio.aspx" />
     <Content Include="Pages\Ingresos\Ingreso_Listar.aspx" />
