@@ -30,11 +30,11 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
 
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
-                    TituloPlazas.Text = $"Plazas del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                    Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
                 }
                 else
                 {
-                    TituloPlazas.Text = "Plazas";
+                    Estacionamiento_Nombre.Visible = false;
                 }
 
                 // Campos disponibles para ordenar
@@ -138,6 +138,11 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         protected void btnAgregar_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Pages/Plaza/Plaza_Crear_Editar.aspx");
+        }
+
+        protected void btnInfoPlaza(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/Plaza/Plaza_Info.aspx");
         }
 
         protected void gvPlazas_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)

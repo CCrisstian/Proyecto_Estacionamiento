@@ -20,7 +20,15 @@ namespace Proyecto_Estacionamiento.Pages.Estacionamiento
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
-                Estacionamiento_Nombre.Text = $"Estacionamiento: <strong>{estacionamiento}</strong>";
+
+                if (!string.IsNullOrEmpty(estacionamiento))
+                {
+                    Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    Estacionamiento_Nombre.Visible = false;
+                }
             }
         }
 

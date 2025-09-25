@@ -3,19 +3,8 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="header-row">
-        <h2>
-            <asp:Literal ID="TituloIngresos" runat="server" />
-        </h2>
-
-        <div class="dashboard">
-            <div class="dashboard-card">
-                <asp:Label ID="lblPlazasDisponibles" runat="server" CssClass="disponibles" />
-            </div>
-
-            <div class="dashboard-card">
-                <asp:Label ID="lblPlazasOcupadas" runat="server" CssClass="ocupadas" />
-            </div>
-        </div>
+        <h2>Ingresos</h2>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
 
     <div class="ingreso-layout">
@@ -25,24 +14,7 @@
         <div class="right-align-filters">
 
             <div class="filtro-grupo">
-                <asp:Label ID="lblOrdenarPor" runat="server" Text="Ordenar por:" />
-
-                <asp:DropDownList ID="ddlCamposOrden" runat="server" CssClass="form-control">
-                    <asp:ListItem Text="Patente" Value="Vehiculo_Patente" />
-                    <asp:ListItem Text="Entrada" Value="Ocu_fecha_Hora_Inicio" />
-                    <asp:ListItem Text="Salida" Value="Ocu_fecha_Hora_Fin" />
-                    <asp:ListItem Text="Monto" Value="Monto" />
-                    <asp:ListItem Text="Plaza" Value="Plaza_Nombre" />
-                    <asp:ListItem Text="Tarifa" Value="Tarifa" />
-                </asp:DropDownList>
-
-                <asp:DropDownList ID="ddlDireccionOrden" runat="server" CssClass="form-control">
-                    <asp:ListItem Text="ASC" Value="ASC" />
-                    <asp:ListItem Text="DESC" Value="DESC" />
-                </asp:DropDownList>
-
-                <asp:Button ID="btnOrdenar" runat="server" Text="Ordenar" CssClass="btn btn-primary"
-                    OnClick="btnOrdenar_Click" />
+                     <asp:Button ID="OrdenarPorFecha" runat="server" Text="Ordenar por fecha " OnClick="btnOrdenAsc_Click" CssClass="btn btn-primary" />
             </div>
 
             <div class="filtro-grupo">
@@ -166,6 +138,13 @@
             showConfirmButton: false,
             timer: 3000
         });
+
+        // 🔹 Limpia los parámetros de la URL sin recargar
+        if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.search = ""; // eliminamos query string
+            window.history.replaceState(null, null, url.toString());
+        }
     </script>
     <% } %>
 </asp:Content>

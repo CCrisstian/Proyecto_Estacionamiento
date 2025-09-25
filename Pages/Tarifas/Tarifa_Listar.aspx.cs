@@ -41,11 +41,11 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
 
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
-                    TituloTarifas.Text = $"Tarifas del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                    Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
                 }
                 else
                 {
-                    TituloTarifas.Text = "Tarifas";
+                    Estacionamiento_Nombre.Visible = false;
                 }
 
                 // Campos disponibles para ordenar

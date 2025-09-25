@@ -1,0 +1,28 @@
+﻿.registro-container {
+    display: flex;
+    gap: 30px;
+}
+
+.formulario-ingreso {
+    flex: 2;
+}
+
+.detalle-tarifa {
+    flex: 1;
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+    .detalle-tarifa .icono-categoria {
+        max-width: 250px;
+        margin-bottom: 10px;
+    }
+
+    .detalle-tarifa .monto {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-top: 10px;
+    }

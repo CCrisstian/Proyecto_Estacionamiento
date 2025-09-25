@@ -41,11 +41,11 @@ namespace Proyecto_Estacionamiento.Pages.Metodos_De_Pago
 
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
-                    TituloMetodosDePago.Text = $"Métodos de Pago del Estacionamiento '<strong>{estacionamiento}</strong>'";
-                }         
-                else      
-                {         
-                    TituloMetodosDePago.Text = "Métodos de Pago";
+                    Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
+                }
+                else
+                {
+                    Estacionamiento_Nombre.Visible = false;
                 }
 
                 ddlCamposOrden.Items.Clear();

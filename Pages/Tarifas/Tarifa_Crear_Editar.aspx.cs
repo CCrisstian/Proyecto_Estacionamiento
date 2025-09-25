@@ -135,8 +135,6 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
             }
         }
 
-
-
         // Validación Tarifa
         protected void cvTiposTarifa_ServerValidate(object source, ServerValidateEventArgs args)
         {

@@ -35,11 +35,11 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
-                    TituloTurnos.Text = $"Turnos del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                    Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
                 }
                 else
                 {
-                    TituloTurnos.Text = "Turnos";
+                    Estacionamiento_Nombre.Visible = false;
                 }
 
                 CargarTurnos();

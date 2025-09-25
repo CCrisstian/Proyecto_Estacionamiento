@@ -15,13 +15,13 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
     {
 
         /// <summary>
-        /// Control TituloPlazas.
+        /// Control Estacionamiento_Nombre.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal TituloPlazas;
+        protected global::System.Web.UI.WebControls.Label Estacionamiento_Nombre;
 
         /// <summary>
         /// Control btnAgregar.
@@ -31,6 +31,15 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnAgregar;
+
+        /// <summary>
+        /// Control ButtonInfoPlaza.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ButtonInfoPlaza;
 
         /// <summary>
         /// Control lblOrdenarPor.

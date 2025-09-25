@@ -54,9 +54,16 @@ namespace Proyecto_Estacionamiento.Pages.Default
                     gvEstacionamientos.DataBind();
 
                     // Mostrar el Estacionamiento seleccionado
-                    // Mostrar el Estacionamiento seleccionado
-                    string estacionamiento = $"Estacionamiento: <strong>{Session["Usu_estacionamiento"]}</strong>";
-                    Estacionamiento_Nombre.Text = estacionamiento;
+                    string estacionamiento = Session["Usu_estacionamiento"] as string;
+
+                    if (!string.IsNullOrEmpty(estacionamiento))
+                    {
+                        Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
+                    }
+                    else
+                    {
+                        Estacionamiento_Nombre.Visible = false;
+                    }
                 }
             }
         }

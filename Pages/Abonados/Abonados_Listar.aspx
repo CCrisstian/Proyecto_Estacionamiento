@@ -3,9 +3,8 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="header-row">
-        <h2>
-            <asp:Literal ID="TituloAbonados" runat="server" />
-        </h2>
+        <h2>Abonados</h2>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
 
     <div style="text-align: center; margin-top: 20px;">

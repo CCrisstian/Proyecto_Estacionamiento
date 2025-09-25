@@ -37,7 +37,7 @@
 
     <% 
         // Mostrar mensaje si se seleccionó un estacionamiento
-        if (!string.IsNullOrEmpty(Request.QueryString["estSeleccionado"]))
+        if (!IsPostBack && !string.IsNullOrEmpty(Request.QueryString["estSeleccionado"]))
         {
             string estNombre = Request.QueryString["estSeleccionado"];
     %>
@@ -49,6 +49,13 @@
             showConfirmButton: false,
             timer: 3500
         });
+
+        // 🔹 Limpia los parámetros de la URL sin recargar
+        if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.search = ""; // eliminamos query string
+            window.history.replaceState(null, null, url.toString());
+        }
     </script>
     <% } %>
 

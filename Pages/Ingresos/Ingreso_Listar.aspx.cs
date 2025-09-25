@@ -15,10 +15,9 @@ namespace Proyecto_Estacionamiento
         {
             // Proteger acceso a páginas
             if (!User.Identity.IsAuthenticated) { Response.Redirect("~Pages/Login/Login.aspx"); }
-            
+
             if (!IsPostBack)    // Verifica si es la primera vez que se carga la página
             {
-                CargarDashboard();
 
                 string tipoUsuario = Session["Usu_tipo"] as string;
                 int legajo = Convert.ToInt32(Session["Usu_legajo"]);
@@ -44,94 +43,31 @@ namespace Proyecto_Estacionamiento
 
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
-                    TituloIngresos.Text = $"Ingresos de Vehículos, Estacionamiento '<strong>{estacionamiento}</strong>'";
+                    Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
                 }
                 else
                 {
-                    TituloIngresos.Text = "Ingresos de Vehículos";
+                    Estacionamiento_Nombre.Visible = false;
                 }
 
                 CargarIngresos();
             }
         }
 
-        private void CargarDashboard()
+        protected void btnOrdenAsc_Click(object sender, EventArgs e)
         {
-            string tipoUsuario = Session["Usu_tipo"] as string;
-            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
-
-            using (var db = new ProyectoEstacionamientoEntities())
-            {
-                List<Plaza> plazas = new List<Plaza>();
-
-                if (tipoUsuario == "Dueño")
-                {
-                    if (Session["Dueño_EstId"] != null)
-                    {
-                        // Caso 1: Dueño eligió un estacionamiento
-                        int estId = (int)Session["Dueño_EstId"];
-                        plazas = db.Plaza
-                                   .Where(p => p.Est_id == estId)
-                                   .ToList();
-                    }
-                    else
-                    {
-                        // Caso 2: No eligió → mostramos todos sus estacionamientos
-                        var estIds = db.Estacionamiento
-                                       .Where(e => e.Dueño_Legajo == legajo)
-                                       .Select(e => e.Est_id)
-                                       .ToList();
-
-                        plazas = db.Plaza
-                                   .Where(p => estIds.Contains(p.Est_id))
-                                   .ToList();
-                    }
-                }
-                else if (tipoUsuario == "Playero")
-                {
-                    // Obtener el Est_id asignado al Playero
-                    int estId = (int)Session["Playero_EstId"];
-                    plazas = db.Plaza
-                               .Where(p => p.Est_id == estId)
-                               .ToList();
-                }
-
-                int plazasDisponibles = plazas.Count(p => p.Plaza_Disponibilidad);
-                int plazasOcupadas = plazas.Count(p => !p.Plaza_Disponibilidad);
-                lblPlazasDisponibles.Text = $"Disponibles: {plazasDisponibles}";
-                lblPlazasOcupadas.Text = $"Ocupadas: {plazasOcupadas}";
-            }
-        }
-
-        protected void btnOrdenar_Click(object sender, EventArgs e)
-        {
+            // 1. Recupera la lista de ingresos desde la sesión.
             if (Session["DatosIngresos"] != null)
             {
-                var lista = (List<Ocupacion_DTO>)Session["DatosIngresos"];
+                var listaIngresos = (List<Ocupacion_DTO>)Session["DatosIngresos"];
 
-                string campo = ddlCamposOrden.SelectedValue;
-                string direccion = ddlDireccionOrden.SelectedValue;
-
-                // Orden dinámico usando reflection
-                if (direccion == "ASC")
-                {
-                    lista = lista.OrderBy(x => GetPropertyValue(x, campo)).ToList();
-                }
-                else
-                {
-                    lista = lista.OrderByDescending(x => GetPropertyValue(x, campo)).ToList();
-                }
-
-                gvIngresos.DataSource = lista;
+                // 2. Ordena la lista por la propiedad de fecha real (`Ocu_fecha_Hora_Inicio`).
+                // ¡Esto es lo que garantiza el orden correcto!
+                var listaOrdenada = listaIngresos.OrderBy(ingreso => ingreso.Ocu_fecha_Hora_Inicio).ToList();
+                // 3. Reasigna la lista ordenada al GridView y haz el enlace.
+                gvIngresos.DataSource = listaOrdenada;
                 gvIngresos.DataBind();
             }
-        }
-
-        private object GetPropertyValue(object obj, string propertyName)
-        {
-            var prop = obj.GetType().GetProperty(propertyName);
-            if (prop == null) return null;
-            return prop.GetValue(obj, null);
         }
 
         protected void btnFiltrarPatente_Click(object sender, EventArgs e)
@@ -255,8 +191,7 @@ namespace Proyecto_Estacionamiento
                     query = query.Where(o => o.Est_id == estId);
 
                     query = query.Where(o =>
-                        o.Est_id == estId &&
-                        !o.Ocu_fecha_Hora_Fin.HasValue  // solo los que no han Egresado
+                        o.Est_id == estId 
                     );
                 }
 

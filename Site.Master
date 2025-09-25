@@ -21,6 +21,7 @@
     <link href="~/Content/formularios.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/dashboard.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/filtro-grupo.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/detalle-tarifa.css" rel="stylesheet" type="text/css" />
 
     <%-- SWEETALERT2 --%>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

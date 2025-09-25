@@ -15,31 +15,13 @@ namespace Proyecto_Estacionamiento
     {
 
         /// <summary>
-        /// Control TituloIngresos.
+        /// Control Estacionamiento_Nombre.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal TituloIngresos;
-
-        /// <summary>
-        /// Control lblPlazasDisponibles.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPlazasDisponibles;
-
-        /// <summary>
-        /// Control lblPlazasOcupadas.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPlazasOcupadas;
+        protected global::System.Web.UI.WebControls.Label Estacionamiento_Nombre;
 
         /// <summary>
         /// Control btnIngreso.
@@ -51,40 +33,13 @@ namespace Proyecto_Estacionamiento
         protected global::System.Web.UI.WebControls.Button btnIngreso;
 
         /// <summary>
-        /// Control lblOrdenarPor.
+        /// Control OrdenarPorFecha.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblOrdenarPor;
-
-        /// <summary>
-        /// Control ddlCamposOrden.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCamposOrden;
-
-        /// <summary>
-        /// Control ddlDireccionOrden.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDireccionOrden;
-
-        /// <summary>
-        /// Control btnOrdenar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnOrdenar;
+        protected global::System.Web.UI.WebControls.Button OrdenarPorFecha;
 
         /// <summary>
         /// Control lblDesde.

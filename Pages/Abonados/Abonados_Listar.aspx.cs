@@ -15,11 +15,11 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
 
             if (!string.IsNullOrEmpty(estacionamiento))
             {
-                TituloAbonados.Text = $"Abonados del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
             }
             else
             {
-                TituloAbonados.Text = "Abonados";
+                Estacionamiento_Nombre.Visible = false;
             }
         }
     }

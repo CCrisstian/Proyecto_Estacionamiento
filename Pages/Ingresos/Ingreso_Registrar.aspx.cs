@@ -1,5 +1,6 @@
 ﻿using Antlr.Runtime.Misc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -197,6 +198,74 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 }
             }
         }
+
+        protected void ddlTarifa_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int tarifaId = int.Parse(ddlTarifa.SelectedValue);
+            int categoriaId = int.Parse(ddlCategoria.SelectedValue);
+
+            int estacionamientoId = 0;
+            if (Session["Playero_EstId"] != null)
+                estacionamientoId = (int)Session["Playero_EstId"];
+            else if (Session["Dueño_EstId"] != null)
+                estacionamientoId = (int)Session["Dueño_EstId"];
+
+            if (tarifaId > 0)
+            {
+                using (var db = new ProyectoEstacionamientoEntities())
+                {
+                    var tarifa = db.Tarifa
+                        .Where(t => t.Tarifa_id == tarifaId)
+                        .Select(t => new
+                        {
+                            t.Tarifa_id,
+                            Categoria = t.Categoria_Vehiculo.Categoria_descripcion,
+                            TipoTarifa = t.Tipos_Tarifa.Tipos_tarifa_descripcion,
+                            t.Tarifa_Monto
+                        })
+                        .FirstOrDefault();
+
+                    if (tarifa != null)
+                    {
+                        // Texto dinámico
+                        litDescripcionTarifa.Text = $"La tarifa para <strong>{tarifa.Categoria}</strong> - {tarifa.TipoTarifa}";
+
+                        // Monto
+                        litMontoTarifa.Text = tarifa.Tarifa_Monto.ToString("C");
+
+                        // Imagen según categoría (usamos el helper)
+                        imgCategoria.ImageUrl = ObtenerIconoPorCategoria(tarifa.Categoria);
+
+                        pnlDetalleTarifa.Visible = true;
+                    }
+                }
+            }
+            else
+            {
+                pnlDetalleTarifa.Visible = false;
+            }
+        }
+
+        private string ObtenerIconoPorCategoria(string categoria)
+        {
+            var mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "Automóviles y Camionetas", "Automóviles y Camionetas.png" },
+        { "Motocicletas", "Motocicletas.png" },
+        { "Camiones", "Camiones.png" },
+        { "Ómnibus y Minibuses", "Ómnibus y Minibuses.png" },
+        { "Vehículos agrícolas o especiales", "Vehículos agrícolas.png" }, // diferencia aquí
+        { "Casas rodantes y Motorhomes", "Casas rodantes y Motorhomes.png" },
+        { "Remolques y acoplados", "Remolques y acoplados.png" },
+        { "Vehículo para personas con discapacidad", "Vehículo para personas con discapacidad.png" }
+    };
+
+            if (mapa.ContainsKey(categoria))
+                return "~/Images/" + mapa[categoria];
+            else
+                return "~/Images/EnConstruccion.png"; // opcional: imagen por defecto
+        }
+
 
         // Validaciones
         protected void cvPatente_ServerValidate(object source, ServerValidateEventArgs args)

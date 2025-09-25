@@ -3,9 +3,8 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="header-row">
-        <h2>
-            <asp:Literal ID="TituloTarifas" runat="server" />
-        </h2>
+        <h2>Tarifas</h2>
+        <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
 
     <asp:Button ID="btnAgregarTarifa" runat="server" Text="Agregar Tarifa" CssClass="btn btn-success" OnClick="btnAgregarTarifa_Click" />
@@ -62,7 +61,7 @@
     <%-- SweetAlert2 para mensajes de exito --%>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <% 
-        if (Request.QueryString["exito"] == "1")
+        if (!IsPostBack && Request.QueryString["exito"] == "1")
         {
             string accion = Request.QueryString["accion"] ?? "guardado";
             string titulo = accion == "agregado"
@@ -77,6 +76,13 @@
             showConfirmButton: false,
             timer: 3000
         });
+
+        // 🔹 Limpia los parámetros de la URL sin recargar
+        if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.search = ""; // eliminamos query string
+            window.history.replaceState(null, null, url.toString());
+        }
     </script>
     <% } %>
 </asp:Content>

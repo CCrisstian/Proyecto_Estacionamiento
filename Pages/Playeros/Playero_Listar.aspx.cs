@@ -32,11 +32,11 @@ namespace Proyecto_Estacionamiento.Pages.Playeros
 
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
-                    TituloPlayeros.Text = $"Playeros del Estacionamiento '<strong>{estacionamiento}</strong>'";
+                    Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
                 }
                 else
                 {
-                    TituloPlayeros.Text = "Playeros";
+                    Estacionamiento_Nombre.Visible = false;
                 }
 
                 ddlCamposOrden.Items.Clear();
