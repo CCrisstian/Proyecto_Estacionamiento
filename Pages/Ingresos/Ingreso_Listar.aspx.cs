@@ -193,6 +193,9 @@ namespace Proyecto_Estacionamiento
                     query = query.Where(o =>
                         o.Est_id == estId 
                     );
+
+                    // 🔹 Solo ingresos sin salida
+                    query = query.Where(o => !o.Ocu_fecha_Hora_Fin.HasValue);
                 }
 
                 var ocupaciones = query.ToList();
@@ -267,6 +270,9 @@ namespace Proyecto_Estacionamiento
                 {
                     int estId = (int)Session["Playero_EstId"];
                     query = query.Where(o => o.Est_id == estId);
+
+                    // Solo ingresos activos (sin salida)
+                    query = query.Where(o => !o.Ocu_fecha_Hora_Fin.HasValue);
                 }
 
                 // Ejecutar consulta
@@ -356,6 +362,8 @@ namespace Proyecto_Estacionamiento
 
         protected void gvIngresos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            decimal montoFinal = 0M; // <-- declarar fuera
+
             if (e.CommandName == "Egreso")
             {
                 int index = Convert.ToInt32(e.CommandArgument);
@@ -398,7 +406,7 @@ namespace Proyecto_Estacionamiento
                     decimal tarifaBase = Convert.ToDecimal(ocupacion.Tarifa.Tarifa_Monto);
                     DateTime fin = DateTime.Now;
                     TimeSpan duracion = fin - inicio;
-                    decimal montoFinal = CalcularMonto(tarifa, duracion, tarifaBase);
+                    montoFinal = CalcularMonto(tarifa, duracion, tarifaBase);
 
                     // 3. Obtener el importe base de Pago_Ocupacion
                     Pago_Ocupacion pago;
@@ -459,7 +467,7 @@ namespace Proyecto_Estacionamiento
 
                 }
             }
-            Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso");
+            Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso&monto={montoFinal:0.00}");
         }
 
 

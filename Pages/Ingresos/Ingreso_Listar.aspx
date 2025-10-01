@@ -122,29 +122,39 @@
         }
     </script>
 
-    <% 
-        if (Request.QueryString["exito"] == "1")
-        {
-            string accion = Request.QueryString["accion"];
-            string titulo = accion == "ingreso"
-                ? "'Ingreso' registrado correctamente"
-                : "'Egreso' registrado correctamente";
-    %>
-    <script>
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "<%= titulo %>",
-            showConfirmButton: false,
-            timer: 3000
-        });
-
-        // 🔹 Limpia los parámetros de la URL sin recargar
-        if (window.history.replaceState) {
-            const url = new URL(window.location);
-            url.search = ""; // eliminamos query string
-            window.history.replaceState(null, null, url.toString());
-        }
-    </script>
+<% 
+if (Request.QueryString["exito"] == "1")
+{
+    string accion = Request.QueryString["accion"];
+    string monto = Request.QueryString["monto"]; // capturamos el monto
+    string titulo = accion == "ingreso"
+        ? "'Ingreso' registrado correctamente"
+        : "'Egreso' registrado correctamente";
+%>
+<script>
+    <% if (accion == "egreso") { %>
+    Swal.fire({
+        title: "<%= titulo %>",
+        html: "<h3><strong>Monto a pagar:</strong> $<%= monto %></h3>",
+        icon: "success",
+        confirmButtonText: "OK"
+    });
+    <% } else { %>
+    Swal.fire({
+        title: "<%= titulo %>",
+        icon: "success",
+        confirmButtonText: "OK"
+    });
     <% } %>
+
+    // 🔹 Limpiamos los parámetros de la URL sin recargar
+    if (window.history.replaceState) {
+        const url = new URL(window.location);
+        url.search = ""; // eliminamos query string
+        window.history.replaceState(null, null, url.toString());
+    }
+</script>
+<% } %>
+
+
 </asp:Content>
