@@ -132,6 +132,7 @@
     <Content Include="Content\header-row.css" />
     <Content Include="Content\menu-list.css" />
     <Content Include="Content\planilla.css" />
+    <Content Include="Content\reloj.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\tabs.css" />
     <Content Include="Images\Automóviles y Camionetas.png" />
@@ -152,6 +153,7 @@
     <Content Include="Pages\Ingresos\Ingreso_Registrar.aspx" />
     <Content Include="Pages\Estacionamiento\Estacionamiento_CrearEditar.aspx" />
     <Content Include="Pages\Estacionamiento\Estacionamiento_Listar.aspx" />
+    <Content Include="Pages\Ingresos\reloj.js" />
     <Content Include="Pages\Login\Login.aspx" />
     <Content Include="Pages\Metodos_De_Pago\MetodosDePago_CrearEditar.aspx" />
     <Content Include="Pages\Metodos_De_Pago\MetodosDePago_Listar.aspx" />

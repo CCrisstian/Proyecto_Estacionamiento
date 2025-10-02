@@ -383,19 +383,19 @@ namespace Proyecto_Estacionamiento
             {
                 int index = Convert.ToInt32(e.CommandArgument);
 
-                // Recuperamos todas las claves necesarias desde DataKeyNames
+                // 1. Recuperamos todas las claves necesarias desde DataKeyNames
                 int estId = (int)gvIngresos.DataKeys[index].Values["Est_id"];
                 int plazaId = (int)gvIngresos.DataKeys[index].Values["Plaza_id"];
                 DateTime inicio = (DateTime)gvIngresos.DataKeys[index].Values["Ocu_fecha_Hora_Inicio"];
 
-                //Obtenemos el id del método de pago seleccionado
+                //1. Obtenemos el id del método de pago seleccionado
                 int metodoPagoId = int.Parse(hfMetodoPago.Value);
 
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
                     db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
 
-                    // 1. Buscar la ocupación con las 3 claves, incluyendo tablas relacionadas
+                    // 3. Buscar la Ocupación con las 3 claves obtenidas de DataKeyNames, incluyendo tablas relacionadas
                     inicio = new DateTime(inicio.Year, inicio.Month, inicio.Day,
                                           inicio.Hour, inicio.Minute, inicio.Second);
 
@@ -412,25 +412,26 @@ namespace Proyecto_Estacionamiento
                     if (ocupacion == null)
                         throw new Exception($"No se encontró ocupacion con: Est_id={estId}, Plaza_id={plazaId}, Ocu_fecha_Hora_Inicio={inicio:yyyy-MM-dd HH:mm:ss.fff}");
 
-                    // 2. Obtener descripción de la tarifa
+                    // 4. Obtener descripción de la tarifa
                     string tarifa = ocupacion.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion;
                     if (string.IsNullOrEmpty(tarifa))
                         throw new Exception("Descripción de tarifa no encontrada");
 
-                    // 4. Calcular el importe final según duración y tipo de tarifa
+                    // 5. Obtener el importe según el tipo de tarifa
                     decimal tarifaBase = Convert.ToDecimal(ocupacion.Tarifa.Tarifa_Monto);
 
+                    // 6. Obtener el tiempo de Egreso (actual)
                     DateTime fin;
                     if (!DateTime.TryParse(Salida.Value, out fin))
                     {
                         fin = DateTime.Now; // fallback
                     }
 
-
+                    // 7. Calcular la duración y el monto final
                     TimeSpan duracion = fin - inicio;
                     decimal montoFinal = CalcularMonto(tarifa, duracion, tarifaBase);
 
-                    // 3. Obtener el importe base de Pago_Ocupacion
+                    // 8. Registrar en la tabla Pago_Ocupacion
                     Pago_Ocupacion pago;
                     pago = new Pago_Ocupacion
                     {
@@ -442,18 +443,18 @@ namespace Proyecto_Estacionamiento
                     db.Pago_Ocupacion.Add(pago);
                     db.SaveChanges(); // <-- aquí obtenemos pago.Pago_id (identity)
 
-                    // asociar pago a la ocupación
+                    // 9. Asociar Pago_Ocupacion a la Ocupación
                     ocupacion.Pago_id = pago.Pago_id;
                     ocupacion.Ocu_fecha_Hora_Fin = fin;
 
-                    // 6. Actualizar disponibilidad de plaza
+                    // 10. Actualizar disponibilidad de plaza
                     var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaId);
                     if (plaza == null)
                         throw new Exception("Plaza no encontrada para actualizar disponibilidad");
 
                     plaza.Plaza_Disponibilidad = true;
 
-                    // Actualizar en la BD usando SQL directo
+                    // 11. Actualizar la Tabla Ocupacion en la BD usando SQL directo
                     string sql = @"
                     UPDATE Ocupacion
                     SET Ocu_fecha_Hora_Fin = @p0,Pago_id = @p10
@@ -492,47 +493,42 @@ namespace Proyecto_Estacionamiento
             Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso");
         }
 
-
-        // Método separado para calcular el monto según tarifa y duración
+        // Método para calcular el monto según tarifa y duración
         private decimal CalcularMonto(string tarifa, TimeSpan duracion, decimal tarifaBase)
         {
             switch (tarifa)
             {
                 case "Por hora":
-                    var horasEnteras = (int)duracion.TotalHours;
-                    var minutosRestantes = duracion.Minutes;
+                    int horasEnteras = (int)Math.Floor(duracion.TotalHours);
+                    double minutosRestantes = (duracion.TotalHours - horasEnteras) * 60;
 
                     int horasCobrar = horasEnteras;
 
-                    if (minutosRestantes > 15)
-                    {
+                    if (minutosRestantes >= 15)
                         horasCobrar++;
-                    }
 
                     if (horasCobrar < 1)
-                    {
                         horasCobrar = 1;
-                    }
 
                     return horasCobrar * tarifaBase;
 
                 case "Por día":
-                    int diasCobrar = (int)Math.Ceiling(duracion.TotalDays - 0.5); // 12 horas = 0.5 días
+                    int diasCobrar = (int)Math.Ceiling(duracion.TotalHours / 24);
                     if (diasCobrar < 1) diasCobrar = 1;
                     return diasCobrar * tarifaBase;
 
                 case "Semanal":
-                    int semanas = (int)Math.Ceiling(duracion.TotalDays / 7);
+                    int semanas = (int)Math.Ceiling(duracion.TotalHours / (24 * 7));
                     if (semanas < 1) semanas = 1;
                     return semanas * tarifaBase;
 
                 case "Mensual":
-                    int meses = (int)Math.Ceiling(duracion.TotalDays / 30);
+                    int meses = (int)Math.Ceiling(duracion.TotalHours / (24 * 30));
                     if (meses < 1) meses = 1;
                     return meses * tarifaBase;
 
                 case "Anual":
-                    int anios = (int)Math.Ceiling(duracion.TotalDays / 365);
+                    int anios = (int)Math.Ceiling(duracion.TotalHours / (24 * 365));
                     if (anios < 1) anios = 1;
                     return anios * tarifaBase;
 
@@ -541,5 +537,4 @@ namespace Proyecto_Estacionamiento
             }
         }
     }
-
 }

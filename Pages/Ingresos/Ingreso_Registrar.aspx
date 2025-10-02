@@ -2,8 +2,11 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+
     <div class="registro-container">
-        
+            <div id="reloj" class="reloj-absoluto">--:--</div>
+
+
         <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-ingreso">
             <div class="header-row">
                 <h2>
@@ -66,7 +69,14 @@
         </asp:Panel>
     </div>
 
+
+
     <%-- SweetAlert2 para mensajes de confirmación --%>
+
+        <!-- Referencias a archivos externos -->
+    <link rel="stylesheet" href="reloj.css" />
+    <script src="reloj.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmarGuardado() {

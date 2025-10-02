@@ -36,7 +36,6 @@
                 <asp:Button ID="btnFiltrarPatente" runat="server" Text="Buscar" OnClick="btnFiltrarPatente_Click"
                     CssClass="btn btn-primary" />
             </div>
-
         </div>
     </div>
 
@@ -56,9 +55,7 @@
             <Columns>
                 <asp:BoundField DataField="Est_nombre" HeaderText="Estacionamiento" />
                 <asp:BoundField DataField="Entrada" HeaderText="Entrada" />
-
                 <asp:BoundField DataField="Vehiculo_Patente" HeaderText="Patente" SortExpression="Vehiculo_Patente" />
-
                 <asp:BoundField DataField="Plaza_Nombre" HeaderText="Plaza" />
                 <asp:BoundField DataField="Tarifa" HeaderText="Tarifa" />
                 <asp:BoundField DataField="Tarifa_Monto" HeaderText="Monto" />
@@ -194,8 +191,7 @@
                 reverseButtons: true
             }).then((firstResult) => {
                 if (firstResult.isConfirmed) {
-
-                    // Bloque de método de pago (sin cambios)
+                    // Bloque de método de pago
                     var opciones = '<option value="0">Seleccione Método de Pago</option>';
         <% foreach (var mp in ddlMetodoDePago.Items.Cast<ListItem>())
         { %>
@@ -208,8 +204,7 @@
                         <label>Método de Pago:</label>
                         <select id="swalMetodoPago" class="swal2-input">
                             ${opciones}
-                        </select>
-                    `,
+                        </select>`,
                         focusConfirm: false,
                         showDenyButton: true,
                         confirmButtonText: "Guardar",
@@ -226,16 +221,14 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             document.getElementById('<%= hfMetodoPago.ClientID %>').value = result.value;
-                        __doPostBack(btn.name, "");
-                    }
-                });
+                            __doPostBack(btn.name, "");
+                        }
+                    });
                 }
             });
-
             return false;
         }
     </script>
-
 
     <% if (Request.QueryString["exito"] == "1")
         {
@@ -249,9 +242,9 @@
             position: "center",
             icon: "success",
             title: "<%= titulo %>",
-        showConfirmButton: false,
-        timer: 3000
-    });
+            showConfirmButton: false,
+            timer: 3000
+        });
 
         // 🔹 Limpiamos los parámetros de la URL sin recargar
         if (window.history.replaceState) {
