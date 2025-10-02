@@ -1,8 +1,11 @@
-﻿using System;
+﻿using AjaxControlToolkit;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Common.CommandTrees;
+using System.Globalization;
 using System.Linq;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -30,13 +33,16 @@ namespace Proyecto_Estacionamiento
                         gvIngresos.Columns[0].Visible = false;
                     }
 
-                    gvIngresos.Columns[7].Visible = false;
+                    gvIngresos.Columns[8].Visible = false;
                 }
                 else
                 {
                     CargarMetodosDePagoEnDropDown(); // llena ddlMetodoDePago
                     gvIngresos.Columns[0].Visible = false;
+                    gvIngresos.Columns[4].Visible = false;
                     gvIngresos.Columns[5].Visible = false;
+                    gvIngresos.Columns[6].Visible = false;
+                    gvIngresos.Columns[7].Visible = false;
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
@@ -85,6 +91,17 @@ namespace Proyecto_Estacionamiento
 
             // Llamar al método CargarIngresos, pasando solo la patente
             CargarIngresos(null, null, patente);
+        }
+
+        protected void txtPatente_TextChanged(object sender, EventArgs e)
+        {
+            string patente = txtPatente.Text.Trim();
+
+            if (string.IsNullOrEmpty(patente))
+            {
+                // Si el usuario borró la patente, se recargan todos los ingresos
+                CargarIngresos();
+            }
         }
 
         protected void btnFiltrar_Click(object sender, EventArgs e)
@@ -148,8 +165,8 @@ namespace Proyecto_Estacionamiento
             public string Est_nombre { get; set; }
             public string Plaza_Nombre { get; set; }
             public string Vehiculo_Patente { get; set; }
-            public int Tarifa_id { get; set; }
             public string Tarifa { get; set; }
+            public decimal Tarifa_Monto { get; set; }
             public string Entrada { get; set; }
             public string Salida { get; set; }
             public double? Monto { get; set; }
@@ -208,8 +225,8 @@ namespace Proyecto_Estacionamiento
                     Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
                     Plaza_Nombre = o.Plaza.Plaza_Nombre,
                     Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
-                    Tarifa_id = o.Tarifa_id,
                     Tarifa = o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
+                    Tarifa_Monto = (decimal)o.Tarifa.Tarifa_Monto,
                     Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
                     Salida = o.Ocu_fecha_Hora_Fin.HasValue ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm") : "",
                     Monto = o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null
@@ -286,8 +303,8 @@ namespace Proyecto_Estacionamiento
                     Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
                     Plaza_Nombre = o.Plaza.Plaza_Nombre,
                     Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
-                    Tarifa_id = o.Tarifa_id,
                     Tarifa = o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
+                    Tarifa_Monto = (decimal)o.Tarifa.Tarifa_Monto,
                     Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
                     Salida = o.Ocu_fecha_Hora_Fin.HasValue
                                 ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm")
@@ -362,8 +379,6 @@ namespace Proyecto_Estacionamiento
 
         protected void gvIngresos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            decimal montoFinal = 0M; // <-- declarar fuera
-
             if (e.CommandName == "Egreso")
             {
                 int index = Convert.ToInt32(e.CommandArgument);
@@ -404,9 +419,16 @@ namespace Proyecto_Estacionamiento
 
                     // 4. Calcular el importe final según duración y tipo de tarifa
                     decimal tarifaBase = Convert.ToDecimal(ocupacion.Tarifa.Tarifa_Monto);
-                    DateTime fin = DateTime.Now;
+
+                    DateTime fin;
+                    if (!DateTime.TryParse(Salida.Value, out fin))
+                    {
+                        fin = DateTime.Now; // fallback
+                    }
+
+
                     TimeSpan duracion = fin - inicio;
-                    montoFinal = CalcularMonto(tarifa, duracion, tarifaBase);
+                    decimal montoFinal = CalcularMonto(tarifa, duracion, tarifaBase);
 
                     // 3. Obtener el importe base de Pago_Ocupacion
                     Pago_Ocupacion pago;
@@ -467,7 +489,7 @@ namespace Proyecto_Estacionamiento
 
                 }
             }
-            Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso&monto={montoFinal:0.00}");
+            Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso");
         }
 
 
@@ -518,6 +540,6 @@ namespace Proyecto_Estacionamiento
                     throw new Exception($"Tipo de tarifa desconocido: {tarifa}");
             }
         }
-
     }
+
 }
