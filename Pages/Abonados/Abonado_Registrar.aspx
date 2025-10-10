@@ -140,18 +140,17 @@
             <!-- Desde -->
             <label for="txtDesde">Desde:</label>
             <asp:TextBox ID="txtDesde" runat="server" CssClass="form-control"
-                TextMode="DateTime"
+                TextMode="DateTimeLocal"
                 AutoPostBack="true"
                 OnTextChanged="txtDesde_TextChanged" />
-            <ajaxToolkit:CalendarExtender ID="calDesde" runat="server"
-                TargetControlID="txtDesde" Format="dd-MM-yyyy" />
 
             <asp:CustomValidator ID="cvDesde" runat="server"
                 OnServerValidate="cvDesde_ServerValidate"
-                ErrorMessage="Debe seleccionar una fecha válida (dd-MM-yyyy) y mayor o igual a hoy."
+                ErrorMessage="Debe seleccionar una fecha y hora válidas y mayor o igual a ahora."
                 Display="Dynamic"
                 ForeColor="Red"
                 ValidationGroup="Abonado" />
+
 
             <!-- Hasta visible al usuario -->
             <label>Hasta:</label>

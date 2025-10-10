@@ -213,15 +213,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         protected global::System.Web.UI.WebControls.TextBox txtDesde;
 
         /// <summary>
-        /// Control calDesde.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender calDesde;
-
-        /// <summary>
         /// Control cvDesde.
         /// </summary>
         /// <remarks>

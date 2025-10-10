@@ -389,24 +389,24 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             // 1️ No puede estar vacío
             if (string.IsNullOrWhiteSpace(valor))
             {
-                validator.ErrorMessage = "La fecha de inicio (Desde) es obligatoria.";
+                validator.ErrorMessage = "La fecha y hora de inicio (Desde) son obligatorias.";
                 args.IsValid = false;
                 return;
             }
 
-            // 2️ Intentar parsear la fecha según el formato dd-MM-yyyy
+            // 2️ Intentar parsear fecha y hora (formato ISO de datetime-local)
             DateTime fechaDesde;
-            if (!DateTime.TryParseExact(valor, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out fechaDesde))
+            if (!DateTime.TryParse(valor, out fechaDesde))
             {
-                validator.ErrorMessage = "Debe ingresar una fecha válida en formato dd-MM-yyyy.";
+                validator.ErrorMessage = "Debe ingresar una fecha y hora válidas.";
                 args.IsValid = false;
                 return;
             }
 
-            // 3️ Debe ser mayor o igual a la fecha actual
-            if (fechaDesde.Date < DateTime.Today)
+            // 3️ Debe ser igual o posterior a la fecha y hora actual
+            if (fechaDesde < DateTime.Now)
             {
-                validator.ErrorMessage = "La fecha de inicio debe ser igual o posterior a la fecha actual.";
+                validator.ErrorMessage = "La fecha y hora de inicio deben ser iguales o posteriores al momento actual.";
                 args.IsValid = false;
                 return;
             }
@@ -418,29 +418,37 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         private void CalcularFechaHasta()
         {
             // Validar que los campos requeridos tengan valor
-            if (string.IsNullOrWhiteSpace(txtDesde.Text) || ddlTipoAbono.SelectedValue == "0" || string.IsNullOrWhiteSpace(txtCantidadTiempo.Text))
+            if (string.IsNullOrWhiteSpace(txtDesde.Text) ||
+                ddlTipoAbono.SelectedValue == "0" ||
+                string.IsNullOrWhiteSpace(txtCantidadTiempo.Text))
             {
                 lblHasta.Text = "";
                 return;
             }
 
-            // Parsear fecha Desde
+            // Intentar parsear la fecha/hora Desde
             DateTime fechaDesde;
-            if (!DateTime.TryParseExact(txtDesde.Text, "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out fechaDesde))
+            string valorDesde = txtDesde.Text.Trim();
+
+            // Formato esperado de un input type="datetime-local" → "yyyy-MM-ddTHH:mm"
+            string[] formatosValidos = { "yyyy-MM-ddTHH:mm", "dd-MM-yyyy HH:mm", "dd-MM-yyyy" };
+
+            if (!DateTime.TryParseExact(valorDesde, formatosValidos,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out fechaDesde))
             {
                 lblHasta.Text = string.Empty;
                 return;
             }
 
             // Parsear cantidad de tiempo
-            int cantidad;
-            if (!int.TryParse(txtCantidadTiempo.Text, out cantidad) || cantidad <= 0)
+            if (!int.TryParse(txtCantidadTiempo.Text, out int cantidad) || cantidad <= 0)
             {
                 lblHasta.Text = string.Empty;
                 return;
             }
 
-            // Obtener unidad de tiempo
+            // Obtener tipo de abono
             string tipoAbono = ddlTipoAbono.SelectedItem.Text; // "Por hora", "Por día", etc.
             DateTime fechaHasta = fechaDesde;
 
@@ -463,9 +471,10 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                     break;
             }
 
-            // Mostrar la fecha en el Label en formato dd-MM-yyyy
-            lblHasta.Text = fechaHasta.ToString("dd-MM-yyyy");
+            // Mostrar fecha y hora
+            lblHasta.Text = fechaHasta.ToString("dd-MM-yyyy HH:mm");
         }
+
 
         // Llamadas automáticas al método CalcularFechaHasta
         protected void txtDesde_TextChanged(object sender, EventArgs e)
