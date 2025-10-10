@@ -6,6 +6,10 @@
         <h2>Abonados</h2>
         <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
+    
+    <asp:Button ID="btnRegistrar" runat="server" Text="Registrar Abonado" OnClick="btnRegistrar_Click" CssClass="btn btn-success" />
+    <br />
+    <br />
 
     <div style="text-align: center; margin-top: 20px;">
         <img src='<%= ResolveUrl("~/Images/EnConstruccion.png") %>'

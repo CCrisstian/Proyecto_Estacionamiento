@@ -39,6 +39,7 @@ button.btn-danger {
 
 .formulario-playero,
 .formulario-estacionamiento,
+.formulario-abonado,
 .formulario-plaza,
 .formulario-tarifa,
 .formulario-ingreso,
@@ -80,4 +81,23 @@ button.btn-danger {
     margin-top: 4px;
     color: red;
     font-size: 0.9em;
+}
+
+.total-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.total-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-valor {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d9534f; /* rojo Bootstrap */
 }

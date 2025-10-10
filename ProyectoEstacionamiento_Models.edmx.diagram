@@ -43,6 +43,14 @@
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Tarifa_Tipos_Tarifa" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Tarifa" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Abono" Width="1.5" PointX="15" PointY="11.875" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Pagos_Abonados" Width="1.5" PointX="17.25" PointY="11.875" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Titular_Abono" Width="1.5" PointX="12.75" PointY="16.125" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Plaza" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Vehiculo_Abonado" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

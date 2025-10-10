@@ -146,6 +146,7 @@
     <Content Include="Images\Vehículos agrícolas.png" />
     <Content Include="Images\Ómnibus y Minibuses.png" />
     <Content Include="Pages\Abonados\Abonados_Listar.aspx" />
+    <Content Include="Pages\Abonados\Abonado_Registrar.aspx" />
     <Content Include="Pages\Default\Inicio.aspx" />
     <Content Include="Pages\Ingresos\Ingreso_Listar.aspx" />
     <Content Include="favicon.ico" />
@@ -252,6 +253,13 @@
     </Compile>
     <Compile Include="Pages\Abonados\Abonados_Listar.aspx.designer.cs">
       <DependentUpon>Abonados_Listar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Abonados\Abonado_Registrar.aspx.cs">
+      <DependentUpon>Abonado_Registrar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Abonados\Abonado_Registrar.aspx.designer.cs">
+      <DependentUpon>Abonado_Registrar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Default\Inicio.aspx.cs">
       <DependentUpon>Inicio.aspx</DependentUpon>

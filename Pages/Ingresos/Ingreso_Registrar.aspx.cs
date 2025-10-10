@@ -1,5 +1,4 @@
-﻿using Antlr.Runtime.Misc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
@@ -25,7 +24,8 @@ namespace Proyecto_Estacionamiento.Pages.Default
 
                 CargarCategoriasFiltradas();
                 ddlPlaza.Enabled = false;
-                ddlTarifa.Enabled = false;            }
+                ddlTarifa.Enabled = false;
+            }
         }
 
         private int? ObtenerEstacionamientoId()

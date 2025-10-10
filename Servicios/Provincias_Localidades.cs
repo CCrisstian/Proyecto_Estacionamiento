@@ -34,7 +34,8 @@ namespace Proyecto_Estacionamiento.Servicios
             using (HttpClient client = new HttpClient()) // HttpClient se usa para hacer solicitudes HTTP
             {
                 // URL de la API Gobierno Argentino para obtener provincias
-                string url = "https://apis.datos.gob.ar/georef/api/provincias";
+                string url = "https://apis.datos.gob.ar/georef/api/v2.0/provincias";
+
                 
                 // GET request a la API para obtener las provincias
                 var response = await client.GetStringAsync(url);
