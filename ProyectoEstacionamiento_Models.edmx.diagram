@@ -51,6 +51,7 @@
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Vehiculo_Abonado" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

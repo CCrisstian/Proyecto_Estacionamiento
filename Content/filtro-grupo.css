@@ -27,6 +27,18 @@
     gap: 10px; /* Espacio entre los elementos dentro de cada grupo */
 }
 
+.filtro-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end; /* Asegura que el botón se alinee con el fondo de los inputs */
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+}
+
 .filtro-fecha {
     width: 250px !important;
     min-width: 180px;

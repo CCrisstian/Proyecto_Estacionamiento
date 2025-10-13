@@ -12,19 +12,18 @@ namespace Proyecto_Estacionamiento
     using System;
     using System.Collections.Generic;
     
-    public partial class Vehiculo_Abonado
+    public partial class Pagos_Abonados
     {
-        public int VA_id { get; set; }
-        public string Vehiculo_Patente { get; set; }
-        public int Tarifa_id { get; set; }
+        public int PA_id { get; set; }
         public int Est_id { get; set; }
         public int Plaza_id { get; set; }
         public long TAB_Cuil_Cuit { get; set; }
         public System.DateTime TAB_Fecha_Desde { get; set; }
+        public int Metodo_Pago_id { get; set; }
+        public double PA_Monto { get; set; }
         public int TAB_DNI { get; set; }
     
-        public virtual Tarifa Tarifa { get; set; }
-        public virtual Vehiculo Vehiculo { get; set; }
         public virtual Abono Abono { get; set; }
+        public virtual Acepta_Metodo_De_Pago Acepta_Metodo_De_Pago { get; set; }
     }
 }

@@ -224,6 +224,9 @@
     <Content Include="Site.Mobile.Master" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abono.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Acepta_Metodo_De_Pago.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
@@ -376,6 +379,9 @@
     <Compile Include="Pages\Turnos\Turno_Listar.aspx.designer.cs">
       <DependentUpon>Turno_Listar.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pagos_Abonados.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
     <Compile Include="Pago_Ocupacion.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
@@ -421,6 +427,9 @@
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Tipos_Tarifa.cs">
+      <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Titular_Abono.cs">
       <DependentUpon>ProyectoEstacionamiento_Models.tt</DependentUpon>
     </Compile>
     <Compile Include="Turno.cs">

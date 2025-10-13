@@ -18,6 +18,7 @@ namespace Proyecto_Estacionamiento
         public Plaza()
         {
             this.Ocupacion = new HashSet<Ocupacion>();
+            this.Abono = new HashSet<Abono>();
         }
     
         public int Est_id { get; set; }
@@ -31,5 +32,7 @@ namespace Proyecto_Estacionamiento
         public virtual Estacionamiento Estacionamiento { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ocupacion> Ocupacion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Abono> Abono { get; set; }
     }
 }

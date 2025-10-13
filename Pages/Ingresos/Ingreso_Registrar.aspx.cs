@@ -331,7 +331,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
         // Guardar
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            // 1️⃣ Validar todos los CustomValidators del grupo "Ingreso"
+            // 1️ Validar todos los CustomValidators del grupo "Ingreso"
             Page.Validate("Ingreso");
             if (!Page.IsValid) return;
 

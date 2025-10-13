@@ -19,6 +19,15 @@
                 Display="Dynamic"
                 ForeColor="Red"
                 ValidationGroup="Abonado" />
+
+            <label for="txtDNI">DNI:</label>
+            <asp:TextBox ID="TextDNI" runat="server" CssClass="form-control" />
+            <asp:CustomValidator ID="cvDNI" runat="server"
+                OnServerValidate="cvDNI_ServerValidate"
+                ErrorMessage=""
+                Display="Dynamic"
+                ForeColor="Red"
+                ValidationGroup="Abonado" />
         </div>
 
         <!-- Nombre -->
@@ -60,17 +69,126 @@
         <!-- ====================== DATOS DEL VEHÍCULO ====================== -->
 
         <div class="form-group form-inline">
-            <!-- Patente -->
-            <label for="txtPatente">Patente:</label>
-            <asp:TextBox ID="txtPatente" runat="server" CssClass="form-control" />
+            <!-- Patentes -->
+            <label for="txtPatente">Patente(s):</label>
+            <asp:TextBox ID="txtPatente" runat="server" CssClass="form-control" placeholder="Clic para agregar patentes" />
+
+            <button id="btnAbrirModalPatentes" type="button" class="btn btn-info btn-sm ml-2">Administrar Patentes</button>
+
             <asp:CustomValidator ID="cvPatente" runat="server"
                 OnServerValidate="cvPatente_ServerValidate"
-                ErrorMessage=""
+                ErrorMessage="Debe ingresar al menos una patente."
                 Display="Dynamic"
                 ForeColor="Red"
                 ValidationGroup="Abonado" />
 
-            <!-- Categoría del Vehículo -->
+            <!-- Modal para ingresar varias patentes -->
+            <div class="modal fade" id="modalPatentes" tabindex="-1" role="dialog" aria-labelledby="modalPatentesLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalPatentesLabel">Ingresar Patentes</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table" id="tablaPatentes">
+                                <thead>
+                                    <tr>
+                                        <th>Patente</th>
+                                        <th style="width: 50px;">
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="agregarFilaPatente()">+</button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="guardarPatentes()">Guardar</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            // Variable auxiliar que usa la sintaxis ASP.NET para obtener el ID real del TextBox
+            var patenteTextBoxID = '<%= txtPatente.ClientID %>';
+
+            // Función auxiliar para crear una fila de patente (con botón de eliminar y valor opcional)
+            function crearFilaPatente(valor = '') {
+                return '<tr>' +
+                    '<td><input type="text" class="form-control patente-input" value="' + valor + '" /></td>' +
+                    '<td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFilaPatente(this)">X</button></td>' +
+                    '</tr>';
+            }
+
+            // 1. Añade una fila nueva y vacía
+            function agregarFilaPatente() {
+                $('#tablaPatentes tbody').append(crearFilaPatente());
+            }
+
+            // 2. Elimina una fila específica
+            function eliminarFilaPatente(elementoBoton) {
+                $(elementoBoton).closest('tr').remove();
+            }
+
+            // 3. Carga las patentes existentes en el modal al abrir (Precarga/Edición)
+            function cargarPatentesModal() {
+                var patenteTextBox = $('#' + patenteTextBoxID);
+                var patentesString = patenteTextBox.val();
+                var tbody = $('#tablaPatentes tbody');
+                tbody.empty(); // Limpia la tabla antes de cargar
+
+                if (patentesString) {
+                    var patentesArray = patentesString.split(',').map(item => item.trim()).filter(item => item.length > 0);
+                    patentesArray.forEach(function (patente) {
+                        tbody.append(crearFilaPatente(patente));
+                    });
+                }
+
+                // Si no hay patentes, agrega una fila vacía para empezar
+                if (tbody.children().length === 0) {
+                    agregarFilaPatente();
+                }
+            }
+
+            // 4. Guarda los datos en el TextBox principal
+            function guardarPatentes() {
+                var patentes = [];
+                $('.patente-input').each(function () {
+                    var val = $(this).val().trim();
+                    if (val) patentes.push(val);
+                });
+
+                $('#' + patenteTextBoxID).val(patentes.join(', '));
+                $('#modalPatentes').modal('hide');
+            }
+
+            // 5. Inicialización de Eventos (Se ejecuta al cargar la página)
+            $(document).ready(function () {
+                // Asigna el evento de apertura del modal a ambos elementos (TextBox y Botón)
+                $('#' + patenteTextBoxID + ', #btnAbrirModalPatentes').on('click', function (e) {
+                    e.preventDefault(); // Previene el comportamiento por defecto
+                    $('#modalPatentes').modal('show');
+                });
+
+                // Evento de Bootstrap: se ejecuta ANTES de que el modal se muestre
+                $('#modalPatentes').on('show.bs.modal', function () {
+                    cargarPatentesModal();
+                });
+            });
+        </script>
+
+        <!-- Categoría del Vehículo -->
+        <div class="form-group form-inline">
             <label for="ddlCategoriaVehiculo">Categoría del Vehículo:</label>
             <asp:DropDownList ID="ddlCategoriaVehiculo" runat="server" CssClass="form-control"
                 AutoPostBack="true"
@@ -196,6 +314,8 @@
                 ValidationGroup="Abonado"
                 OnClick="btnGuardar_Click" />
         </div>
+
+        <asp:Label ID="lblError" runat="server" ForeColor="Red" Font-Bold="true" EnableViewState="false"></asp:Label>
     </asp:Panel>
 
 </asp:Content>

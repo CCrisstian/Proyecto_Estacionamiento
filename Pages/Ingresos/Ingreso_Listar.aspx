@@ -11,30 +11,39 @@
 
         <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />
 
+        <%--  Ana --%>
+
         <div class="right-align-filters">
 
             <div class="filtro-grupo">
                 <asp:Button ID="OrdenarPorFecha" runat="server" Text="Ordenar por fecha " OnClick="btnOrdenAsc_Click" CssClass="btn btn-primary" />
             </div>
+            <div class="filtro-container">
+                <div class="filtro-grupo">
+                    <asp:Label ID="lblDesde" runat="server" Text="Desde:" />
+                    <asp:TextBox ID="txtDesde" runat="server" CssClass="form-control filtro-fecha" />
+                    <ajaxToolkit:CalendarExtender ID="calDesde" runat="server" TargetControlID="txtDesde" Format="dd/MM/yyyy" />
 
-            <div class="filtro-grupo">
-                <asp:Label ID="lblDesde" runat="server" Text="Desde:" />
-                <asp:TextBox ID="txtDesde" runat="server" CssClass="form-control filtro-fecha" />
-                <asp:Label ID="lblHasta" runat="server" Text="Hasta:" />
-                <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control filtro-fecha" />
-                <asp:Button ID="btnFiltrarFechas" runat="server" Text="Buscar" OnClick="btnFiltrar_Click"
-                    CssClass="btn btn-primary" />
-            </div>
+                    <asp:Label ID="lblHasta" runat="server" Text="Hasta:" />
+                    <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control filtro-fecha" />
+                    <ajaxToolkit:CalendarExtender ID="calHasta" runat="server" TargetControlID="txtHasta" Format="dd/MM/yyyy" />
 
-            <div class="filtro-grupo">
-                <asp:Label ID="lblPatente" runat="server" Text="Patente:" />
-                <asp:TextBox ID="txtPatente" runat="server" CssClass="form-control"
-                    placeholder="Buscar por patente"
-                    OnTextChanged="txtPatente_TextChanged"
-                    onkeyup="if(this.value===''){ __doPostBack(this.name,''); }" />
+                    <asp:Label ID="lblPatente" runat="server" Text="Patente:" />
 
-                <asp:Button ID="btnFiltrarPatente" runat="server" Text="Buscar" OnClick="btnFiltrarPatente_Click"
-                    CssClass="btn btn-primary" />
+                    <asp:TextBox ID="txtPatente"
+                        runat="server"
+                        CssClass="form-control"
+                        placeholder="Buscar por patente"
+                        OnTextChanged="txtPatente_TextChanged"
+                        onkeyup="if(this.value===''){ __doPostBack(this.name,''); }"
+                        AutoPostBack="true" />
+                    <asp:Button ID="btnFiltrarPatente"
+                        runat="server"
+                        Text="Buscar"
+                        OnClick="btnFiltrarPatente_Click"
+                        CssClass="btn btn-primary" />
+
+                </div>
             </div>
         </div>
     </div>

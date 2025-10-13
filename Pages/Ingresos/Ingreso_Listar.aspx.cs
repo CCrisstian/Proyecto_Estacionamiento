@@ -78,19 +78,61 @@ namespace Proyecto_Estacionamiento
 
         protected void btnFiltrarPatente_Click(object sender, EventArgs e)
         {
-            // Obtener el valor del campo de texto de la patente
+            // Obtener y limpiar la patente (YA NO ES OBLIGATORIA)
             string patente = txtPatente.Text.Trim();
 
-            // Verificar si el campo de patente está vacío
-            if (string.IsNullOrEmpty(patente))
+            // -------------------------------------------------------------------------
+            // 1. Manejo de Fechas
+            // -------------------------------------------------------------------------
+
+            DateTime? fechaDesde = null;
+            DateTime? fechaHasta = null;
+            DateTime tempDesde, tempHasta;
+
+            bool desdeValido = DateTime.TryParseExact(txtDesde.Text, "dd/MM/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out tempDesde);
+            bool hastaValido = DateTime.TryParseExact(txtHasta.Text, "dd/MM/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out tempHasta);
+
+            // Asignación y validación del rango de fechas
+            if (desdeValido && hastaValido)
             {
-                string script = "Swal.fire({icon: 'error', title: 'Campo vacío', text: 'Por favor, ingrese una patente para buscar.'});";
-                ScriptManager.RegisterStartupScript(this, GetType(), "alert", script, true);
-                return; // Detener la ejecución si el campo está vacío
+                if (tempDesde > tempHasta)
+                {
+                    string script = "Swal.fire({icon: 'error', title: 'Error de fecha', text: 'La fecha \"Hasta\" no puede ser anterior a la fecha \"Desde\".'});";
+                    ScriptManager.RegisterStartupScript(this, GetType(), "alert", script, true);
+                    return;
+                }
+                fechaDesde = tempDesde;
+                // Asigna el final del día a la fecha hasta
+                fechaHasta = tempHasta.AddHours(23).AddMinutes(59).AddSeconds(59);
+            }
+            else if (desdeValido)
+            {
+                fechaDesde = tempDesde;
+            }
+            else if (hastaValido)
+            {
+                // Asigna el final del día a la fecha hasta
+                fechaHasta = tempHasta.AddHours(23).AddMinutes(59).AddSeconds(59);
             }
 
-            // Llamar al método CargarIngresos, pasando solo la patente
-            CargarIngresos(null, null, patente);
+            // -------------------------------------------------------------------------
+            // 2. VALIDACIÓN: Mostrar error si NO hay ningún criterio de búsqueda.
+            // -------------------------------------------------------------------------
+            if (string.IsNullOrEmpty(patente) && !desdeValido && !hastaValido)
+            {
+                string script = "Swal.fire({icon: 'error', title: 'Filtro Requerido', text: 'Debe ingresar una patente o al menos una fecha para realizar la búsqueda.'});";
+                ScriptManager.RegisterStartupScript(this, GetType(), "alert", script, true);
+                return;
+            }
+
+            // -------------------------------------------------------------------------
+            // 3. Llamar al método CargarIngresos, pasando fechas y patente
+            // -------------------------------------------------------------------------
+            CargarIngresos(fechaDesde, fechaHasta, patente);
         }
 
         protected void txtPatente_TextChanged(object sender, EventArgs e)
@@ -155,6 +197,7 @@ namespace Proyecto_Estacionamiento
             CargarIngresos(fechaDesde, fechaHasta, null);
         }
 
+
         public class Ocupacion_DTO
         {
             public int Est_id { get; set; }
@@ -208,7 +251,7 @@ namespace Proyecto_Estacionamiento
                     query = query.Where(o => o.Est_id == estId);
 
                     query = query.Where(o =>
-                        o.Est_id == estId 
+                        o.Est_id == estId
                     );
 
                     // 🔹 Solo ingresos sin salida

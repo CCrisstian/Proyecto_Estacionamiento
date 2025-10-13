@@ -12,22 +12,23 @@ namespace Proyecto_Estacionamiento
     using System;
     using System.Collections.Generic;
     
-    public partial class Acepta_Metodo_De_Pago
+    public partial class Titular_Abono
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Acepta_Metodo_De_Pago()
+        public Titular_Abono()
         {
-            this.Pagos_Abonados = new HashSet<Pagos_Abonados>();
+            this.Abono = new HashSet<Abono>();
         }
     
-        public int Est_id { get; set; }
-        public int Metodo_Pago_id { get; set; }
-        public Nullable<System.DateTime> AMP_Desde { get; set; }
-        public Nullable<System.DateTime> AMP_Hasta { get; set; }
+        public long TAB_Cuil_Cuit { get; set; }
+        public System.DateTime TAB_Fecha_Desde { get; set; }
+        public System.DateTime TAB_Fecha_Vto { get; set; }
+        public string TAB_Nombre { get; set; }
+        public string TAB_Apellido { get; set; }
+        public int TAB_Telefono { get; set; }
+        public int TAB_DNI { get; set; }
     
-        public virtual Estacionamiento Estacionamiento { get; set; }
-        public virtual Metodos_De_Pago Metodos_De_Pago { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Pagos_Abonados> Pagos_Abonados { get; set; }
+        public virtual ICollection<Abono> Abono { get; set; }
     }
 }
