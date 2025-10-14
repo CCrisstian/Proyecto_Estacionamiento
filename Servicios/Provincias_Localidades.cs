@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using static Proyecto_Estacionamiento.Servicios.Provincias_Localidades;
+using static System.Net.WebRequestMethods;
 
 namespace Proyecto_Estacionamiento.Servicios
 {
@@ -34,7 +36,7 @@ namespace Proyecto_Estacionamiento.Servicios
             using (HttpClient client = new HttpClient()) // HttpClient se usa para hacer solicitudes HTTP
             {
                 // URL de la API Gobierno Argentino para obtener provincias
-                string url = "https://apis.datos.gob.ar/georef/api/v2.0/provincias";
+                string url = "https://apis.datos.gob.ar/georef/api/provincias";
 
                 
                 // GET request a la API para obtener las provincias
