@@ -38,35 +38,57 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             }
         }
 
-        private void CargarAbonos()
+        private void CargarAbonos(string patenteFiltro = null)
         {
             try
             {
+                string tipoUsuario = Session["Usu_tipo"] as string;
+                int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
-                    int? estId = ObtenerEstacionamientoId();
-                    if (estId == null)
+                    IQueryable<Vehiculo_Abonado> query = db.Vehiculo_Abonado;
+
+                    // 1. Aplicamos el filtro de seguridad por rol (esta lógica se mantiene)
+                    if (tipoUsuario == "Dueño")
                     {
-                        // Manejar el caso donde no hay un estacionamiento seleccionado
-                        gvAbonos.DataSource = null;
-                        gvAbonos.DataBind();
-                        return;
+                        if (Session["Dueño_EstId"] != null)
+                        {
+                            int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                            query = query.Where(va => va.Est_id == estIdSeleccionado);
+                        }
+                        else
+                        {
+                            var estIdsDelDueño = db.Estacionamiento.Where(e => e.Dueño_Legajo == legajo).Select(e => e.Est_id).ToList();
+                            query = query.Where(va => estIdsDelDueño.Contains(va.Est_id));
+                        }
+                    }
+                    else if (tipoUsuario == "Playero")
+                    {
+                        int estIdPlayero = (int)Session["Playero_EstId"];
+                        query = query.Where(va => va.Est_id == estIdPlayero);
                     }
 
-                    // Preparamos la consulta a la base de datos usando LINQ
-                    var abonos = db.Vehiculo_Abonado
-                        .Where(va => va.Est_id == estId) // Filtramos por el estacionamiento actual
+                    // 2. APLICAMOS EL NUEVO FILTRO POR PATENTE
+                    if (!string.IsNullOrWhiteSpace(patenteFiltro))
+                    {
+                        // .Contains() busca coincidencias parciales (ej. "AA123" encuentra "AA123BB")
+                        // .ToUpper() hace la búsqueda insensible a mayúsculas/minúsculas
+                        query = query.Where(va => va.Vehiculo_Patente.ToUpper().Contains(patenteFiltro.ToUpper()));
+                    }
+
+                    // 3. Ejecutamos la consulta final
+                    var abonos = query
                         .Select(va => new
                         {
                             Patente = va.Vehiculo_Patente,
-                            Plaza = va.Abono.Plaza.Plaza_Nombre, // Navegamos a través de las relaciones para obtener el nombre
+                            Plaza = va.Abono.Plaza.Plaza_Nombre,
                             Desde = va.Abono.TAB_Fecha_Desde,
-                            Hasta = va.Abono.Titular_Abono.TAB_Fecha_Vto // La fecha de Vto está en Titular_Abono
+                            Hasta = va.Abono.Titular_Abono.TAB_Fecha_Vto
                         })
-                        .OrderByDescending(a => a.Desde) // Mostramos los más recientes primero
+                        .OrderByDescending(a => a.Desde)
                         .ToList();
 
-                    // Enlazamos los resultados con el GridView
                     gvAbonos.DataSource = abonos;
                     gvAbonos.DataBind();
                 }
@@ -76,6 +98,19 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
+
+
+        protected void btnBuscarPatente_Click(object sender, EventArgs e)
+        {
+            // Llama al método de carga pasándole el texto del buscador
+            CargarAbonos(txtBuscarPatente.Text.Trim());
+        }
+
+        protected void txtBuscarPatente_TextChanged(object sender, EventArgs e)
+        {
+            CargarAbonos(txtBuscarPatente.Text.Trim());
+        }
+
 
         private int? ObtenerEstacionamientoId()
         {

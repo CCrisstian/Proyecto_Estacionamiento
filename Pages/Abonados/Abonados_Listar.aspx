@@ -12,6 +12,19 @@
     <br />
     <br />
 
+    <div class="search-bar-container" style="margin-bottom: 20px; display: flex; align-items: center; max-width: 450px;">
+        <asp:TextBox ID="txtBuscarPatente" runat="server" 
+            CssClass="form-control" 
+            placeholder="Buscar por patente..." 
+            OnTextChanged="txtBuscarPatente_TextChanged" 
+            AutoPostBack="true" 
+            style="margin-right: 10px;" />
+        <asp:Button ID="btnBuscarPatente" runat="server" 
+            Text="Buscar" 
+            OnClick="btnBuscarPatente_Click" 
+            CssClass="btn btn-primary" />
+    </div>
+
     <div class="grid-wrapper">
         <asp:GridView ID="gvAbonos" runat="server"
             AutoGenerateColumns="False"
