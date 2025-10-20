@@ -92,11 +92,25 @@ namespace Proyecto_Estacionamiento.Pages.Tarifas
         {
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                ddlTiposTarifa.DataSource = db.Tipos_Tarifa.ToList();
+                // 1. Obtenemos todas las tarifas de la base de datos
+                var tarifas = db.Tipos_Tarifa.ToList();
+
+                // 2. Definimos el orden lógico deseado usando los IDs
+                //    (Por hora, Por día, Semanal, Quincenal, Mensual, Anual)
+                var ordenLogicoIDs = new List<int> { 1, 2, 3, 6, 4, 5 };
+
+                // 3. Reordenamos la lista basándonos en la posición de su ID
+                //    en nuestra lista de orden lógico.
+                var tarifasOrdenadas = tarifas
+                    .OrderBy(t => ordenLogicoIDs.IndexOf(t.Tipos_tarifa_id))
+                    .ToList();
+
+                // 4. Asignamos la lista ya ordenada al DropDownList
+                ddlTiposTarifa.DataSource = tarifasOrdenadas;
                 ddlTiposTarifa.DataTextField = "Tipos_tarifa_descripcion";
                 ddlTiposTarifa.DataValueField = "Tipos_tarifa_id";
                 ddlTiposTarifa.DataBind();
-                ddlTiposTarifa.Items.Insert(0, new ListItem("-- Seleccione una Tarifa--", ""));
+                ddlTiposTarifa.Items.Insert(0, new ListItem("-- Seleccione una Tarifa --", ""));
             }
         }
 

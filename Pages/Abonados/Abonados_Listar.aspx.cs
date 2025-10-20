@@ -47,47 +47,71 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
 
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
-                    IQueryable<Vehiculo_Abonado> query = db.Vehiculo_Abonado;
+                    // 1. Consulta base sobre Abono (IQueryable)
+                    IQueryable<Abono> query = db.Abono;
 
-                    // 1. Aplicamos el filtro de seguridad por rol (esta lógica se mantiene)
+                    // 2. Aplicamos el filtro de seguridad por ROL
                     if (tipoUsuario == "Dueño")
                     {
                         if (Session["Dueño_EstId"] != null)
                         {
                             int estIdSeleccionado = (int)Session["Dueño_EstId"];
-                            query = query.Where(va => va.Est_id == estIdSeleccionado);
+                            // Filtra la consulta base 'Abono' por Est_id
+                            query = query.Where(a => a.Est_id == estIdSeleccionado);
                         }
                         else
                         {
-                            var estIdsDelDueño = db.Estacionamiento.Where(e => e.Dueño_Legajo == legajo).Select(e => e.Est_id).ToList();
-                            query = query.Where(va => estIdsDelDueño.Contains(va.Est_id));
+                            var estIdsDelDueño = db.Estacionamiento
+                                                   .Where(e => e.Dueño_Legajo == legajo)
+                                                   .Select(e => e.Est_id).ToList();
+                            // Filtra por todos los Est_id que pertenecen al dueño
+                            query = query.Where(a => estIdsDelDueño.Contains(a.Est_id));
                         }
                     }
                     else if (tipoUsuario == "Playero")
                     {
                         int estIdPlayero = (int)Session["Playero_EstId"];
-                        query = query.Where(va => va.Est_id == estIdPlayero);
+                        // Filtra por el Est_id específico del playero
+                        query = query.Where(a => a.Est_id == estIdPlayero);
                     }
 
-                    // 2. APLICAMOS EL NUEVO FILTRO POR PATENTE
+                    // 3. Filtramos por ABONOS VIGENTES
+                    query = query.Where(a => a.Titular_Abono.TAB_Fecha_Vto >= DateTime.Now);
+
+                    // 4. Aplicamos el filtro por PATENTE (si se proveyó una)
                     if (!string.IsNullOrWhiteSpace(patenteFiltro))
                     {
-                        // .Contains() busca coincidencias parciales (ej. "AA123" encuentra "AA123BB")
-                        // .ToUpper() hace la búsqueda insensible a mayúsculas/minúsculas
-                        query = query.Where(va => va.Vehiculo_Patente.ToUpper().Contains(patenteFiltro.ToUpper()));
+                        // Filtra si CUALQUIER Vehiculo_Abonado asociado a este Abono contiene la patente
+                        query = query.Where(a => a.Vehiculo_Abonado.Any(va => va.Vehiculo_Patente.ToUpper().Contains(patenteFiltro.ToUpper())));
                     }
 
-                    // 3. Ejecutamos la consulta final
+                    // 5. Proyectamos los datos para el Grid y el Modal
                     var abonos = query
-                        .Select(va => new
+                        .OrderByDescending(a => a.TAB_Fecha_Desde)
+                        .Select(a => new // 'a' es un objeto 'Abono'
                         {
-                            Patente = va.Vehiculo_Patente,
-                            Plaza = va.Abono.Plaza.Plaza_Nombre,
-                            Desde = va.Abono.TAB_Fecha_Desde,
-                            Hasta = va.Abono.Titular_Abono.TAB_Fecha_Vto
+                            // Datos para el Grid 
+                            Nombre = a.Titular_Abono.TAB_Nombre,
+                            Apellido = a.Titular_Abono.TAB_Apellido,
+                            Plaza = a.Plaza.Plaza_Nombre,
+
+                            // Datos para el Modal 
+                            FechaDesde = a.TAB_Fecha_Desde,
+                            FechaVto = a.Titular_Abono.TAB_Fecha_Vto,
+                            PatentesList = a.Vehiculo_Abonado.Select(va => va.Vehiculo_Patente)
                         })
-                        .OrderByDescending(a => a.Desde)
-                        .ToList();
+                        .ToList() // Traemos los datos de la BD a memoria...
+                        .Select(dto => new // ...y ahora formateamos los datos en C#
+                        {
+                            dto.Nombre,
+                            dto.Apellido,
+                            dto.Plaza,
+                            // Convertimos la lista de patentes a un solo string
+                            PatentesStr = string.Join(", ", dto.PatentesList),
+                            // Formateamos las fechas para el modal
+                            FechaDesdeStr = dto.FechaDesde.ToString("dd/MM/yyyy HH:mm"),
+                            FechaVtoStr = dto.FechaVto.ToString("dd/MM/yyyy HH:mm")
+                        });
 
                     gvAbonos.DataSource = abonos;
                     gvAbonos.DataBind();

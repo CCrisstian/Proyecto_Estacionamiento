@@ -161,40 +161,54 @@ namespace Proyecto_Estacionamiento.Pages.Default
             }
         }
 
-
         protected void CargarTarifasFiltradas(int? estacionamientoId, int categoriaSeleccionadaId)
         {
             if (categoriaSeleccionadaId == 0)
             {
-                LimpiarDropDown(ddlTarifa, "--Seleccione Tarifa--");
+                LimpiarDropDown(ddlTarifa, "-- Seleccione Tarifa --");
                 return;
             }
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
+                // 1. Definimos los únicos IDs de Tipos_Tarifa que queremos mostrar
+                var idsPermitidos = new List<int> { 1, 2, 6 }; // 1:Por hora, 2:Por día, 6:Quincenal
+
+                // 2. Traemos la lista de la BD, filtrando por los IDs permitidos
                 var tarifas = db.Tarifa
-                    .Where(t => t.Est_id == estacionamientoId && t.Categoria_id == categoriaSeleccionadaId)
+                    .Where(t => t.Est_id == estacionamientoId &&
+                                t.Categoria_id == categoriaSeleccionadaId &&
+                                idsPermitidos.Contains(t.Tipos_Tarifa.Tipos_tarifa_id)) // <-- ¡FILTRO AÑADIDO AQUÍ!
                     .Select(t => new
                     {
                         t.Tarifa_id,
                         Descripcion = t.Tipos_Tarifa != null ? t.Tipos_Tarifa.Tipos_tarifa_descripcion : "(Sin descripción)",
-                        t.Tarifa_Monto
+                        t.Tarifa_Monto,
+                        t.Tipos_Tarifa.Tipos_tarifa_id
                     })
-                    .OrderBy(t => t.Descripcion)
+                    .ToList(); // Traemos la lista filtrada a memoria
+
+                // 3. Definimos el orden lógico (ahora solo con los IDs permitidos)
+                var ordenLogicoIDs = new List<int> { 1, 2, 6 };
+
+                // 4. Reordenamos la lista en memoria
+                var tarifasOrdenadas = tarifas
+                    .OrderBy(t => ordenLogicoIDs.IndexOf(t.Tipos_tarifa_id))
                     .ToList();
 
-                if (tarifas.Any())
+                // 5. Continuamos con la lógica para poblar el dropdown
+                if (tarifasOrdenadas.Any())
                 {
-                    ddlTarifa.DataSource = tarifas;
+                    ddlTarifa.DataSource = tarifasOrdenadas;
                     ddlTarifa.DataTextField = "Descripcion";
                     ddlTarifa.DataValueField = "Tarifa_id";
                     ddlTarifa.DataBind();
-                    ddlTarifa.Items.Insert(0, new ListItem("--Seleccione Tarifa--", "0"));
+                    ddlTarifa.Items.Insert(0, new ListItem("-- Seleccione Tarifa --", "0"));
                     ddlTarifa.Enabled = true;
                 }
                 else
                 {
-                    LimpiarDropDown(ddlTarifa, "--Seleccione Tarifa--");
+                    LimpiarDropDown(ddlTarifa, "-- Seleccione Tarifa --");
                 }
             }
         }

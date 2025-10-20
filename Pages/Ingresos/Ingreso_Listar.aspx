@@ -108,20 +108,10 @@
                     if (diasCobrar < 1) diasCobrar = 1;
                     return diasCobrar * tarifaBase;
 
-                case "Semanal":
-                    let semanas = Math.ceil(duracionHoras / (24 * 7));
-                    if (semanas < 1) semanas = 1;
-                    return semanas * tarifaBase;
-
-                case "Mensual":
-                    let meses = Math.ceil(duracionHoras / (24 * 30));
-                    if (meses < 1) meses = 1;
-                    return meses * tarifaBase;
-
-                case "Anual":
-                    let anios = Math.ceil(duracionHoras / (24 * 365));
-                    if (anios < 1) anios = 1;
-                    return anios * tarifaBase;
+                case "Quincenal":
+                    let quincenas = Math.ceil(duracionHoras / (24 * 15));
+                    if (quincenas < 1) quincenas = 1;
+                    return quincenas * tarifaBase;
 
                 default:
                     throw `Tipo de tarifa desconocido: ${tarifa}`;

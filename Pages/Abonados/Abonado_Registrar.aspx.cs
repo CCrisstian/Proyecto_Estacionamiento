@@ -68,37 +68,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         }
 
 
-        // VALIDACION - DNI
-        protected void cvDNI_ServerValidate(object source, ServerValidateEventArgs args)
-        {
-            var validator = (CustomValidator)source;
-            string dni = TextDNI.Text.Trim(); // Usamos TextDNI, que es el ID de tu TextBox
-
-            // 1. No debe aceptar vacío
-            if (string.IsNullOrWhiteSpace(dni))
-            {
-                validator.ErrorMessage = "El DNI es obligatorio.";
-                args.IsValid = false;
-                return; // Detenemos la validación aquí
-            }
-
-            // 2. Usamos una Expresión Regular para validar el resto de las reglas de una sola vez:
-            //    - Solo números enteros
-            //    - Exactamente 8 dígitos
-            //    - Sin letras ni símbolos
-            var regex = new Regex(@"^\d{8}$");
-
-            if (!regex.IsMatch(dni))
-            {
-                validator.ErrorMessage = "El DNI debe contener exactamente 8 números.";
-                args.IsValid = false;
-                return;
-            }
-
-            // Si pasó todas las validaciones, es válido
-            args.IsValid = true;
-        }
-
         // VALIDACION - Nombre
         protected void cvNombre_ServerValidate(object source, ServerValidateEventArgs args)
         {
@@ -267,20 +236,35 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
+                // 1. Definimos los únicos IDs de Tipos_Tarifa que queremos mostrar
+                var idsAbonos = new List<int> { 3, 4, 5 }; // 3:Semanal, 4:Mensual, 5:Anual
+
+                // 2. Traemos la lista de la BD, filtrando por los IDs permitidos
                 var tarifas = db.Tarifa
-                    .Where(t => t.Est_id == estacionamientoId && t.Categoria_id == categoriaSeleccionadaId)
+                    .Where(t => t.Est_id == estacionamientoId &&
+                                t.Categoria_id == categoriaSeleccionadaId &&
+                                idsAbonos.Contains(t.Tipos_Tarifa.Tipos_tarifa_id)) // <-- FILTRO AÑADIDO
                     .Select(t => new
                     {
                         t.Tarifa_id,
                         Descripcion = t.Tipos_Tarifa != null ? t.Tipos_Tarifa.Tipos_tarifa_descripcion : "(Sin descripción)",
-                        t.Tarifa_Monto
+                        t.Tarifa_Monto,
+                        t.Tipos_Tarifa.Tipos_tarifa_id // <-- Necesario para ordenar
                     })
-                    .OrderBy(t => t.Descripcion)
+                    .ToList(); // Traemos la lista a memoria
+
+                // 3. Definimos el orden lógico (Semanal, Mensual, Anual)
+                var ordenLogicoIDs = new List<int> { 3, 4, 5 };
+
+                // 4. Ordenamos la lista en memoria
+                var tarifasOrdenadas = tarifas
+                    .OrderBy(t => ordenLogicoIDs.IndexOf(t.Tipos_tarifa_id))
                     .ToList();
 
-                if (tarifas.Any())
+                // 5. Continuamos con la lógica para poblar el dropdown
+                if (tarifasOrdenadas.Any())
                 {
-                    ddlTipoAbono.DataSource = tarifas;
+                    ddlTipoAbono.DataSource = tarifasOrdenadas; // Usamos la lista ordenada
                     ddlTipoAbono.DataTextField = "Descripcion";
                     ddlTipoAbono.DataValueField = "Tarifa_id";
                     ddlTipoAbono.DataBind();
@@ -646,7 +630,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         var nuevoTitular = new Titular_Abono();
                         // ... (asignación de campos de nuevoTitular)
                         nuevoTitular.TAB_Cuil_Cuit = Convert.ToInt64(txtCuilCuit.Text.Trim());
-                        nuevoTitular.TAB_DNI = Convert.ToInt32(TextDNI.Text.Trim());
                         nuevoTitular.TAB_Telefono = Convert.ToInt32(txtTelefono.Text.Trim());
                         nuevoTitular.TAB_Nombre = txtNombre.Text.Trim();
                         nuevoTitular.TAB_Apellido = string.IsNullOrWhiteSpace(txtApellido.Text) ? null : txtApellido.Text.Trim();
@@ -668,7 +651,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         nuevoAbono.Plaza_id = plazaId;
                         nuevoAbono.TAB_Cuil_Cuit = nuevoTitular.TAB_Cuil_Cuit;
                         nuevoAbono.TAB_Fecha_Desde = nuevoTitular.TAB_Fecha_Desde;
-                        nuevoAbono.TAB_DNI = nuevoTitular.TAB_DNI;
                         db.Abono.Add(nuevoAbono);
                         db.SaveChanges();
 
@@ -695,7 +677,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         nuevoPago.Plaza_id = nuevoAbono.Plaza_id;
                         nuevoPago.TAB_Cuil_Cuit = nuevoAbono.TAB_Cuil_Cuit;
                         nuevoPago.TAB_Fecha_Desde = nuevoAbono.TAB_Fecha_Desde;
-                        nuevoPago.TAB_DNI = nuevoAbono.TAB_DNI;
                         nuevoPago.Metodo_Pago_id = Convert.ToInt32(ddlMetodoPago.SelectedValue);
                         nuevoPago.PA_Monto = Convert.ToDouble(lblTotal.Text);
                         db.Pagos_Abonados.Add(nuevoPago);
@@ -740,7 +721,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                                     Plaza_id = nuevoAbono.Plaza_id,
                                     TAB_Cuil_Cuit = nuevoAbono.TAB_Cuil_Cuit,
                                     TAB_Fecha_Desde = nuevoAbono.TAB_Fecha_Desde,
-                                    TAB_DNI = nuevoAbono.TAB_DNI
                                 };
                                 db.Vehiculo_Abonado.Add(nuevaRelacion);
                             }

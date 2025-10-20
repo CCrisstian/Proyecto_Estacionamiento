@@ -19,15 +19,6 @@
                 Display="Dynamic"
                 ForeColor="Red"
                 ValidationGroup="Abonado" />
-
-            <label for="txtDNI">DNI:</label>
-            <asp:TextBox ID="TextDNI" runat="server" CssClass="form-control" />
-            <asp:CustomValidator ID="cvDNI" runat="server"
-                OnServerValidate="cvDNI_ServerValidate"
-                ErrorMessage=""
-                Display="Dynamic"
-                ForeColor="Red"
-                ValidationGroup="Abonado" />
         </div>
 
         <!-- Nombre -->
@@ -72,8 +63,6 @@
             <!-- Patentes -->
             <label for="txtPatente">Patente(s):</label>
             <asp:TextBox ID="txtPatente" runat="server" CssClass="form-control" placeholder="Clic para agregar patentes" />
-
-            <button id="btnAbrirModalPatentes" type="button" class="btn btn-info btn-sm ml-2">Administrar Patentes</button>
 
             <asp:CustomValidator ID="cvPatente" runat="server"
                 OnServerValidate="cvPatente_ServerValidate"

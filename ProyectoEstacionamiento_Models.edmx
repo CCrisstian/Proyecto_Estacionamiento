@@ -11,13 +11,11 @@
             <PropertyRef Name="Plaza_id" />
             <PropertyRef Name="TAB_Cuil_Cuit" />
             <PropertyRef Name="TAB_Fecha_Desde" />
-            <PropertyRef Name="TAB_DNI" />
           </Key>
           <Property Name="Est_id" Type="int" Nullable="false" />
           <Property Name="Plaza_id" Type="int" Nullable="false" />
           <Property Name="TAB_Cuil_Cuit" Type="bigint" Nullable="false" />
           <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
-          <Property Name="TAB_DNI" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Acepta_Metodo_De_Pago">
           <Key>
@@ -105,14 +103,13 @@
           <Key>
             <PropertyRef Name="PA_id" />
           </Key>
-          <Property Name="PA_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="PA_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Est_id" Type="int" Nullable="false" />
           <Property Name="Plaza_id" Type="int" Nullable="false" />
           <Property Name="TAB_Cuil_Cuit" Type="bigint" Nullable="false" />
           <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
           <Property Name="Metodo_Pago_id" Type="int" Nullable="false" />
           <Property Name="PA_Monto" Type="float" Nullable="false" />
-          <Property Name="TAB_DNI" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Playero">
           <Key>
@@ -156,7 +153,6 @@
           <Key>
             <PropertyRef Name="TAB_Cuil_Cuit" />
             <PropertyRef Name="TAB_Fecha_Desde" />
-            <PropertyRef Name="TAB_DNI" />
           </Key>
           <Property Name="TAB_Cuil_Cuit" Type="bigint" Nullable="false" />
           <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
@@ -164,7 +160,6 @@
           <Property Name="TAB_Nombre" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="TAB_Apellido" Type="varchar" MaxLength="50" />
           <Property Name="TAB_Telefono" Type="int" Nullable="false" />
-          <Property Name="TAB_DNI" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Turno">
           <Key>
@@ -211,7 +206,6 @@
           <Property Name="Plaza_id" Type="int" Nullable="false" />
           <Property Name="TAB_Cuil_Cuit" Type="bigint" Nullable="false" />
           <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
-          <Property Name="TAB_DNI" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_Abono_Plaza">
           <End Role="Plaza" Type="Self.Plaza" Multiplicity="1" />
@@ -234,12 +228,10 @@
             <Principal Role="Titular_Abono">
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Principal>
             <Dependent Role="Abono">
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -386,14 +378,12 @@
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Principal>
             <Dependent Role="Pagos_Abonados">
               <PropertyRef Name="Est_id" />
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -552,14 +542,12 @@
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Principal>
             <Dependent Role="Vehiculo_Abonado">
               <PropertyRef Name="Est_id" />
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -907,7 +895,6 @@
           <Property Name="Plaza_id" Type="Int32" Nullable="false" />
           <Property Name="TAB_Cuil_Cuit" Type="Int64" Nullable="false" />
           <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TAB_DNI" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono" FromRole="Vehiculo_Abonado" ToRole="Abono" />
         </EntityType>
         <Association Name="FK_Acepta_Metodo_De_Pago_Estacionamiento">
@@ -1311,13 +1298,11 @@
             <PropertyRef Name="Plaza_id" />
             <PropertyRef Name="TAB_Cuil_Cuit" />
             <PropertyRef Name="TAB_Fecha_Desde" />
-            <PropertyRef Name="TAB_DNI" />
           </Key>
           <Property Name="Est_id" Type="Int32" Nullable="false" />
           <Property Name="Plaza_id" Type="Int32" Nullable="false" />
           <Property Name="TAB_Cuil_Cuit" Type="Int64" Nullable="false" />
           <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TAB_DNI" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Plaza" Relationship="ProyectoEstacionamientoModel.FK_Abono_Plaza" FromRole="Abono" ToRole="Plaza" />
           <NavigationProperty Name="Titular_Abono" Relationship="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" FromRole="Abono" ToRole="Titular_Abono" />
           <NavigationProperty Name="Pagos_Abonados" Relationship="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" FromRole="Abono" ToRole="Pagos_Abonados" />
@@ -1334,7 +1319,6 @@
           <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Metodo_Pago_id" Type="Int32" Nullable="false" />
           <Property Name="PA_Monto" Type="Double" Nullable="false" />
-          <Property Name="TAB_DNI" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" FromRole="Pagos_Abonados" ToRole="Abono" />
           <NavigationProperty Name="Acepta_Metodo_De_Pago" Relationship="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" FromRole="Pagos_Abonados" ToRole="Acepta_Metodo_De_Pago" />
         </EntityType>
@@ -1342,7 +1326,6 @@
           <Key>
             <PropertyRef Name="TAB_Cuil_Cuit" />
             <PropertyRef Name="TAB_Fecha_Desde" />
-            <PropertyRef Name="TAB_DNI" />
           </Key>
           <Property Name="TAB_Cuil_Cuit" Type="Int64" Nullable="false" />
           <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
@@ -1350,7 +1333,6 @@
           <Property Name="TAB_Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TAB_Apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TAB_Telefono" Type="Int32" Nullable="false" />
-          <Property Name="TAB_DNI" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" FromRole="Titular_Abono" ToRole="Abono" />
         </EntityType>
         <Association Name="FK_Abono_Plaza">
@@ -1374,12 +1356,10 @@
             <Principal Role="Titular_Abono">
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Principal>
             <Dependent Role="Abono">
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1392,14 +1372,12 @@
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Principal>
             <Dependent Role="Pagos_Abonados">
               <PropertyRef Name="Est_id" />
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1412,14 +1390,12 @@
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Principal>
             <Dependent Role="Vehiculo_Abonado">
               <PropertyRef Name="Est_id" />
               <PropertyRef Name="Plaza_id" />
               <PropertyRef Name="TAB_Cuil_Cuit" />
               <PropertyRef Name="TAB_Fecha_Desde" />
-              <PropertyRef Name="TAB_DNI" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1610,7 +1586,6 @@
           <EntitySetMapping Name="Vehiculo_Abonado">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Vehiculo_Abonado">
               <MappingFragment StoreEntitySet="Vehiculo_Abonado">
-                <ScalarProperty Name="TAB_DNI" ColumnName="TAB_DNI" />
                 <ScalarProperty Name="TAB_Fecha_Desde" ColumnName="TAB_Fecha_Desde" />
                 <ScalarProperty Name="TAB_Cuil_Cuit" ColumnName="TAB_Cuil_Cuit" />
                 <ScalarProperty Name="Plaza_id" ColumnName="Plaza_id" />
@@ -1624,7 +1599,6 @@
           <EntitySetMapping Name="Abono">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Abono">
               <MappingFragment StoreEntitySet="Abono">
-                <ScalarProperty Name="TAB_DNI" ColumnName="TAB_DNI" />
                 <ScalarProperty Name="TAB_Fecha_Desde" ColumnName="TAB_Fecha_Desde" />
                 <ScalarProperty Name="TAB_Cuil_Cuit" ColumnName="TAB_Cuil_Cuit" />
                 <ScalarProperty Name="Plaza_id" ColumnName="Plaza_id" />
@@ -1635,7 +1609,6 @@
           <EntitySetMapping Name="Pagos_Abonados">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Pagos_Abonados">
               <MappingFragment StoreEntitySet="Pagos_Abonados">
-                <ScalarProperty Name="TAB_DNI" ColumnName="TAB_DNI" />
                 <ScalarProperty Name="PA_Monto" ColumnName="PA_Monto" />
                 <ScalarProperty Name="Metodo_Pago_id" ColumnName="Metodo_Pago_id" />
                 <ScalarProperty Name="TAB_Fecha_Desde" ColumnName="TAB_Fecha_Desde" />
@@ -1649,7 +1622,6 @@
           <EntitySetMapping Name="Titular_Abono">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Titular_Abono">
               <MappingFragment StoreEntitySet="Titular_Abono">
-                <ScalarProperty Name="TAB_DNI" ColumnName="TAB_DNI" />
                 <ScalarProperty Name="TAB_Telefono" ColumnName="TAB_Telefono" />
                 <ScalarProperty Name="TAB_Apellido" ColumnName="TAB_Apellido" />
                 <ScalarProperty Name="TAB_Nombre" ColumnName="TAB_Nombre" />

@@ -26,7 +26,6 @@ namespace Proyecto_Estacionamiento
         public string TAB_Nombre { get; set; }
         public string TAB_Apellido { get; set; }
         public int TAB_Telefono { get; set; }
-        public int TAB_DNI { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Abono> Abono { get; set; }

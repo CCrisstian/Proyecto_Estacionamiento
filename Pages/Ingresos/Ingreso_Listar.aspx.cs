@@ -560,20 +560,10 @@ namespace Proyecto_Estacionamiento
                     if (diasCobrar < 1) diasCobrar = 1;
                     return diasCobrar * tarifaBase;
 
-                case "Semanal":
-                    int semanas = (int)Math.Ceiling(duracion.TotalHours / (24 * 7));
-                    if (semanas < 1) semanas = 1;
-                    return semanas * tarifaBase;
-
-                case "Mensual":
-                    int meses = (int)Math.Ceiling(duracion.TotalHours / (24 * 30));
-                    if (meses < 1) meses = 1;
-                    return meses * tarifaBase;
-
-                case "Anual":
-                    int anios = (int)Math.Ceiling(duracion.TotalHours / (24 * 365));
-                    if (anios < 1) anios = 1;
-                    return anios * tarifaBase;
+                case "Quincenal":
+                    int quincenas = (int)Math.Ceiling(duracion.TotalHours / (24 * 15)); // 15 días
+                    if (quincenas < 1) quincenas = 1;
+                    return quincenas * tarifaBase;
 
                 default:
                     throw new Exception($"Tipo de tarifa desconocido: {tarifa}");

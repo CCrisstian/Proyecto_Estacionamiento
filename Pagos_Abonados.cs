@@ -21,7 +21,6 @@ namespace Proyecto_Estacionamiento
         public System.DateTime TAB_Fecha_Desde { get; set; }
         public int Metodo_Pago_id { get; set; }
         public double PA_Monto { get; set; }
-        public int TAB_DNI { get; set; }
     
         public virtual Abono Abono { get; set; }
         public virtual Acepta_Metodo_De_Pago Acepta_Metodo_De_Pago { get; set; }
