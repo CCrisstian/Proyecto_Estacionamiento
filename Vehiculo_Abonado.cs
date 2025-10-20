@@ -19,11 +19,12 @@ namespace Proyecto_Estacionamiento
         public int Tarifa_id { get; set; }
         public int Est_id { get; set; }
         public int Plaza_id { get; set; }
-        public long TAB_Cuil_Cuit { get; set; }
+        public long Numero_Identificacion { get; set; }
         public System.DateTime TAB_Fecha_Desde { get; set; }
+        public string Tipo_Identificacion { get; set; }
     
+        public virtual Abono Abono { get; set; }
         public virtual Tarifa Tarifa { get; set; }
         public virtual Vehiculo Vehiculo { get; set; }
-        public virtual Abono Abono { get; set; }
     }
 }

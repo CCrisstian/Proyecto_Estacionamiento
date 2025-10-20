@@ -9,12 +9,28 @@
 
         <hr />
 
-        <!-- CUIL / CUIT -->
+        <!-- Tipo_Identificacion  -->
         <div class="form-group form-inline">
-            <label for="txtCuilCuit">CUIL / CUIT:</label>
-            <asp:TextBox ID="txtCuilCuit" runat="server" CssClass="form-control" />
-            <asp:CustomValidator ID="cvCuilCuit" runat="server"
-                OnServerValidate="cvCuilCuit_ServerValidate"
+            <label for="ddlTipoIdentificacion">Tipo de Identificación:</label>
+            <asp:DropDownList ID="ddlTipoIdentificacion" runat="server" CssClass="form-control">
+                <asp:ListItem Text="-- Seleccione --" Value="" />
+                <asp:ListItem Text="CUIL" Value="CUIL" />
+                <asp:ListItem Text="CUIT" Value="CUIT" />
+            </asp:DropDownList>
+            <asp:RequiredFieldValidator ID="rfvTipoIdentificacion" runat="server"
+                ControlToValidate="ddlTipoIdentificacion"
+                ErrorMessage="Debe seleccionar un Tipo de Identificación."
+                Display="Dynamic"
+                ForeColor="Red"
+                InitialValue=""
+                ValidationGroup="Abonado" />
+
+
+        <!-- Numero_Identificacion -->
+            <label for="txtNumero_Identificacion">Numero de Identificación:</label>
+            <asp:TextBox ID="txtNumero_Identificacion" runat="server" CssClass="form-control" />
+            <asp:CustomValidator ID="cvNumero_Identificacion" runat="server"
+                OnServerValidate="cvNumero_Identificacion_ServerValidate"
                 ErrorMessage=""
                 Display="Dynamic"
                 ForeColor="Red"
@@ -301,10 +317,34 @@
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar"
                 CssClass="btn btn-primary"
                 ValidationGroup="Abonado"
+                OnClientClick="return confirmarGuardado();"
                 OnClick="btnGuardar_Click" />
         </div>
 
         <asp:Label ID="lblError" runat="server" ForeColor="Red" Font-Bold="true" EnableViewState="false"></asp:Label>
     </asp:Panel>
 
+        <%-- SweetAlert2 para mensajes de confirmación --%>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarGuardado() {
+            Swal.fire({
+                title: "¿Deseás registrar el 'Abono'?",
+                showDenyButton: true,
+                confirmButtonText: "Guardar",
+                denyButtonText: "Cancelar",
+                reverseButtons: true // 👈 Esto invierte el orden de los botones
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Evitar loop infinito llamando el click del botón
+                    // Usar __doPostBack para disparar postback sin recursión
+                    __doPostBack('<%= btnGuardar.UniqueID %>', '');
+                } else if (result.isDenied) {
+                    Swal.fire("'Abono' no registrado", "", "info");
+                }
+                // Si canceló, no hacemos nada
+            });
+            return false; // Esto previene el postback original hasta que confirmemos
+        }
+    </script>
 </asp:Content>

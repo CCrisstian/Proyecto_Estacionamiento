@@ -33,8 +33,13 @@
             EmptyDataText="No se encontraron abonos vigentes...">
 
             <Columns>
+
+                <asp:BoundField DataField="TipoIdentificacion" HeaderText="Tipo Doc." SortExpression="TipoIdentificacion" />
+                <asp:BoundField DataField="NumeroIdentificacion" HeaderText="N° Identificación" SortExpression="NumeroIdentificacion" />
+
                 <asp:BoundField DataField="Nombre" HeaderText="Nombre" SortExpression="Nombre" />
                 <asp:BoundField DataField="Apellido" HeaderText="Apellido" SortExpression="Apellido" />
+
                 <asp:BoundField DataField="Plaza" HeaderText="Plaza" SortExpression="Plaza" />
 
                 <asp:TemplateField HeaderText="Detalles" ItemStyle-CssClass="grid-cell-centered">
@@ -49,7 +54,6 @@
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
-
         </asp:GridView>
     </div>
 

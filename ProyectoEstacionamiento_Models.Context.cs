@@ -40,9 +40,9 @@ namespace Proyecto_Estacionamiento
         public virtual DbSet<Turno> Turno { get; set; }
         public virtual DbSet<Usuarios> Usuarios { get; set; }
         public virtual DbSet<Vehiculo> Vehiculo { get; set; }
-        public virtual DbSet<Vehiculo_Abonado> Vehiculo_Abonado { get; set; }
         public virtual DbSet<Abono> Abono { get; set; }
         public virtual DbSet<Pagos_Abonados> Pagos_Abonados { get; set; }
         public virtual DbSet<Titular_Abono> Titular_Abono { get; set; }
+        public virtual DbSet<Vehiculo_Abonado> Vehiculo_Abonado { get; set; }
     }
 }

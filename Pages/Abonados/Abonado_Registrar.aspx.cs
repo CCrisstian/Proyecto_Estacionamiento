@@ -38,28 +38,28 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             }
         }
 
-        // VALIDACION - CUIL/CUIT
-        protected void cvCuilCuit_ServerValidate(object source, ServerValidateEventArgs args)
+        // VALIDACION - Numero_Identificacion
+        protected void cvNumero_Identificacion_ServerValidate(object source, ServerValidateEventArgs args)
         {
             var validator = (CustomValidator)source;
 
-            if (string.IsNullOrWhiteSpace(txtCuilCuit.Text))
+            if (string.IsNullOrWhiteSpace(txtNumero_Identificacion.Text))
             {
-                validator.ErrorMessage = "El CUIL / CUIT es obligatorio.";
+                validator.ErrorMessage = "El Numero de Identificación es obligatorio.";
                 args.IsValid = false;
                 return;
             }
 
-            if (!long.TryParse(txtCuilCuit.Text, out _))
+            if (!long.TryParse(txtNumero_Identificacion.Text, out _))
             {
-                validator.ErrorMessage = "El CUIL / CUIT debe contener solo números.";
+                validator.ErrorMessage = "El Numero de Identificación debe contener solo números.";
                 args.IsValid = false;
                 return;
             }
 
-            if (txtCuilCuit.Text.Length != 11)
+            if (txtNumero_Identificacion.Text.Length != 11)
             {
-                validator.ErrorMessage = "El CUIL / CUIT debe tener 11 dígitos.";
+                validator.ErrorMessage = "El Numero de Identificación debe tener 11 dígitos.";
                 args.IsValid = false;
                 return;
             }
@@ -629,7 +629,8 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         // ==========================================================
                         var nuevoTitular = new Titular_Abono();
                         // ... (asignación de campos de nuevoTitular)
-                        nuevoTitular.TAB_Cuil_Cuit = Convert.ToInt64(txtCuilCuit.Text.Trim());
+                        nuevoTitular.Numero_Identificacion = Convert.ToInt64(txtNumero_Identificacion.Text.Trim());
+                        nuevoTitular.Tipo_Identificacion = ddlTipoIdentificacion.SelectedValue;
                         nuevoTitular.TAB_Telefono = Convert.ToInt32(txtTelefono.Text.Trim());
                         nuevoTitular.TAB_Nombre = txtNombre.Text.Trim();
                         nuevoTitular.TAB_Apellido = string.IsNullOrWhiteSpace(txtApellido.Text) ? null : txtApellido.Text.Trim();
@@ -649,7 +650,8 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         // ... (asignación de campos de nuevoAbono)
                         nuevoAbono.Est_id = estId.Value;
                         nuevoAbono.Plaza_id = plazaId;
-                        nuevoAbono.TAB_Cuil_Cuit = nuevoTitular.TAB_Cuil_Cuit;
+                        nuevoAbono.Numero_Identificacion = nuevoTitular.Numero_Identificacion;
+                        nuevoAbono.Tipo_Identificacion = nuevoTitular.Tipo_Identificacion;
                         nuevoAbono.TAB_Fecha_Desde = nuevoTitular.TAB_Fecha_Desde;
                         db.Abono.Add(nuevoAbono);
                         db.SaveChanges();
@@ -675,7 +677,8 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         // ... (asignación de campos de nuevoPago)
                         nuevoPago.Est_id = nuevoAbono.Est_id;
                         nuevoPago.Plaza_id = nuevoAbono.Plaza_id;
-                        nuevoPago.TAB_Cuil_Cuit = nuevoAbono.TAB_Cuil_Cuit;
+                        nuevoPago.Numero_Identificacion = nuevoAbono.Numero_Identificacion;
+                        nuevoPago.Tipo_Identificacion = nuevoAbono.Tipo_Identificacion;
                         nuevoPago.TAB_Fecha_Desde = nuevoAbono.TAB_Fecha_Desde;
                         nuevoPago.Metodo_Pago_id = Convert.ToInt32(ddlMetodoPago.SelectedValue);
                         nuevoPago.PA_Monto = Convert.ToDouble(lblTotal.Text);
@@ -719,7 +722,8 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                                     Tarifa_id = tarifaId,
                                     Est_id = nuevoAbono.Est_id,
                                     Plaza_id = nuevoAbono.Plaza_id,
-                                    TAB_Cuil_Cuit = nuevoAbono.TAB_Cuil_Cuit,
+                                    Numero_Identificacion = nuevoAbono.Numero_Identificacion,
+                                    Tipo_Identificacion = nuevoAbono.Tipo_Identificacion,
                                     TAB_Fecha_Desde = nuevoAbono.TAB_Fecha_Desde,
                                 };
                                 db.Vehiculo_Abonado.Add(nuevaRelacion);

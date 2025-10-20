@@ -33,22 +33,40 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         protected global::System.Web.UI.WebControls.Label lblTitulo;
 
         /// <summary>
-        /// Control txtCuilCuit.
+        /// Control ddlTipoIdentificacion.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCuilCuit;
+        protected global::System.Web.UI.WebControls.DropDownList ddlTipoIdentificacion;
 
         /// <summary>
-        /// Control cvCuilCuit.
+        /// Control rfvTipoIdentificacion.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator cvCuilCuit;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTipoIdentificacion;
+
+        /// <summary>
+        /// Control txtNumero_Identificacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNumero_Identificacion;
+
+        /// <summary>
+        /// Control cvNumero_Identificacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvNumero_Identificacion;
 
         /// <summary>
         /// Control txtNombre.

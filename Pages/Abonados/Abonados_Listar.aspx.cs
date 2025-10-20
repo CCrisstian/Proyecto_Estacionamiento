@@ -50,17 +50,16 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                     // 1. Consulta base sobre Abono (IQueryable)
                     IQueryable<Abono> query = db.Abono;
 
-                    // 2. Aplicamos el filtro de seguridad por ROL
+                    // 2. Aplicamos el filtro de seguridad por 
                     if (tipoUsuario == "Dueño")
                     {
-                        if (Session["Dueño_EstId"] != null)
-                        {
+                        if (Session["Dueño_EstId"] != null){
                             int estIdSeleccionado = (int)Session["Dueño_EstId"];
+
                             // Filtra la consulta base 'Abono' por Est_id
                             query = query.Where(a => a.Est_id == estIdSeleccionado);
                         }
-                        else
-                        {
+                        else{
                             var estIdsDelDueño = db.Estacionamiento
                                                    .Where(e => e.Dueño_Legajo == legajo)
                                                    .Select(e => e.Est_id).ToList();
@@ -75,40 +74,41 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         query = query.Where(a => a.Est_id == estIdPlayero);
                     }
 
-                    // 3. Filtramos por ABONOS VIGENTES
+                    // Filtramos por ABONOS VIGENTES
                     query = query.Where(a => a.Titular_Abono.TAB_Fecha_Vto >= DateTime.Now);
 
-                    // 4. Aplicamos el filtro por PATENTE (si se proveyó una)
-                    if (!string.IsNullOrWhiteSpace(patenteFiltro))
-                    {
+                    // Aplicamos el filtro por PATENTE (si se proveyó una)
+                    if (!string.IsNullOrWhiteSpace(patenteFiltro)){
                         // Filtra si CUALQUIER Vehiculo_Abonado asociado a este Abono contiene la patente
                         query = query.Where(a => a.Vehiculo_Abonado.Any(va => va.Vehiculo_Patente.ToUpper().Contains(patenteFiltro.ToUpper())));
                     }
 
-                    // 5. Proyectamos los datos para el Grid y el Modal
+                    // Proyectamos los datos para el Grid y el Modal
                     var abonos = query
                         .OrderByDescending(a => a.TAB_Fecha_Desde)
-                        .Select(a => new // 'a' es un objeto 'Abono'
+                        .Select(a => new
                         {
-                            // Datos para el Grid 
                             Nombre = a.Titular_Abono.TAB_Nombre,
                             Apellido = a.Titular_Abono.TAB_Apellido,
                             Plaza = a.Plaza.Plaza_Nombre,
 
-                            // Datos para el Modal 
+                            TipoIdentificacion = a.Titular_Abono.Tipo_Identificacion,
+                            NumeroIdentificacion = a.Titular_Abono.Numero_Identificacion,
+
+                            // Datos para el Modal
                             FechaDesde = a.TAB_Fecha_Desde,
                             FechaVto = a.Titular_Abono.TAB_Fecha_Vto,
                             PatentesList = a.Vehiculo_Abonado.Select(va => va.Vehiculo_Patente)
                         })
-                        .ToList() // Traemos los datos de la BD a memoria...
-                        .Select(dto => new // ...y ahora formateamos los datos en C#
+                        .ToList() // Traemos los datos a memoria...
+                        .Select(dto => new // ...y formateamos
                         {
                             dto.Nombre,
                             dto.Apellido,
                             dto.Plaza,
-                            // Convertimos la lista de patentes a un solo string
+                            dto.TipoIdentificacion,
+                            dto.NumeroIdentificacion,
                             PatentesStr = string.Join(", ", dto.PatentesList),
-                            // Formateamos las fechas para el modal
                             FechaDesdeStr = dto.FechaDesde.ToString("dd/MM/yyyy HH:mm"),
                             FechaVtoStr = dto.FechaVto.ToString("dd/MM/yyyy HH:mm")
                         });

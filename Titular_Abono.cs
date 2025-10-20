@@ -20,12 +20,13 @@ namespace Proyecto_Estacionamiento
             this.Abono = new HashSet<Abono>();
         }
     
-        public long TAB_Cuil_Cuit { get; set; }
+        public long Numero_Identificacion { get; set; }
         public System.DateTime TAB_Fecha_Desde { get; set; }
         public System.DateTime TAB_Fecha_Vto { get; set; }
         public string TAB_Nombre { get; set; }
         public string TAB_Apellido { get; set; }
         public int TAB_Telefono { get; set; }
+        public string Tipo_Identificacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Abono> Abono { get; set; }
