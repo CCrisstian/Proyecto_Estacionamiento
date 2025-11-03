@@ -21,8 +21,7 @@ namespace Proyecto_Estacionamiento
         }
     
         public long Numero_Identificacion { get; set; }
-        public System.DateTime TAB_Fecha_Desde { get; set; }
-        public System.DateTime TAB_Fecha_Vto { get; set; }
+        public System.DateTime TAB_Fecha_Alta { get; set; }
         public string TAB_Nombre { get; set; }
         public string TAB_Apellido { get; set; }
         public int TAB_Telefono { get; set; }

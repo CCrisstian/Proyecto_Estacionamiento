@@ -166,6 +166,7 @@
     <Content Include="Pages\Tarifas\Tarifa_Listar.aspx" />
     <Content Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx" />
     <Content Include="Pages\Turnos\Turno_Listar.aspx" />
+    <Content Include="Pages\Login\Web.config" />
     <Content Include="ProyectoEstacionamiento_Models.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
@@ -175,14 +176,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
       <LastGenOutput>ProyectoEstacionamiento_Models.cs</LastGenOutput>
-    </Content>
-    <Content Include="Pages\Login\Web.config" />
-    <EntityDeploy Include="ProyectoEstacionamiento_Models.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ProyectoEstacionamiento_Models.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="ProyectoEstacionamiento_Models.edmx.diagram">
-      <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
     </Content>
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -212,6 +205,13 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <EntityDeploy Include="ProyectoEstacionamiento_Models.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ProyectoEstacionamiento_Models.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="ProyectoEstacionamiento_Models.edmx.diagram">
+      <DependentUpon>ProyectoEstacionamiento_Models.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />

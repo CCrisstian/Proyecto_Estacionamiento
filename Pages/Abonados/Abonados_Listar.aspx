@@ -2,6 +2,15 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+    <%-- ESTILO FILA --%>
+    <style type="text/css">
+        .abono-vencido-hoy {
+            background-color: #d24025; /* Un rojo pálido */
+            color: #721c24 !important; /* Texto oscuro para contraste */
+        }
+    </style>
+    <%-- FIN DEL BLOQUE DE ESTILO --%>
+
     <div class="header-row">
         <h2>Abonados</h2>
         <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
@@ -30,7 +39,8 @@
             AutoGenerateColumns="False"
             CssClass="grid"
             Width="100%"
-            EmptyDataText="No se encontraron abonos vigentes...">
+            EmptyDataText="No se encontraron abonos vigentes..."
+            OnRowDataBound="gvAbonos_RowDataBound">
 
             <Columns>
 
@@ -49,7 +59,9 @@
                             onclick="mostrarDetallesAbono(this); return false;"
                             data-patentes='<%# Eval("PatentesStr") %>'
                             data-desde='<%# Eval("FechaDesdeStr") %>'
-                            data-hasta='<%# Eval("FechaVtoStr") %>'>🔍
+                            data-hasta='<%# Eval("FechaVtoStr") %>'
+                            data-vto-raw='<%# Eval("FechaVtoRaw") %>'
+                            data-tipoabono='<%# Eval("TipoAbono") %>'>🔍
                         </a>
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -61,40 +73,55 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
-
-        // Función JS que lee los datos y muestra el modal
         function mostrarDetallesAbono(elementoBoton) {
 
-            // Leemos los datos desde el dataset
+            // 1. Leemos los datos desde el dataset
             var patentes = elementoBoton.dataset.patentes;
             var desde = elementoBoton.dataset.desde;
             var hasta = elementoBoton.dataset.hasta;
+            var vtoRaw = elementoBoton.dataset.vtoRaw; // <-- Leemos la fecha raw
+            var tipoAbono = elementoBoton.dataset.tipoabono;
 
-            // Formateamos el string de patentes para que se vea como una lista
+            // 2. Comparamos si la fecha de vencimiento es hoy
+            var hoy = new Date();
+            var hoyStr = hoy.getFullYear() + '-' +
+                ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' +
+                ('0' + hoy.getDate()).slice(-2); // Formato YYYY-MM-DD
+
+            var venceHoy = (vtoRaw === hoyStr);
+            var swalIcon = venceHoy ? "warning" : "info"; // Cambia el icono si vence hoy
+            var mensajeVencimiento = venceHoy
+                ? '<p style="color:red; font-weight:bold;">¡Este Abono vence hoy!</p>'
+                : ''; // Agrega mensaje si vence hoy
+
+            // 3. Formateamos patentes
             var patentesHtml = patentes.split(',')
                 .map(p => p.trim())
                 .join('<br>');
-
-            if (!patentes || patentes.trim() === "") { // Mejor validación para patentes vacías
+            if (!patentes || patentes.trim() === "") {
                 patentesHtml = "No hay patentes asignadas.";
             }
 
-            // Creamos el HTML para el modal
+            // 4. Creamos el HTML para el modal (añadiendo el mensaje de vencimiento)
             var modalHtml = `
-        <div style="text-align:left; font-family:monospace; font-size: 1.1em;">
-            <p><b>Vigencia del Abono</b></p>
-            <p><b>Desde:</b> ${desde}</p>
-            <p><b>Hasta:</b> ${hasta}</p>
-            <hr/>
-            <p><b>Patentes Asignadas:</b></p>
-            <div style="padding-left: 15px;">${patentesHtml}</div>
-        </div>`;
+            <div style="text-align:left; font-family:monospace; font-size: 1.1em;">
+                ${mensajeVencimiento} <%-- Mensaje de vencimiento (si aplica) --%>
+                <hr/>
+                <p><b>Tipo de Abono:</b> ${tipoAbono}</p>
+                <hr/>
+                <h4>Vigencia del Abono</h4>
+                <p><b>Desde:</b> ${desde}</p>
+                <p><b>Hasta:</b> ${hasta}</p>
+                <hr/>
+                <h4>Patentes Asignadas:</h4>
+                <div style="padding-left: 15px;">${patentesHtml}</div>
+            </div>`;
 
-            // Mostramos el SweetAlert
+            // 5. Mostramos el SweetAlert (con el icono condicional)
             Swal.fire({
                 title: "Detalles del Abono",
                 html: modalHtml,
-                icon: "info",
+                icon: swalIcon, // Icono dinámico
                 confirmButtonText: "Cerrar"
             });
         }

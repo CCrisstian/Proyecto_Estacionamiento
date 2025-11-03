@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -39,32 +37,84 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         }
 
         // VALIDACION - Numero_Identificacion
-        protected void cvNumero_Identificacion_ServerValidate(object source, ServerValidateEventArgs args)
+        protected void CvNumero_Identificacion_ServerValidate(object source, ServerValidateEventArgs args)
         {
             var validator = (CustomValidator)source;
+            string numeroStr = txtNumero_Identificacion.Text.Trim();
+            string tipoId = ddlTipoIdentificacion.SelectedValue; // Leemos el tipo seleccionado
 
-            if (string.IsNullOrWhiteSpace(txtNumero_Identificacion.Text))
+            // 1. Validar que el número no esté vacío
+            if (string.IsNullOrWhiteSpace(numeroStr))
             {
-                validator.ErrorMessage = "El Numero de Identificación es obligatorio.";
+                validator.ErrorMessage = "El Número de Identificación es obligatorio.";
                 args.IsValid = false;
                 return;
             }
 
-            if (!long.TryParse(txtNumero_Identificacion.Text, out _))
+            // 2. Validar que sean solo números
+            // Usamos Regex para permitir cualquier cantidad de dígitos (luego validamos la longitud)
+            if (!Regex.IsMatch(numeroStr, @"^\d+$"))
             {
-                validator.ErrorMessage = "El Numero de Identificación debe contener solo números.";
+                validator.ErrorMessage = "El Número de Identificación debe contener solo números.";
                 args.IsValid = false;
                 return;
             }
 
-            if (txtNumero_Identificacion.Text.Length != 11)
-            {
-                validator.ErrorMessage = "El Numero de Identificación debe tener 11 dígitos.";
-                args.IsValid = false;
-                return;
-            }
+            // 3. Validar longitud y formato según el tipo seleccionado
+            args.IsValid = false; // Asumir inválido hasta que un caso lo valide
 
-            args.IsValid = true;
+            switch (tipoId)
+            {
+                case "CUIL":
+                case "CUIT":
+                    if (numeroStr.Length == 11)
+                    {
+                        args.IsValid = true;
+                    }
+                    else
+                    {
+                        validator.ErrorMessage = "El CUIT/CUIL debe tener 11 dígitos.";
+                    }
+                    break;
+
+                case "DNI":
+                    if (numeroStr.Length != 8)
+                    {
+                        validator.ErrorMessage = "El DNI debe tener 8 dígitos.";
+                    }
+                    else if (numeroStr.StartsWith("9"))
+                    {
+                        validator.ErrorMessage = "Un DNI de 8 dígitos no puede comenzar con 9. Si es DNI Extranjero, selecciónelo.";
+                    }
+                    else
+                    {
+                        args.IsValid = true;
+                    }
+                    break;
+
+                case "DNI-Extranjero":
+                    if (numeroStr.Length != 8)
+                    {
+                        validator.ErrorMessage = "El DNI Extranjero debe tener 8 dígitos.";
+                    }
+                    else if (!numeroStr.StartsWith("9"))
+                    {
+                        validator.ErrorMessage = "El DNI Extranjero debe comenzar con el dígito 9.";
+                    }
+                    else
+                    {
+                        args.IsValid = true;
+                    }
+                    break;
+
+                case "": // El usuario no seleccionó un tipo
+                    validator.ErrorMessage = "Debe seleccionar un Tipo de Identificación válido.";
+                    break;
+
+                default: // Un valor inesperado
+                    validator.ErrorMessage = "Tipo de Identificación no reconocido.";
+                    break;
+            }
         }
 
 
@@ -320,10 +370,12 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             ActualizarTotal();
         }
 
-
         // Plaza
         protected void CargarPlazasFiltradas(int? estacionamientoId, int categoriaSeleccionadaId)
         {
+            // Limpiamos el label de tipo de plaza CADA VEZ que se recargan las plazas
+            lblPlazaTipo.Text = string.Empty;
+
             if (categoriaSeleccionadaId == 0)   // Si no se seleccionó Categoría no se habilitan las Plazas
             {
                 LimpiarDropDown(ddlPlaza, "--Seleccione Plaza--");
@@ -355,8 +407,38 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             }
         }
 
+        protected void ddlPlaza_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Si el usuario selecciona "--Seleccione Plaza--" (valor "0")
+            if (ddlPlaza.SelectedValue == "0" || string.IsNullOrEmpty(ddlPlaza.SelectedValue))
+            {
+                lblPlazaTipo.Text = string.Empty;
+                return;
+            }
+
+            // Obtenemos los IDs necesarios para buscar la plaza
+            int plazaId = int.Parse(ddlPlaza.SelectedValue);
+            int? estacionamientoId = ObtenerEstacionamientoId();
+
+            using (var db = new ProyectoEstacionamientoEntities())
+            {
+                // Buscamos la plaza específica usando la clave primaria (Est_id y Plaza_id)
+                var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estacionamientoId && p.Plaza_id == plazaId);
+
+                if (plaza != null)
+                {
+                    // Asignamos el valor de Plaza_Tipo al Label
+                    lblPlazaTipo.Text = $"{plaza.Plaza_Tipo}";
+                }
+                else
+                {
+                    lblPlazaTipo.Text = string.Empty; // No debería pasar, pero por seguridad
+                }
+            }
+        }
+
         // VALIDACION - Plaza
-        protected void cvPlaza_ServerValidate(object source, ServerValidateEventArgs args)
+        protected void CvPlaza_ServerValidate(object source, ServerValidateEventArgs args)
         {
             var validator = (CustomValidator)source;
 
@@ -574,48 +656,94 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             }
         }
 
+        protected void TxtNumero_Identificacion_TextChanged(object sender, EventArgs e)
+        {
+            string numeroStr = txtNumero_Identificacion.Text.Trim();
+            string tipoId = ddlTipoIdentificacion.SelectedValue;
+
+            // Solo buscar si tenemos ambos datos y el número parece válido (11 dígitos)
+            if (!string.IsNullOrEmpty(numeroStr) && numeroStr.Length == 11 && long.TryParse(numeroStr, out long numeroParsed) && !string.IsNullOrEmpty(tipoId))
+            {
+                using (var db = new ProyectoEstacionamientoEntities()) // Usa el nombre correcto de tu contexto
+                {
+                    // Buscamos el último registro de titular con esa identificación (podría tener varios abonos históricos)
+                    var titularExistente = db.Titular_Abono
+                                            .Where(t => t.Numero_Identificacion == numeroParsed && t.Tipo_Identificacion == tipoId)
+                                            .OrderByDescending(t => t.TAB_Fecha_Alta) // Tomamos el más reciente
+                                            .FirstOrDefault();
+
+                    if (titularExistente != null)
+                    {
+                        // Autocompletar campos
+                        txtNombre.Text = titularExistente.TAB_Nombre;
+                        txtApellido.Text = titularExistente.TAB_Apellido;
+                        txtTelefono.Text = titularExistente.TAB_Telefono.ToString();
+
+                        // Deshabilitar campos para evitar edición accidental
+                        txtNombre.Enabled = false;
+                        txtApellido.Enabled = false;
+                        txtTelefono.Enabled = false;
+                    }
+                    else
+                    {
+                        // Si no se encuentra, limpiar campos (por si cambió el número)
+                        LimpiarCamposTitular();
+                        // Habilitar campos si estaban deshabilitados
+                        HabilitarCamposTitular(true);
+                    }
+                }
+            }
+            else
+            {
+                // Si el número/tipo no es válido, limpiar campos
+                LimpiarCamposTitular();
+                // Habilitar campos si estaban deshabilitados
+                HabilitarCamposTitular(true);
+            }
+        }
+
+        // Método auxiliar para limpiar campos
+        private void LimpiarCamposTitular()
+        {
+            txtNombre.Text = string.Empty;
+            txtApellido.Text = string.Empty;
+            txtTelefono.Text = string.Empty;
+        }
+
+        private void HabilitarCamposTitular(bool habilitar)
+        {
+            txtNombre.Enabled = habilitar;
+            txtApellido.Enabled = habilitar;
+            txtTelefono.Enabled = habilitar;
+        }
 
         // GUARDAR
-        protected void btnGuardar_Click(object sender, EventArgs e)
+        protected void BtnGuardar_Click(object sender, EventArgs e)
         {
-
-            // Limpiamos cualquier error anterior
             lblError.Text = "";
-
             try
             {
-                // ==========================================================
-                // 0. VALIDACIÓN DE DATOS PREVIA (FORMATO CORRECTO)
-                // ==========================================================
+                // 0. VALIDACIÓN DE DATOS PREVIA
                 Page.Validate("Abonado");
                 if (!Page.IsValid)
                 {
-                    lblError.Text = "Por favor, corrija los errores marcados en el formulario.";
                     return;
                 }
 
                 DateTime fechaDesde, fechaHasta;
                 var culture = System.Globalization.CultureInfo.InvariantCulture;
-
-                // Define el formato ISO que envía el control datetime-local
                 string formatoISO = "yyyy-MM-dd'T'HH:mm";
 
-                // 1. Validamos la fecha "Desde"
                 if (!DateTime.TryParseExact(txtDesde.Text, formatoISO, culture, System.Globalization.DateTimeStyles.None, out fechaDesde))
                 {
                     lblError.Text = $"Error en 'Fecha Desde'. El valor '{txtDesde.Text}' no es una fecha y hora válida.";
                     return;
                 }
-
-                // 2. Validamos la fecha "Hasta"
                 if (!DateTime.TryParseExact(txtHasta.Text, formatoISO, culture, System.Globalization.DateTimeStyles.None, out fechaHasta))
                 {
                     lblError.Text = $"Error en 'Fecha Hasta'. El valor '{txtHasta.Text}' no es una fecha y hora válida.";
                     return;
                 }
-
-
-                // Si llegamos aquí, las fechas son válidas y están cargadas en las variables.
 
                 // ==========================================================
                 // Comienza la transacción de la base de datos
@@ -625,19 +753,25 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                     using (var transaction = db.Database.BeginTransaction())
                     {
                         // ==========================================================
-                        // 1. INSERTAR "Titular_Abono"
+                        // 1. BUSCAR O INSERTAR "Titular_Abono"
                         // ==========================================================
-                        var nuevoTitular = new Titular_Abono();
-                        // ... (asignación de campos de nuevoTitular)
-                        nuevoTitular.Numero_Identificacion = Convert.ToInt64(txtNumero_Identificacion.Text.Trim());
-                        nuevoTitular.Tipo_Identificacion = ddlTipoIdentificacion.SelectedValue;
-                        nuevoTitular.TAB_Telefono = Convert.ToInt32(txtTelefono.Text.Trim());
-                        nuevoTitular.TAB_Nombre = txtNombre.Text.Trim();
-                        nuevoTitular.TAB_Apellido = string.IsNullOrWhiteSpace(txtApellido.Text) ? null : txtApellido.Text.Trim();
-                        nuevoTitular.TAB_Fecha_Desde = fechaDesde;
-                        nuevoTitular.TAB_Fecha_Vto = fechaHasta;
-                        db.Titular_Abono.Add(nuevoTitular);
-                        db.SaveChanges();
+                        long numeroIdParsed = Convert.ToInt64(txtNumero_Identificacion.Text.Trim());
+                        string tipoIdSeleccionado = ddlTipoIdentificacion.SelectedValue;
+
+                        Titular_Abono titularParaAbono = db.Titular_Abono
+                                                          .FirstOrDefault(t => t.Numero_Identificacion == numeroIdParsed && t.Tipo_Identificacion == tipoIdSeleccionado);
+
+                        if (titularParaAbono == null) // Si NO existe, lo creamos
+                        {
+                            titularParaAbono = new Titular_Abono();
+                            titularParaAbono.Numero_Identificacion = numeroIdParsed;
+                            titularParaAbono.Tipo_Identificacion = tipoIdSeleccionado;
+                            titularParaAbono.TAB_Telefono = Convert.ToInt32(txtTelefono.Text.Trim());
+                            titularParaAbono.TAB_Nombre = txtNombre.Text.Trim();
+                            titularParaAbono.TAB_Apellido = string.IsNullOrWhiteSpace(txtApellido.Text) ? null : txtApellido.Text.Trim();
+                            titularParaAbono.TAB_Fecha_Alta = fechaDesde;
+                            db.Titular_Abono.Add(titularParaAbono);
+                        }
 
                         // ==========================================================
                         // 2. INSERTAR "Abono"
@@ -647,13 +781,15 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         int plazaId = Convert.ToInt32(ddlPlaza.SelectedValue);
 
                         var nuevoAbono = new Abono();
-                        // ... (asignación de campos de nuevoAbono)
                         nuevoAbono.Est_id = estId.Value;
                         nuevoAbono.Plaza_id = plazaId;
-                        nuevoAbono.Numero_Identificacion = nuevoTitular.Numero_Identificacion;
-                        nuevoAbono.Tipo_Identificacion = nuevoTitular.Tipo_Identificacion;
-                        nuevoAbono.TAB_Fecha_Desde = nuevoTitular.TAB_Fecha_Desde;
+                        nuevoAbono.Numero_Identificacion = titularParaAbono.Numero_Identificacion;
+                        nuevoAbono.Tipo_Identificacion = titularParaAbono.Tipo_Identificacion;
+                        nuevoAbono.Fecha_Desde = fechaDesde;
+                        nuevoAbono.Fecha_Vto = fechaHasta;
                         db.Abono.Add(nuevoAbono);
+
+                        // Esto es necesario para que la BD genere el nuevo 'Id_Abono' (IDENTITY).
                         db.SaveChanges();
 
                         // ==========================================================
@@ -668,37 +804,28 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         {
                             throw new InvalidOperationException($"La plaza con ID {plazaId} no fue encontrada.");
                         }
-                        db.SaveChanges();
+                        // No guardamos aún, lo haremos junto con el pago y vehículos
 
                         // ==========================================================
                         // 4. INSERTAR "Pagos_Abonados"
                         // ==========================================================
                         var nuevoPago = new Pagos_Abonados();
-                        // ... (asignación de campos de nuevoPago)
+                        nuevoPago.Id_Abono = nuevoAbono.Id_Abono;
                         nuevoPago.Est_id = nuevoAbono.Est_id;
-                        nuevoPago.Plaza_id = nuevoAbono.Plaza_id;
-                        nuevoPago.Numero_Identificacion = nuevoAbono.Numero_Identificacion;
-                        nuevoPago.Tipo_Identificacion = nuevoAbono.Tipo_Identificacion;
-                        nuevoPago.TAB_Fecha_Desde = nuevoAbono.TAB_Fecha_Desde;
+                        nuevoPago.Fecha_Pago = fechaDesde;
                         nuevoPago.Metodo_Pago_id = Convert.ToInt32(ddlMetodoPago.SelectedValue);
                         nuevoPago.PA_Monto = Convert.ToDouble(lblTotal.Text);
                         db.Pagos_Abonados.Add(nuevoPago);
-                        db.SaveChanges();
 
                         // ==========================================================
-                        // 5 & 6. INSERTAR "Vehiculo" Y "Vehiculo_Abonado" (CON MANEJO DE ERROR ESPECÍFICO)
+                        // 5 & 6. INSERTAR "Vehiculo" Y "Vehiculo_Abonado"
                         // ==========================================================
                         try
                         {
                             int categoriaId = Convert.ToInt32(ddlCategoriaVehiculo.SelectedValue);
                             int tarifaId = Convert.ToInt32(ddlTipoAbono.SelectedValue);
+                            var patentesUnicas = txtPatente.Text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim().ToUpper()).Distinct();
 
-                            var patentesUnicas = txtPatente.Text
-                                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                .Select(p => p.Trim().ToUpper())
-                                .Distinct();
-
-                            // Verificamos si hay al menos una patente para procesar
                             if (!patentesUnicas.Any())
                             {
                                 throw new InvalidOperationException("No se ingresó ninguna patente válida.");
@@ -706,55 +833,42 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
 
                             foreach (var patente in patentesUnicas)
                             {
-                                // Paso 1: Verificamos si el vehículo ya existe en la base de datos.
                                 var vehiculoExistente = db.Vehiculo.Find(patente);
                                 if (vehiculoExistente == null)
                                 {
-                                    // Si no existe, lo agregamos al contexto. Aún no se guarda en la BD.
                                     var nuevoVehiculo = new Vehiculo { Vehiculo_Patente = patente, Categoria_id = categoriaId };
                                     db.Vehiculo.Add(nuevoVehiculo);
                                 }
 
-                                // Paso 2: Creamos la relación con el abono y la agregamos al contexto.
                                 var nuevaRelacion = new Vehiculo_Abonado
                                 {
                                     Vehiculo_Patente = patente,
                                     Tarifa_id = tarifaId,
-                                    Est_id = nuevoAbono.Est_id,
-                                    Plaza_id = nuevoAbono.Plaza_id,
-                                    Numero_Identificacion = nuevoAbono.Numero_Identificacion,
-                                    Tipo_Identificacion = nuevoAbono.Tipo_Identificacion,
-                                    TAB_Fecha_Desde = nuevoAbono.TAB_Fecha_Desde,
+                                    Id_Abono = nuevoAbono.Id_Abono
                                 };
                                 db.Vehiculo_Abonado.Add(nuevaRelacion);
                             }
 
-                            // Guardamos TODOS los vehículos nuevos y TODAS las relaciones en una sola operación.
+                            // Guardamos la actualización de Plaza, el nuevo Pago, los nuevos Vehículos y las nuevas Relaciones
                             db.SaveChanges();
                         }
                         catch (Exception ex2)
                         {
                             System.Diagnostics.Debug.WriteLine(ex2.ToString());
-                            lblError.Text = "Error al procesar las patentes. Verifique que todas tengan un formato válido y no excedan el largo permitido.";
-
-                            throw;
+                            lblError.Text = "Error al procesar las patentes. Verifique formato y largo.";
+                            throw; // Re-lanza para revertir la transacción
                         }
 
                         // ==========================================================
                         // 7. CONFIRMACIÓN FINAL
                         // ==========================================================
-                        transaction.Commit(); // Confirma TODAS las operaciones.
-
-                        // ==========================================================
-                        // 8. Redirigir después de confirmar
-                        // ==========================================================
+                        transaction.Commit();
                         Response.Redirect($"~/Pages/Abonados/Abonados_Listar.aspx?exito=1");
                     }
                 }
             }
             catch (Exception ex)
             {
-                // El catch ahora atrapará otros errores (de base de datos, conversiones numéricas, etc.)
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
                 lblError.Text = "Ocurrió un error inesperado al guardar los datos. Verifique la información.";
             }

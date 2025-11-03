@@ -9,68 +9,82 @@
 
         <hr />
 
-        <!-- Tipo_Identificacion  -->
-        <div class="form-group form-inline">
-            <label for="ddlTipoIdentificacion">Tipo de Identificación:</label>
-            <asp:DropDownList ID="ddlTipoIdentificacion" runat="server" CssClass="form-control">
-                <asp:ListItem Text="-- Seleccione --" Value="" />
-                <asp:ListItem Text="CUIL" Value="CUIL" />
-                <asp:ListItem Text="CUIT" Value="CUIT" />
-            </asp:DropDownList>
-            <asp:RequiredFieldValidator ID="rfvTipoIdentificacion" runat="server"
-                ControlToValidate="ddlTipoIdentificacion"
-                ErrorMessage="Debe seleccionar un Tipo de Identificación."
-                Display="Dynamic"
-                ForeColor="Red"
-                InitialValue=""
-                ValidationGroup="Abonado" />
+        <%-- *** INICIO UpdatePanel *** --%>
+        <asp:UpdatePanel ID="upnlDatosTitular" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
 
+                <!-- Tipo_Identificacion  -->
+                <div class="form-group form-inline">
+                    <label for="ddlTipoIdentificacion">Tipo de Identificación:</label>
+                    <asp:DropDownList ID="ddlTipoIdentificacion" runat="server" CssClass="form-control">
+                        <asp:ListItem Text="-- Seleccione --" Value="" />
+                        <asp:ListItem Text="CUIL" Value="CUIL" />
+                        <asp:ListItem Text="CUIT" Value="CUIT" />
+                        <asp:ListItem Text="DNI" Value="DNI" />
+                        <asp:ListItem Text="DNI Extranjero" Value="DNI-Extranjero" />
+                    </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvTipoIdentificacion" runat="server"
+                        ControlToValidate="ddlTipoIdentificacion"
+                        ErrorMessage="Debe seleccionar un Tipo de Identificación."
+                        Display="Dynamic"
+                        ForeColor="Red"
+                        InitialValue=""
+                        ValidationGroup="Abonado" />
 
-        <!-- Numero_Identificacion -->
-            <label for="txtNumero_Identificacion">Numero de Identificación:</label>
-            <asp:TextBox ID="txtNumero_Identificacion" runat="server" CssClass="form-control" />
-            <asp:CustomValidator ID="cvNumero_Identificacion" runat="server"
-                OnServerValidate="cvNumero_Identificacion_ServerValidate"
-                ErrorMessage=""
-                Display="Dynamic"
-                ForeColor="Red"
-                ValidationGroup="Abonado" />
-        </div>
+                    <!-- Numero_Identificacion -->
+                    <label for="txtNumero_Identificacion">Numero de Identificación:</label>
+                    <asp:TextBox ID="txtNumero_Identificacion" runat="server" CssClass="form-control"
+                        AutoPostBack="true"
+                        OnTextChanged="TxtNumero_Identificacion_TextChanged" />
+                    <asp:CustomValidator ID="cvNumero_Identificacion" runat="server"
+                        OnServerValidate="CvNumero_Identificacion_ServerValidate"
+                        ErrorMessage=""
+                        Display="Dynamic"
+                        ForeColor="Red"
+                        ValidationGroup="Abonado" />
+                </div>
 
-        <!-- Nombre -->
-        <div class="form-group form-inline">
-            <label for="txtNombre">Nombre:</label>
-            <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" />
-            <asp:CustomValidator ID="cvNombre" runat="server"
-                OnServerValidate="cvNombre_ServerValidate"
-                ErrorMessage=""
-                Display="Dynamic"
-                ForeColor="Red"
-                ValidationGroup="Abonado" />
+                <!-- Nombre -->
+                <div class="form-group form-inline">
+                    <label for="txtNombre">Nombre:</label>
+                    <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" />
+                    <asp:CustomValidator ID="cvNombre" runat="server"
+                        OnServerValidate="cvNombre_ServerValidate"
+                        ErrorMessage=""
+                        Display="Dynamic"
+                        ForeColor="Red"
+                        ValidationGroup="Abonado" />
 
-            <!-- Apellido -->
-            <label for="txtApellido">Apellido:</label>
-            <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control" />
-            <asp:CustomValidator ID="cvApellido" runat="server"
-                OnServerValidate="cvApellido_ServerValidate"
-                ErrorMessage=""
-                Display="Dynamic"
-                ForeColor="Red"
-                ValidationGroup="Abonado" />
-        </div>
+                    <!-- Apellido -->
+                    <label for="txtApellido">Apellido:</label>
+                    <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control" />
+                    <asp:CustomValidator ID="cvApellido" runat="server"
+                        OnServerValidate="cvApellido_ServerValidate"
+                        ErrorMessage=""
+                        Display="Dynamic"
+                        ForeColor="Red"
+                        ValidationGroup="Abonado" />
+                </div>
 
-        <!-- Teléfono -->
-        <div class="form-group form-inline">
-            <label for="txtTelefono">Teléfono:</label>
-            <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control" />
-            <asp:CustomValidator ID="cvTelefono" runat="server"
-                OnServerValidate="cvTelefono_ServerValidate"
-                ErrorMessage=""
-                Display="Dynamic"
-                ForeColor="Red"
-                ValidationGroup="Abonado" />
-        </div>
+                <!-- Teléfono -->
+                <div class="form-group form-inline">
+                    <label for="txtTelefono">Teléfono:</label>
+                    <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control" />
+                    <asp:CustomValidator ID="cvTelefono" runat="server"
+                        OnServerValidate="cvTelefono_ServerValidate"
+                        ErrorMessage=""
+                        Display="Dynamic"
+                        ForeColor="Red"
+                        ValidationGroup="Abonado" />
+                </div>
 
+            </ContentTemplate>
+            <%-- *** Trigger para el UpdatePanel *** --%>
+            <Triggers>
+                <asp:AsyncPostBackTrigger ControlID="txtNumero_Identificacion" EventName="TextChanged" />
+            </Triggers>
+        </asp:UpdatePanel>
+        <%-- *** FIN UpdatePanel *** --%>
         <hr />
 
         <!-- ====================== DATOS DEL VEHÍCULO ====================== -->
@@ -245,15 +259,28 @@
 
         <!-- ====================== PLAZA ====================== -->
 
-        <div class="form-group form-inline">
-            <label for="ddlPlaza">Plaza:</label>
-            <asp:DropDownList ID="ddlPlaza" runat="server" CssClass="form-control" />
-            <asp:CustomValidator ID="cvPlaza" runat="server"
-                OnServerValidate="cvPlaza_ServerValidate"
-                Display="Dynamic"
-                ForeColor="Red"
-                ValidationGroup="Abonado" />
-        </div>
+        <%-- Envolvemos en UpdatePanel para refresco parcial (AJAX) --%>
+        <asp:UpdatePanel ID="upnlPlaza" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <div class="form-group form-inline">
+                    <label for="ddlPlaza">Plaza:</label>
+                    <asp:DropDownList ID="ddlPlaza" runat="server" CssClass="form-control"
+                        AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlPlaza_SelectedIndexChanged" />
+                    
+                    <label for="lblPlazaTipo" class="ml-1">Tipo de Plaza: </label>
+                    <asp:Label ID="lblPlazaTipo" runat="server"
+                        CssClass="font-weight-bold text-primary d-inline-block" 
+                        Style="font-size: 1.8rem; min-width: 60px;"/>
+
+                    <asp:CustomValidator ID="cvPlaza" runat="server"
+                        OnServerValidate="CvPlaza_ServerValidate"
+                        Display="Dynamic"
+                        ForeColor="Red"
+                        ValidationGroup="Abonado" />
+                </div>
+            </ContentTemplate>
+        </asp:UpdatePanel>
 
         <hr />
 
@@ -318,13 +345,13 @@
                 CssClass="btn btn-primary"
                 ValidationGroup="Abonado"
                 OnClientClick="return confirmarGuardado();"
-                OnClick="btnGuardar_Click" />
+                OnClick="BtnGuardar_Click" />
         </div>
 
         <asp:Label ID="lblError" runat="server" ForeColor="Red" Font-Bold="true" EnableViewState="false"></asp:Label>
     </asp:Panel>
 
-        <%-- SweetAlert2 para mensajes de confirmación --%>
+    <%-- SweetAlert2 para mensajes de confirmación --%>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function confirmarGuardado() {

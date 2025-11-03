@@ -4,20 +4,18 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Abono">
           <Key>
-            <PropertyRef Name="Est_id" />
-            <PropertyRef Name="Plaza_id" />
-            <PropertyRef Name="Numero_Identificacion" />
-            <PropertyRef Name="TAB_Fecha_Desde" />
-            <PropertyRef Name="Tipo_Identificacion" />
+            <PropertyRef Name="Id_Abono" />
           </Key>
           <Property Name="Est_id" Type="int" Nullable="false" />
           <Property Name="Plaza_id" Type="int" Nullable="false" />
           <Property Name="Numero_Identificacion" Type="bigint" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
+          <Property Name="Fecha_Desde" Type="datetime" Nullable="false" />
           <Property Name="Tipo_Identificacion" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Fecha_Vto" Type="datetime" Nullable="false" />
+          <Property Name="Id_Abono" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="Acepta_Metodo_De_Pago">
           <Key>
@@ -107,12 +105,10 @@
           </Key>
           <Property Name="PA_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Est_id" Type="int" Nullable="false" />
-          <Property Name="Plaza_id" Type="int" Nullable="false" />
-          <Property Name="Numero_Identificacion" Type="bigint" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
+          <Property Name="Fecha_Pago" Type="datetime" Nullable="false" />
           <Property Name="Metodo_Pago_id" Type="int" Nullable="false" />
           <Property Name="PA_Monto" Type="float" Nullable="false" />
-          <Property Name="Tipo_Identificacion" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Id_Abono" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Playero">
           <Key>
@@ -155,12 +151,10 @@
         <EntityType Name="Titular_Abono">
           <Key>
             <PropertyRef Name="Numero_Identificacion" />
-            <PropertyRef Name="TAB_Fecha_Desde" />
             <PropertyRef Name="Tipo_Identificacion" />
           </Key>
           <Property Name="Numero_Identificacion" Type="bigint" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
-          <Property Name="TAB_Fecha_Vto" Type="datetime" Nullable="false" />
+          <Property Name="TAB_Fecha_Alta" Type="datetime" Nullable="false" />
           <Property Name="TAB_Nombre" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="TAB_Apellido" Type="varchar" MaxLength="50" />
           <Property Name="TAB_Telefono" Type="int" Nullable="false" />
@@ -207,11 +201,7 @@
           <Property Name="VA_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Vehiculo_Patente" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="Tarifa_id" Type="int" Nullable="false" />
-          <Property Name="Est_id" Type="int" Nullable="false" />
-          <Property Name="Plaza_id" Type="int" Nullable="false" />
-          <Property Name="Numero_Identificacion" Type="bigint" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="datetime" Nullable="false" />
-          <Property Name="Tipo_Identificacion" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Id_Abono" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_Abono_Plaza">
           <End Role="Plaza" Type="Self.Plaza" Multiplicity="1" />
@@ -234,12 +224,10 @@
             <Principal Role="Titular_Abono">
               <PropertyRef Name="Numero_Identificacion" />
               <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
             </Principal>
             <Dependent Role="Abono">
               <PropertyRef Name="Numero_Identificacion" />
               <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -382,18 +370,10 @@
           <End Role="Pagos_Abonados" Type="Self.Pagos_Abonados" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Abono">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
+              <PropertyRef Name="Id_Abono" />
             </Principal>
             <Dependent Role="Pagos_Abonados">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
+              <PropertyRef Name="Id_Abono" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -548,18 +528,10 @@
           <End Role="Vehiculo_Abonado" Type="Self.Vehiculo_Abonado" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Abono">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
+              <PropertyRef Name="Id_Abono" />
             </Principal>
             <Dependent Role="Vehiculo_Abonado">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
+              <PropertyRef Name="Id_Abono" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -692,10 +664,27 @@
             <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProyectoEstacionamientoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Abono">
+          <Key>
+            <PropertyRef Name="Id_Abono" />
+          </Key>
+          <Property Name="Est_id" Type="Int32" Nullable="false" />
+          <Property Name="Plaza_id" Type="Int32" Nullable="false" />
+          <Property Name="Numero_Identificacion" Type="Int64" Nullable="false" />
+          <Property Name="Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Tipo_Identificacion" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Fecha_Vto" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Id_Abono" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Plaza" Relationship="Self.FK_Abono_Plaza" FromRole="Abono" ToRole="Plaza" />
+          <NavigationProperty Name="Titular_Abono" Relationship="Self.FK_Abono_Titular_Abono" FromRole="Abono" ToRole="Titular_Abono" />
+          <NavigationProperty Name="Pagos_Abonados" Relationship="Self.FK_Pagos_Abonados_Abono" FromRole="Abono" ToRole="Pagos_Abonados" />
+          <NavigationProperty Name="Vehiculo_Abonado" Relationship="Self.FK_VehiculoAbonado_Abono" FromRole="Abono" ToRole="Vehiculo_Abonado" />
+        </EntityType>
         <EntityType Name="Acepta_Metodo_De_Pago">
           <Key>
             <PropertyRef Name="Est_id" />
@@ -707,7 +696,7 @@
           <Property Name="AMP_Hasta" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Estacionamiento" Relationship="Self.FK_Acepta_Metodo_De_Pago_Estacionamiento" FromRole="Acepta_Metodo_De_Pago" ToRole="Estacionamiento" />
           <NavigationProperty Name="Metodos_De_Pago" Relationship="Self.FK_Acepta_Metodo_De_Pago_Metodos_De_Pago" FromRole="Acepta_Metodo_De_Pago" ToRole="Metodos_De_Pago" />
-          <NavigationProperty Name="Pagos_Abonados" Relationship="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" FromRole="Acepta_Metodo_De_Pago" ToRole="Pagos_Abonados" />
+          <NavigationProperty Name="Pagos_Abonados" Relationship="Self.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" FromRole="Acepta_Metodo_De_Pago" ToRole="Pagos_Abonados" />
         </EntityType>
         <EntityType Name="Categoria_Vehiculo">
           <Key>
@@ -744,14 +733,14 @@
           <Property Name="Est_Fin_de_semana_Atencion" Type="Boolean" />
           <Property Name="Est_Hora_Fin_de_semana" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Est_Disponibilidad" Type="Boolean" Nullable="false" />
+          <Property Name="Est_Latitud" Type="Double" />
+          <Property Name="Est_Longitud" Type="Double" />
           <NavigationProperty Name="Acepta_Metodo_De_Pago" Relationship="Self.FK_Acepta_Metodo_De_Pago_Estacionamiento" FromRole="Estacionamiento" ToRole="Acepta_Metodo_De_Pago" />
           <NavigationProperty Name="Dueño" Relationship="Self.FK_Estacionamiento_Dueño" FromRole="Estacionamiento" ToRole="Dueño" />
           <NavigationProperty Name="Pago_Ocupacion" Relationship="Self.FK_Pago_Ocupacion_Estacionamiento" FromRole="Estacionamiento" ToRole="Pago_Ocupacion" />
           <NavigationProperty Name="Playero" Relationship="Self.FK_Playero_Estacionamiento" FromRole="Estacionamiento" ToRole="Playero" />
           <NavigationProperty Name="Plaza" Relationship="Self.FK_Plaza_Estacionamiento" FromRole="Estacionamiento" ToRole="Plaza" />
           <NavigationProperty Name="Tarifa" Relationship="Self.FK_Tarifa_Estacionamiento" FromRole="Estacionamiento" ToRole="Tarifa" />
-          <Property Name="Est_Latitud" Type="Double" />
-          <Property Name="Est_Longitud" Type="Double" />
         </EntityType>
         <EntityType Name="Incidencias">
           <Key>
@@ -802,17 +791,30 @@
           <NavigationProperty Name="Metodos_De_Pago" Relationship="Self.FK_Pago_Ocupacion_Metodos_De_Pago" FromRole="Pago_Ocupacion" ToRole="Metodos_De_Pago" />
           <NavigationProperty Name="Ocupacion" Relationship="Self.FK_Ocupacion_Pago_Ocupacion" FromRole="Pago_Ocupacion" ToRole="Ocupacion" />
         </EntityType>
+        <EntityType Name="Pagos_Abonados">
+          <Key>
+            <PropertyRef Name="PA_id" />
+          </Key>
+          <Property Name="PA_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Est_id" Type="Int32" Nullable="false" />
+          <Property Name="Fecha_Pago" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Metodo_Pago_id" Type="Int32" Nullable="false" />
+          <Property Name="PA_Monto" Type="Double" Nullable="false" />
+          <Property Name="Id_Abono" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Abono" Relationship="Self.FK_Pagos_Abonados_Abono" FromRole="Pagos_Abonados" ToRole="Abono" />
+          <NavigationProperty Name="Acepta_Metodo_De_Pago" Relationship="Self.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" FromRole="Pagos_Abonados" ToRole="Acepta_Metodo_De_Pago" />
+        </EntityType>
         <EntityType Name="Playero">
           <Key>
             <PropertyRef Name="Playero_legajo" />
           </Key>
           <Property Name="Playero_legajo" Type="Int32" Nullable="false" />
           <Property Name="Est_id" Type="Int32" />
+          <Property Name="Playero_activo" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Estacionamiento" Relationship="Self.FK_Playero_Estacionamiento" FromRole="Playero" ToRole="Estacionamiento" />
           <NavigationProperty Name="Incidencias" Relationship="Self.FK_Incidencias_Playero" FromRole="Playero" ToRole="Incidencias" />
           <NavigationProperty Name="Usuarios" Relationship="Self.FK_Playero_Usuarios" FromRole="Playero" ToRole="Usuarios" />
           <NavigationProperty Name="Turno" Relationship="Self.FK_Turno_Playero" FromRole="Playero" ToRole="Turno" />
-          <Property Name="Playero_activo" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Plaza">
           <Key>
@@ -825,10 +827,10 @@
           <Property Name="Plaza_Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Plaza_Tipo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Plaza_Disponibilidad" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Abono" Relationship="Self.FK_Abono_Plaza" FromRole="Plaza" ToRole="Abono" />
           <NavigationProperty Name="Categoria_Vehiculo" Relationship="Self.FK_Plaza_Categoria_Vehiculo" FromRole="Plaza" ToRole="Categoria_Vehiculo" />
           <NavigationProperty Name="Estacionamiento" Relationship="Self.FK_Plaza_Estacionamiento" FromRole="Plaza" ToRole="Estacionamiento" />
           <NavigationProperty Name="Ocupacion" Relationship="Self.FK_Ocupacion_Plaza" FromRole="Plaza" ToRole="Ocupacion" />
-          <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_Abono_Plaza" FromRole="Plaza" ToRole="Abono" />
         </EntityType>
         <EntityType Name="Tarifa">
           <Key>
@@ -844,7 +846,7 @@
           <NavigationProperty Name="Estacionamiento" Relationship="Self.FK_Tarifa_Estacionamiento" FromRole="Tarifa" ToRole="Estacionamiento" />
           <NavigationProperty Name="Ocupacion" Relationship="Self.FK_Ocupacion_Tarifa" FromRole="Tarifa" ToRole="Ocupacion" />
           <NavigationProperty Name="Tipos_Tarifa" Relationship="Self.FK_Tarifa_Tipos_Tarifa" FromRole="Tarifa" ToRole="Tipos_Tarifa" />
-          <NavigationProperty Name="Vehiculo_Abonado" Relationship="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Tarifa" FromRole="Tarifa" ToRole="Vehiculo_Abonado" />
+          <NavigationProperty Name="Vehiculo_Abonado" Relationship="Self.FK_Vehiculo_Abonado_Tarifa" FromRole="Tarifa" ToRole="Vehiculo_Abonado" />
         </EntityType>
         <EntityType Name="Tipos_Tarifa">
           <Key>
@@ -853,6 +855,19 @@
           <Property Name="Tipos_tarifa_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Tipos_tarifa_descripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Tarifa" Relationship="Self.FK_Tarifa_Tipos_Tarifa" FromRole="Tipos_Tarifa" ToRole="Tarifa" />
+        </EntityType>
+        <EntityType Name="Titular_Abono">
+          <Key>
+            <PropertyRef Name="Numero_Identificacion" />
+            <PropertyRef Name="Tipo_Identificacion" />
+          </Key>
+          <Property Name="Numero_Identificacion" Type="Int64" Nullable="false" />
+          <Property Name="TAB_Fecha_Alta" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TAB_Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TAB_Apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TAB_Telefono" Type="Int32" Nullable="false" />
+          <Property Name="Tipo_Identificacion" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Abono" Relationship="Self.FK_Abono_Titular_Abono" FromRole="Titular_Abono" ToRole="Abono" />
         </EntityType>
         <EntityType Name="Turno">
           <Key>
@@ -892,8 +907,72 @@
           <Property Name="Vehiculo_Color" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Categoria_Vehiculo" Relationship="Self.FK_Vehiculo_Categoria_Vehiculo" FromRole="Vehiculo" ToRole="Categoria_Vehiculo" />
           <NavigationProperty Name="Ocupacion" Relationship="Self.FK_Ocupacion_Vehiculo" FromRole="Vehiculo" ToRole="Ocupacion" />
-          <NavigationProperty Name="Vehiculo_Abonado" Relationship="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo" FromRole="Vehiculo" ToRole="Vehiculo_Abonado" />
+          <NavigationProperty Name="Vehiculo_Abonado" Relationship="Self.FK_Vehiculo_Abonado_Vehiculo" FromRole="Vehiculo" ToRole="Vehiculo_Abonado" />
         </EntityType>
+        <EntityType Name="Vehiculo_Abonado">
+          <Key>
+            <PropertyRef Name="VA_id" />
+          </Key>
+          <Property Name="VA_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Vehiculo_Patente" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Tarifa_id" Type="Int32" Nullable="false" />
+          <Property Name="Id_Abono" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Abono" Relationship="Self.FK_VehiculoAbonado_Abono" FromRole="Vehiculo_Abonado" ToRole="Abono" />
+          <NavigationProperty Name="Tarifa" Relationship="Self.FK_Vehiculo_Abonado_Tarifa" FromRole="Vehiculo_Abonado" ToRole="Tarifa" />
+          <NavigationProperty Name="Vehiculo" Relationship="Self.FK_Vehiculo_Abonado_Vehiculo" FromRole="Vehiculo_Abonado" ToRole="Vehiculo" />
+        </EntityType>
+        <Association Name="FK_Abono_Plaza">
+          <End Role="Plaza" Type="Self.Plaza" Multiplicity="1" />
+          <End Role="Abono" Type="Self.Abono" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plaza">
+              <PropertyRef Name="Est_id" />
+              <PropertyRef Name="Plaza_id" />
+            </Principal>
+            <Dependent Role="Abono">
+              <PropertyRef Name="Est_id" />
+              <PropertyRef Name="Plaza_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Abono_Titular_Abono">
+          <End Role="Titular_Abono" Type="Self.Titular_Abono" Multiplicity="1" />
+          <End Role="Abono" Type="Self.Abono" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Titular_Abono">
+              <PropertyRef Name="Numero_Identificacion" />
+              <PropertyRef Name="Tipo_Identificacion" />
+            </Principal>
+            <Dependent Role="Abono">
+              <PropertyRef Name="Numero_Identificacion" />
+              <PropertyRef Name="Tipo_Identificacion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pagos_Abonados_Abono">
+          <End Role="Abono" Type="Self.Abono" Multiplicity="1" />
+          <End Role="Pagos_Abonados" Type="Self.Pagos_Abonados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Abono">
+              <PropertyRef Name="Id_Abono" />
+            </Principal>
+            <Dependent Role="Pagos_Abonados">
+              <PropertyRef Name="Id_Abono" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VehiculoAbonado_Abono">
+          <End Role="Abono" Type="Self.Abono" Multiplicity="1" />
+          <End Role="Vehiculo_Abonado" Type="Self.Vehiculo_Abonado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Abono">
+              <PropertyRef Name="Id_Abono" />
+            </Principal>
+            <Dependent Role="Vehiculo_Abonado">
+              <PropertyRef Name="Id_Abono" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Acepta_Metodo_De_Pago_Estacionamiento">
           <End Role="Estacionamiento" Type="Self.Estacionamiento" Multiplicity="1" />
           <End Role="Acepta_Metodo_De_Pago" Type="Self.Acepta_Metodo_De_Pago" Multiplicity="*" />
@@ -914,6 +993,20 @@
               <PropertyRef Name="Metodo_pago_id" />
             </Principal>
             <Dependent Role="Acepta_Metodo_De_Pago">
+              <PropertyRef Name="Metodo_Pago_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pagos_Abonados_Acepta_Metodo_De_Pago">
+          <End Role="Acepta_Metodo_De_Pago" Type="Self.Acepta_Metodo_De_Pago" Multiplicity="1" />
+          <End Role="Pagos_Abonados" Type="Self.Pagos_Abonados" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Acepta_Metodo_De_Pago">
+              <PropertyRef Name="Est_id" />
+              <PropertyRef Name="Metodo_Pago_id" />
+            </Principal>
+            <Dependent Role="Pagos_Abonados">
+              <PropertyRef Name="Est_id" />
               <PropertyRef Name="Metodo_Pago_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -1136,7 +1229,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Vehiculo_Abonado_Tarifa">
+          <End Role="Tarifa" Type="Self.Tarifa" Multiplicity="1" />
+          <End Role="Vehiculo_Abonado" Type="Self.Vehiculo_Abonado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tarifa">
+              <PropertyRef Name="Tarifa_id" />
+            </Principal>
+            <Dependent Role="Vehiculo_Abonado">
+              <PropertyRef Name="Tarifa_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vehiculo_Abonado_Vehiculo">
+          <End Role="Vehiculo" Type="Self.Vehiculo" Multiplicity="1" />
+          <End Role="Vehiculo_Abonado" Type="Self.Vehiculo_Abonado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vehiculo">
+              <PropertyRef Name="Vehiculo_Patente" />
+            </Principal>
+            <Dependent Role="Vehiculo_Abonado">
+              <PropertyRef Name="Vehiculo_Patente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="ProyectoEstacionamientoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Abono" EntityType="Self.Abono" />
           <EntitySet Name="Acepta_Metodo_De_Pago" EntityType="Self.Acepta_Metodo_De_Pago" />
           <EntitySet Name="Categoria_Vehiculo" EntityType="Self.Categoria_Vehiculo" />
           <EntitySet Name="Dueño" EntityType="Self.Dueño" />
@@ -1145,13 +1263,32 @@
           <EntitySet Name="Metodos_De_Pago" EntityType="Self.Metodos_De_Pago" />
           <EntitySet Name="Ocupacion" EntityType="Self.Ocupacion" />
           <EntitySet Name="Pago_Ocupacion" EntityType="Self.Pago_Ocupacion" />
+          <EntitySet Name="Pagos_Abonados" EntityType="Self.Pagos_Abonados" />
           <EntitySet Name="Playero" EntityType="Self.Playero" />
           <EntitySet Name="Plaza" EntityType="Self.Plaza" />
           <EntitySet Name="Tarifa" EntityType="Self.Tarifa" />
           <EntitySet Name="Tipos_Tarifa" EntityType="Self.Tipos_Tarifa" />
+          <EntitySet Name="Titular_Abono" EntityType="Self.Titular_Abono" />
           <EntitySet Name="Turno" EntityType="Self.Turno" />
           <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
           <EntitySet Name="Vehiculo" EntityType="Self.Vehiculo" />
+          <EntitySet Name="Vehiculo_Abonado" EntityType="Self.Vehiculo_Abonado" />
+          <AssociationSet Name="FK_Abono_Plaza" Association="Self.FK_Abono_Plaza">
+            <End Role="Plaza" EntitySet="Plaza" />
+            <End Role="Abono" EntitySet="Abono" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Abono_Titular_Abono" Association="Self.FK_Abono_Titular_Abono">
+            <End Role="Titular_Abono" EntitySet="Titular_Abono" />
+            <End Role="Abono" EntitySet="Abono" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pagos_Abonados_Abono" Association="Self.FK_Pagos_Abonados_Abono">
+            <End Role="Abono" EntitySet="Abono" />
+            <End Role="Pagos_Abonados" EntitySet="Pagos_Abonados" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VehiculoAbonado_Abono" Association="Self.FK_VehiculoAbonado_Abono">
+            <End Role="Abono" EntitySet="Abono" />
+            <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
+          </AssociationSet>
           <AssociationSet Name="FK_Acepta_Metodo_De_Pago_Estacionamiento" Association="Self.FK_Acepta_Metodo_De_Pago_Estacionamiento">
             <End Role="Estacionamiento" EntitySet="Estacionamiento" />
             <End Role="Acepta_Metodo_De_Pago" EntitySet="Acepta_Metodo_De_Pago" />
@@ -1159,6 +1296,10 @@
           <AssociationSet Name="FK_Acepta_Metodo_De_Pago_Metodos_De_Pago" Association="Self.FK_Acepta_Metodo_De_Pago_Metodos_De_Pago">
             <End Role="Metodos_De_Pago" EntitySet="Metodos_De_Pago" />
             <End Role="Acepta_Metodo_De_Pago" EntitySet="Acepta_Metodo_De_Pago" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pagos_Abonados_Acepta_Metodo_De_Pago" Association="Self.FK_Pagos_Abonados_Acepta_Metodo_De_Pago">
+            <End Role="Acepta_Metodo_De_Pago" EntitySet="Acepta_Metodo_De_Pago" />
+            <End Role="Pagos_Abonados" EntitySet="Pagos_Abonados" />
           </AssociationSet>
           <AssociationSet Name="FK_Plaza_Categoria_Vehiculo" Association="Self.FK_Plaza_Categoria_Vehiculo">
             <End Role="Categoria_Vehiculo" EntitySet="Categoria_Vehiculo" />
@@ -1232,217 +1373,34 @@
             <End Role="Tipos_Tarifa" EntitySet="Tipos_Tarifa" />
             <End Role="Tarifa" EntitySet="Tarifa" />
           </AssociationSet>
-          <EntitySet Name="Abono" EntityType="ProyectoEstacionamientoModel.Abono" />
-          <EntitySet Name="Pagos_Abonados" EntityType="ProyectoEstacionamientoModel.Pagos_Abonados" />
-          <EntitySet Name="Titular_Abono" EntityType="ProyectoEstacionamientoModel.Titular_Abono" />
-          <EntitySet Name="Vehiculo_Abonado" EntityType="ProyectoEstacionamientoModel.Vehiculo_Abonado" />
-          <AssociationSet Name="FK_Abono_Plaza" Association="ProyectoEstacionamientoModel.FK_Abono_Plaza">
-            <End Role="Plaza" EntitySet="Plaza" />
-            <End Role="Abono" EntitySet="Abono" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Abono_Titular_Abono" Association="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono">
-            <End Role="Titular_Abono" EntitySet="Titular_Abono" />
-            <End Role="Abono" EntitySet="Abono" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Pagos_Abonados_Abono" Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono">
-            <End Role="Abono" EntitySet="Abono" />
-            <End Role="Pagos_Abonados" EntitySet="Pagos_Abonados" />
-          </AssociationSet>
-          <AssociationSet Name="FK_VehiculoAbonado_Abono" Association="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono">
-            <End Role="Abono" EntitySet="Abono" />
-            <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Pagos_Abonados_Acepta_Metodo_De_Pago" Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago">
-            <End Role="Acepta_Metodo_De_Pago" EntitySet="Acepta_Metodo_De_Pago" />
-            <End Role="Pagos_Abonados" EntitySet="Pagos_Abonados" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Vehiculo_Abonado_Tarifa" Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Tarifa">
+          <AssociationSet Name="FK_Vehiculo_Abonado_Tarifa" Association="Self.FK_Vehiculo_Abonado_Tarifa">
             <End Role="Tarifa" EntitySet="Tarifa" />
             <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
           </AssociationSet>
-          <AssociationSet Name="FK_Vehiculo_Abonado_Vehiculo" Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo">
+          <AssociationSet Name="FK_Vehiculo_Abonado_Vehiculo" Association="Self.FK_Vehiculo_Abonado_Vehiculo">
             <End Role="Vehiculo" EntitySet="Vehiculo" />
             <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Abono">
-          <Key>
-            <PropertyRef Name="Est_id" />
-            <PropertyRef Name="Plaza_id" />
-            <PropertyRef Name="Numero_Identificacion" />
-            <PropertyRef Name="TAB_Fecha_Desde" />
-            <PropertyRef Name="Tipo_Identificacion" />
-          </Key>
-          <Property Name="Est_id" Type="Int32" Nullable="false" />
-          <Property Name="Plaza_id" Type="Int32" Nullable="false" />
-          <Property Name="Numero_Identificacion" Type="Int64" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Tipo_Identificacion" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Plaza" Relationship="ProyectoEstacionamientoModel.FK_Abono_Plaza" FromRole="Abono" ToRole="Plaza" />
-          <NavigationProperty Name="Titular_Abono" Relationship="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" FromRole="Abono" ToRole="Titular_Abono" />
-          <NavigationProperty Name="Pagos_Abonados" Relationship="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" FromRole="Abono" ToRole="Pagos_Abonados" />
-          <NavigationProperty Name="Vehiculo_Abonado" Relationship="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono" FromRole="Abono" ToRole="Vehiculo_Abonado" />
-        </EntityType>
-        <EntityType Name="Pagos_Abonados">
-          <Key>
-            <PropertyRef Name="PA_id" />
-          </Key>
-          <Property Name="PA_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Est_id" Type="Int32" Nullable="false" />
-          <Property Name="Plaza_id" Type="Int32" Nullable="false" />
-          <Property Name="Numero_Identificacion" Type="Int64" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Metodo_Pago_id" Type="Int32" Nullable="false" />
-          <Property Name="PA_Monto" Type="Double" Nullable="false" />
-          <Property Name="Tipo_Identificacion" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" FromRole="Pagos_Abonados" ToRole="Abono" />
-          <NavigationProperty Name="Acepta_Metodo_De_Pago" Relationship="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" FromRole="Pagos_Abonados" ToRole="Acepta_Metodo_De_Pago" />
-        </EntityType>
-        <EntityType Name="Titular_Abono">
-          <Key>
-            <PropertyRef Name="Numero_Identificacion" />
-            <PropertyRef Name="TAB_Fecha_Desde" />
-            <PropertyRef Name="Tipo_Identificacion" />
-          </Key>
-          <Property Name="Numero_Identificacion" Type="Int64" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TAB_Fecha_Vto" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="TAB_Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TAB_Apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TAB_Telefono" Type="Int32" Nullable="false" />
-          <Property Name="Tipo_Identificacion" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" FromRole="Titular_Abono" ToRole="Abono" />
-        </EntityType>
-        <EntityType Name="Vehiculo_Abonado">
-          <Key>
-            <PropertyRef Name="VA_id" />
-          </Key>
-          <Property Name="VA_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Vehiculo_Patente" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Tarifa_id" Type="Int32" Nullable="false" />
-          <Property Name="Est_id" Type="Int32" Nullable="false" />
-          <Property Name="Plaza_id" Type="Int32" Nullable="false" />
-          <Property Name="Numero_Identificacion" Type="Int64" Nullable="false" />
-          <Property Name="TAB_Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Tipo_Identificacion" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono" FromRole="Vehiculo_Abonado" ToRole="Abono" />
-          <NavigationProperty Name="Tarifa" Relationship="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Tarifa" FromRole="Vehiculo_Abonado" ToRole="Tarifa" />
-          <NavigationProperty Name="Vehiculo" Relationship="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo" FromRole="Vehiculo_Abonado" ToRole="Vehiculo" />
-        </EntityType>
-        <Association Name="FK_Abono_Plaza">
-          <End Type="ProyectoEstacionamientoModel.Plaza" Role="Plaza" Multiplicity="1" />
-          <End Type="ProyectoEstacionamientoModel.Abono" Role="Abono" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Plaza">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-            </Principal>
-            <Dependent Role="Abono">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Abono_Titular_Abono">
-          <End Type="ProyectoEstacionamientoModel.Titular_Abono" Role="Titular_Abono" Multiplicity="1" />
-          <End Type="ProyectoEstacionamientoModel.Abono" Role="Abono" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Titular_Abono">
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
-            </Principal>
-            <Dependent Role="Abono">
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Pagos_Abonados_Abono">
-          <End Type="ProyectoEstacionamientoModel.Abono" Role="Abono" Multiplicity="1" />
-          <End Type="ProyectoEstacionamientoModel.Pagos_Abonados" Role="Pagos_Abonados" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Abono">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
-            </Principal>
-            <Dependent Role="Pagos_Abonados">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_VehiculoAbonado_Abono">
-          <End Type="ProyectoEstacionamientoModel.Abono" Role="Abono" Multiplicity="1" />
-          <End Type="ProyectoEstacionamientoModel.Vehiculo_Abonado" Role="Vehiculo_Abonado" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Abono">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
-            </Principal>
-            <Dependent Role="Vehiculo_Abonado">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Plaza_id" />
-              <PropertyRef Name="Numero_Identificacion" />
-              <PropertyRef Name="Tipo_Identificacion" />
-              <PropertyRef Name="TAB_Fecha_Desde" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Pagos_Abonados_Acepta_Metodo_De_Pago">
-          <End Type="ProyectoEstacionamientoModel.Acepta_Metodo_De_Pago" Role="Acepta_Metodo_De_Pago" Multiplicity="1" />
-          <End Type="ProyectoEstacionamientoModel.Pagos_Abonados" Role="Pagos_Abonados" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Acepta_Metodo_De_Pago">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Metodo_Pago_id" />
-            </Principal>
-            <Dependent Role="Pagos_Abonados">
-              <PropertyRef Name="Est_id" />
-              <PropertyRef Name="Metodo_Pago_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Vehiculo_Abonado_Tarifa">
-          <End Type="ProyectoEstacionamientoModel.Tarifa" Role="Tarifa" Multiplicity="1" />
-          <End Type="ProyectoEstacionamientoModel.Vehiculo_Abonado" Role="Vehiculo_Abonado" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tarifa">
-              <PropertyRef Name="Tarifa_id" />
-            </Principal>
-            <Dependent Role="Vehiculo_Abonado">
-              <PropertyRef Name="Tarifa_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Vehiculo_Abonado_Vehiculo">
-          <End Type="ProyectoEstacionamientoModel.Vehiculo" Role="Vehiculo" Multiplicity="1" />
-          <End Type="ProyectoEstacionamientoModel.Vehiculo_Abonado" Role="Vehiculo_Abonado" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Vehiculo">
-              <PropertyRef Name="Vehiculo_Patente" />
-            </Principal>
-            <Dependent Role="Vehiculo_Abonado">
-              <PropertyRef Name="Vehiculo_Patente" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ProyectoEstacionamientoModelStoreContainer" CdmEntityContainer="ProyectoEstacionamientoEntities">
+          <EntitySetMapping Name="Abono">
+            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Abono">
+              <MappingFragment StoreEntitySet="Abono">
+                <ScalarProperty Name="Est_id" ColumnName="Est_id" />
+                <ScalarProperty Name="Plaza_id" ColumnName="Plaza_id" />
+                <ScalarProperty Name="Numero_Identificacion" ColumnName="Numero_Identificacion" />
+                <ScalarProperty Name="Fecha_Desde" ColumnName="Fecha_Desde" />
+                <ScalarProperty Name="Tipo_Identificacion" ColumnName="Tipo_Identificacion" />
+                <ScalarProperty Name="Fecha_Vto" ColumnName="Fecha_Vto" />
+                <ScalarProperty Name="Id_Abono" ColumnName="Id_Abono" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Acepta_Metodo_De_Pago">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Acepta_Metodo_De_Pago">
               <MappingFragment StoreEntitySet="Acepta_Metodo_De_Pago">
@@ -1471,8 +1429,6 @@
           <EntitySetMapping Name="Estacionamiento">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Estacionamiento">
               <MappingFragment StoreEntitySet="Estacionamiento">
-                <ScalarProperty Name="Est_Longitud" ColumnName="Est_Longitud" />
-                <ScalarProperty Name="Est_Latitud" ColumnName="Est_Latitud" />
                 <ScalarProperty Name="Est_id" ColumnName="Est_id" />
                 <ScalarProperty Name="Dueño_Legajo" ColumnName="Dueño_Legajo" />
                 <ScalarProperty Name="Est_nombre" ColumnName="Est_nombre" />
@@ -1486,6 +1442,8 @@
                 <ScalarProperty Name="Est_Fin_de_semana_Atencion" ColumnName="Est_Fin_de_semana_Atencion" />
                 <ScalarProperty Name="Est_Hora_Fin_de_semana" ColumnName="Est_Hora_Fin_de_semana" />
                 <ScalarProperty Name="Est_Disponibilidad" ColumnName="Est_Disponibilidad" />
+                <ScalarProperty Name="Est_Latitud" ColumnName="Est_Latitud" />
+                <ScalarProperty Name="Est_Longitud" ColumnName="Est_Longitud" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1530,12 +1488,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Pagos_Abonados">
+            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Pagos_Abonados">
+              <MappingFragment StoreEntitySet="Pagos_Abonados">
+                <ScalarProperty Name="PA_id" ColumnName="PA_id" />
+                <ScalarProperty Name="Est_id" ColumnName="Est_id" />
+                <ScalarProperty Name="Fecha_Pago" ColumnName="Fecha_Pago" />
+                <ScalarProperty Name="Metodo_Pago_id" ColumnName="Metodo_Pago_id" />
+                <ScalarProperty Name="PA_Monto" ColumnName="PA_Monto" />
+                <ScalarProperty Name="Id_Abono" ColumnName="Id_Abono" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Playero">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Playero">
               <MappingFragment StoreEntitySet="Playero">
-                <ScalarProperty Name="Playero_activo" ColumnName="Playero_activo" />
                 <ScalarProperty Name="Playero_legajo" ColumnName="Playero_legajo" />
                 <ScalarProperty Name="Est_id" ColumnName="Est_id" />
+                <ScalarProperty Name="Playero_activo" ColumnName="Playero_activo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1568,6 +1538,18 @@
               <MappingFragment StoreEntitySet="Tipos_Tarifa">
                 <ScalarProperty Name="Tipos_tarifa_id" ColumnName="Tipos_tarifa_id" />
                 <ScalarProperty Name="Tipos_tarifa_descripcion" ColumnName="Tipos_tarifa_descripcion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Titular_Abono">
+            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Titular_Abono">
+              <MappingFragment StoreEntitySet="Titular_Abono">
+                <ScalarProperty Name="Numero_Identificacion" ColumnName="Numero_Identificacion" />
+                <ScalarProperty Name="TAB_Fecha_Alta" ColumnName="TAB_Fecha_Alta" />
+                <ScalarProperty Name="TAB_Nombre" ColumnName="TAB_Nombre" />
+                <ScalarProperty Name="TAB_Apellido" ColumnName="TAB_Apellido" />
+                <ScalarProperty Name="TAB_Telefono" ColumnName="TAB_Telefono" />
+                <ScalarProperty Name="Tipo_Identificacion" ColumnName="Tipo_Identificacion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1607,55 +1589,13 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Abono">
-            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Abono">
-              <MappingFragment StoreEntitySet="Abono">
-                <ScalarProperty Name="Tipo_Identificacion" ColumnName="Tipo_Identificacion" />
-                <ScalarProperty Name="TAB_Fecha_Desde" ColumnName="TAB_Fecha_Desde" />
-                <ScalarProperty Name="Numero_Identificacion" ColumnName="Numero_Identificacion" />
-                <ScalarProperty Name="Plaza_id" ColumnName="Plaza_id" />
-                <ScalarProperty Name="Est_id" ColumnName="Est_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Pagos_Abonados">
-            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Pagos_Abonados">
-              <MappingFragment StoreEntitySet="Pagos_Abonados">
-                <ScalarProperty Name="Tipo_Identificacion" ColumnName="Tipo_Identificacion" />
-                <ScalarProperty Name="PA_Monto" ColumnName="PA_Monto" />
-                <ScalarProperty Name="Metodo_Pago_id" ColumnName="Metodo_Pago_id" />
-                <ScalarProperty Name="TAB_Fecha_Desde" ColumnName="TAB_Fecha_Desde" />
-                <ScalarProperty Name="Numero_Identificacion" ColumnName="Numero_Identificacion" />
-                <ScalarProperty Name="Plaza_id" ColumnName="Plaza_id" />
-                <ScalarProperty Name="Est_id" ColumnName="Est_id" />
-                <ScalarProperty Name="PA_id" ColumnName="PA_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Titular_Abono">
-            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Titular_Abono">
-              <MappingFragment StoreEntitySet="Titular_Abono">
-                <ScalarProperty Name="Tipo_Identificacion" ColumnName="Tipo_Identificacion" />
-                <ScalarProperty Name="TAB_Telefono" ColumnName="TAB_Telefono" />
-                <ScalarProperty Name="TAB_Apellido" ColumnName="TAB_Apellido" />
-                <ScalarProperty Name="TAB_Nombre" ColumnName="TAB_Nombre" />
-                <ScalarProperty Name="TAB_Fecha_Vto" ColumnName="TAB_Fecha_Vto" />
-                <ScalarProperty Name="TAB_Fecha_Desde" ColumnName="TAB_Fecha_Desde" />
-                <ScalarProperty Name="Numero_Identificacion" ColumnName="Numero_Identificacion" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Vehiculo_Abonado">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Vehiculo_Abonado">
               <MappingFragment StoreEntitySet="Vehiculo_Abonado">
-                <ScalarProperty Name="Tipo_Identificacion" ColumnName="Tipo_Identificacion" />
-                <ScalarProperty Name="TAB_Fecha_Desde" ColumnName="TAB_Fecha_Desde" />
-                <ScalarProperty Name="Numero_Identificacion" ColumnName="Numero_Identificacion" />
-                <ScalarProperty Name="Plaza_id" ColumnName="Plaza_id" />
-                <ScalarProperty Name="Est_id" ColumnName="Est_id" />
-                <ScalarProperty Name="Tarifa_id" ColumnName="Tarifa_id" />
-                <ScalarProperty Name="Vehiculo_Patente" ColumnName="Vehiculo_Patente" />
                 <ScalarProperty Name="VA_id" ColumnName="VA_id" />
+                <ScalarProperty Name="Vehiculo_Patente" ColumnName="Vehiculo_Patente" />
+                <ScalarProperty Name="Tarifa_id" ColumnName="Tarifa_id" />
+                <ScalarProperty Name="Id_Abono" ColumnName="Id_Abono" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

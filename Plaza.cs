@@ -17,8 +17,8 @@ namespace Proyecto_Estacionamiento
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Plaza()
         {
-            this.Ocupacion = new HashSet<Ocupacion>();
             this.Abono = new HashSet<Abono>();
+            this.Ocupacion = new HashSet<Ocupacion>();
         }
     
         public int Est_id { get; set; }
@@ -28,11 +28,11 @@ namespace Proyecto_Estacionamiento
         public string Plaza_Tipo { get; set; }
         public bool Plaza_Disponibilidad { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Abono> Abono { get; set; }
         public virtual Categoria_Vehiculo Categoria_Vehiculo { get; set; }
         public virtual Estacionamiento Estacionamiento { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ocupacion> Ocupacion { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Abono> Abono { get; set; }
     }
 }

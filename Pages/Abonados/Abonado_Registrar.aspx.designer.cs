@@ -33,6 +33,15 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         protected global::System.Web.UI.WebControls.Label lblTitulo;
 
         /// <summary>
+        /// Control upnlDatosTitular.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlDatosTitular;
+
+        /// <summary>
         /// Control ddlTipoIdentificacion.
         /// </summary>
         /// <remarks>
@@ -204,6 +213,15 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         protected global::System.Web.UI.WebControls.CustomValidator cvCantidadTiempo;
 
         /// <summary>
+        /// Control upnlPlaza.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlPlaza;
+
+        /// <summary>
         /// Control ddlPlaza.
         /// </summary>
         /// <remarks>
@@ -211,6 +229,15 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlPlaza;
+
+        /// <summary>
+        /// Control lblPlazaTipo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPlazaTipo;
 
         /// <summary>
         /// Control cvPlaza.

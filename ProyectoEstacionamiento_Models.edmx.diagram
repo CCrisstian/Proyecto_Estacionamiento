@@ -4,24 +4,33 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="98a29b877da344258ad1078d6c39c247" Name="Diagram1">
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Acepta_Metodo_De_Pago" Width="1.5" PointX="7.5" PointY="12" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Categoria_Vehiculo" Width="1.5" PointX="8.25" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Dueño" Width="1.5" PointX="3" PointY="12.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Estacionamiento" Width="1.5" PointX="5.25" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Incidencias" Width="1.5" PointX="9.75" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Metodos_De_Pago" Width="1.5" PointX="5.25" PointY="8.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Ocupacion" Width="1.5" PointX="12.75" PointY="11.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Pago_Ocupacion" Width="1.5" PointX="10.5" PointY="11.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Playero" Width="1.5" PointX="7.5" PointY="9" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Plaza" Width="1.5" PointX="7.5" PointY="15.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Tarifa" Width="1.5" PointX="10.5" PointY="7.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Tipos_Tarifa" Width="1.5" PointX="8.25" PointY="19.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Turno" Width="1.5" PointX="9.75" PointY="16" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Usuarios" Width="1.5" PointX="0.75" PointY="11.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo" Width="1.5" PointX="10.5" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="77fa1c4ddae8413891139595bcd6e06c" Name="Diagram1">
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Abono" Width="1.5" PointX="12.75" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Acepta_Metodo_De_Pago" Width="1.5" PointX="7.5" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Categoria_Vehiculo" Width="1.5" PointX="8.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Dueño" Width="1.5" PointX="3" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Estacionamiento" Width="1.5" PointX="5.25" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Incidencias" Width="1.5" PointX="9.75" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Metodos_De_Pago" Width="1.5" PointX="5.25" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Ocupacion" Width="1.5" PointX="15.75" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Pago_Ocupacion" Width="1.5" PointX="10.5" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Pagos_Abonados" Width="1.5" PointX="12.75" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Playero" Width="1.5" PointX="7.5" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Plaza" Width="1.5" PointX="7.5" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Tarifa" Width="1.5" PointX="10.5" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Tipos_Tarifa" Width="1.5" PointX="8.25" PointY="20.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Titular_Abono" Width="1.5" PointX="10.5" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Turno" Width="1.5" PointX="9.75" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Usuarios" Width="1.5" PointX="0.75" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo" Width="1.5" PointX="13.5" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo_Abonado" Width="1.5" PointX="18" PointY="11.75" IsExpanded="true" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Plaza" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Acepta_Metodo_De_Pago_Estacionamiento" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Acepta_Metodo_De_Pago_Metodos_De_Pago" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Plaza_Categoria_Vehiculo" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Tarifa_Categoria_Vehiculo" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Categoria_Vehiculo" ManuallyRouted="false" />
@@ -40,18 +49,8 @@
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Playero_Usuarios" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Turno_Playero" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Tarifa_Tipos_Tarifa" ManuallyRouted="false" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Vehiculo_Abonado" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Abono" Width="1.5" PointX="12.75" PointY="15.75" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Pagos_Abonados" Width="1.5" PointX="15" PointY="13.75" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Titular_Abono" Width="1.5" PointX="10.5" PointY="19.875" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo_Abonado" Width="1.5" PointX="15" PointY="8" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Plaza" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Abono" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Acepta_Metodo_De_Pago" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Tarifa" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Tarifa" ManuallyRouted="false" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

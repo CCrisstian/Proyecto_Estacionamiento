@@ -73,32 +73,33 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         // Filtra por el Est_id específico del playero
                         query = query.Where(a => a.Est_id == estIdPlayero);
                     }
+                    // 3. Filtramos por ABONOS VIGENTES (Usando Abono.Fecha_Vto)
+                    query = query.Where(a => a.Fecha_Vto >= DateTime.Now);
 
-                    // Filtramos por ABONOS VIGENTES
-                    query = query.Where(a => a.Titular_Abono.TAB_Fecha_Vto >= DateTime.Now);
-
-                    // Aplicamos el filtro por PATENTE (si se proveyó una)
-                    if (!string.IsNullOrWhiteSpace(patenteFiltro)){
-                        // Filtra si CUALQUIER Vehiculo_Abonado asociado a este Abono contiene la patente
+                    // 4. Aplicamos el filtro por PATENTE (si se proveyó una)
+                    if (!string.IsNullOrWhiteSpace(patenteFiltro))
+                    {
                         query = query.Where(a => a.Vehiculo_Abonado.Any(va => va.Vehiculo_Patente.ToUpper().Contains(patenteFiltro.ToUpper())));
                     }
 
-                    // Proyectamos los datos para el Grid y el Modal
+                    // 5. Proyectamos los datos para el Grid y el Modal
                     var abonos = query
-                        .OrderByDescending(a => a.TAB_Fecha_Desde)
-                        .Select(a => new
+                        // Ordenamos por la fecha de inicio del Abono
+                        .OrderByDescending(a => a.Fecha_Desde)
+                        .Select(a => new // 'a' es un objeto 'Abono'
                         {
+                            // Datos Grid
                             Nombre = a.Titular_Abono.TAB_Nombre,
                             Apellido = a.Titular_Abono.TAB_Apellido,
                             Plaza = a.Plaza.Plaza_Nombre,
-
                             TipoIdentificacion = a.Titular_Abono.Tipo_Identificacion,
                             NumeroIdentificacion = a.Titular_Abono.Numero_Identificacion,
 
-                            // Datos para el Modal
-                            FechaDesde = a.TAB_Fecha_Desde,
-                            FechaVto = a.Titular_Abono.TAB_Fecha_Vto,
-                            PatentesList = a.Vehiculo_Abonado.Select(va => va.Vehiculo_Patente)
+                            // Datos Modal
+                            FechaDesde = a.Fecha_Desde,
+                            FechaVto = a.Fecha_Vto,
+                            PatentesList = a.Vehiculo_Abonado.Select(va => va.Vehiculo_Patente),
+                            TipoAbono = a.Vehiculo_Abonado.FirstOrDefault().Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
                         })
                         .ToList() // Traemos los datos a memoria...
                         .Select(dto => new // ...y formateamos
@@ -108,9 +109,13 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                             dto.Plaza,
                             dto.TipoIdentificacion,
                             dto.NumeroIdentificacion,
+                            dto.TipoAbono,
                             PatentesStr = string.Join(", ", dto.PatentesList),
                             FechaDesdeStr = dto.FechaDesde.ToString("dd/MM/yyyy HH:mm"),
-                            FechaVtoStr = dto.FechaVto.ToString("dd/MM/yyyy HH:mm")
+                            FechaVtoStr = dto.FechaVto.ToString("dd/MM/yyyy HH:mm"),
+                            FechaVtoRaw = dto.FechaVto.ToString("yyyy-MM-dd"),
+
+                            FechaVto = dto.FechaVto
                         });
 
                     gvAbonos.DataSource = abonos;
@@ -123,6 +128,34 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             }
         }
 
+        protected void gvAbonos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            // Asegurarse de que estamos en una fila de datos (no en el header o footer)
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                try
+                {
+                    // 1. Obtener el objeto de datos de la fila
+                    // Usamos 'dynamic' porque estamos bindeando a un tipo anónimo
+                    dynamic dataItem = e.Row.DataItem;
+
+                    // 2. Obtener la fecha de vencimiento (el objeto DateTime real)
+                    DateTime fechaVto = (DateTime)dataItem.FechaVto;
+
+                    // 3. Comparar solo la parte de la FECHA (ignorando la hora)
+                    if (fechaVto.Date == DateTime.Today)
+                    {
+                        // 4. Aplicar la clase CSS a toda la fila
+                        e.Row.CssClass += " abono-vencido-hoy";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Manejar cualquier error
+                    System.Diagnostics.Debug.WriteLine("Error en RowDataBound: " + ex.Message);
+                }
+            }
+        }
 
         protected void btnBuscarPatente_Click(object sender, EventArgs e)
         {

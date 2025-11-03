@@ -24,8 +24,10 @@ namespace Proyecto_Estacionamiento
         public int Est_id { get; set; }
         public int Plaza_id { get; set; }
         public long Numero_Identificacion { get; set; }
-        public System.DateTime TAB_Fecha_Desde { get; set; }
+        public System.DateTime Fecha_Desde { get; set; }
         public string Tipo_Identificacion { get; set; }
+        public System.DateTime Fecha_Vto { get; set; }
+        public int Id_Abono { get; set; }
     
         public virtual Plaza Plaza { get; set; }
         public virtual Titular_Abono Titular_Abono { get; set; }
