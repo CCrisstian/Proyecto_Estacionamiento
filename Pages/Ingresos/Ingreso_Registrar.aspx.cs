@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Default
@@ -45,34 +46,124 @@ namespace Proyecto_Estacionamiento.Pages.Default
         }
 
         // Metodo para autocompletar los campos del Vehículo si se ingresa una patente existente
+
         protected void txtPatente_TextChanged(object sender, EventArgs e)
         {
             string patenteIngresada = txtPatente.Text.Trim().Replace(" ", "").ToUpper();
 
+            // 1. Limpiar todos los campos y habilitarlos
+            ResetearCampos();
+
+            if (string.IsNullOrWhiteSpace(patenteIngresada))
+            {
+                return; // Si borró la patente, salir.
+            }
+
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                var vehiculo = db.Vehiculo
-                                 .FirstOrDefault(v => v.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada);
+                int? estId = ObtenerEstacionamientoId();
 
-                if (vehiculo != null)
+                // 2. Buscar si la patente tiene un ABONO VIGENTE en este estacionamiento
+                var abonoVehiculo = db.Vehiculo_Abonado
+                    .Include("Abono")
+                    .Include("Abono.Plaza")
+                    .Include("Tarifa")
+                    .Include("Tarifa.Tipos_Tarifa")
+                    .Include("Vehiculo")
+                    .Include("Vehiculo.Categoria_Vehiculo")
+                    .FirstOrDefault(va =>
+                        va.Vehiculo_Patente == patenteIngresada &&
+                        va.Abono.Est_id == estId &&
+                        va.Abono.Fecha_Vto >= DateTime.Now
+                    );
+
+                if (abonoVehiculo != null)
                 {
-                    // Autocompletamos los campos
-                    ddlCategoria.SelectedValue = vehiculo.Categoria_id.ToString();
+                    // --- ES UN ABONADO VIGENTE ---
 
-                    // Bloqueamos edición de los campos
-                    ddlCategoria.Enabled = false;
+                    var plazaDelAbono = abonoVehiculo.Abono.Plaza;
+                    var tarifaDelAbono = abonoVehiculo.Tarifa;
+                    var categoriaDelAbono = abonoVehiculo.Vehiculo.Categoria_Vehiculo;
 
-                    // Filtrar automáticamente Plazas y Tarifas según categoría
+                    // 3. Comprobar si su plaza asignada está disponible
+                    if (!plazaDelAbono.Plaza_Disponibilidad)
+                    {
+                        string script = $"Swal.fire({{icon: 'error', title: 'Plaza Ocupada', text: 'La plaza {plazaDelAbono.Plaza_Nombre} asignada a este abono ya se encuentra ocupada. Se registrará como un ingreso normal.'}});";
+                        ScriptManager.RegisterStartupScript(this, GetType(), "alertPlazaOcupada", script, true);
+
+                        ddlCategoria.SelectedValue = categoriaDelAbono.Categoria_id.ToString();
+                        ddlCategoria_SelectedIndexChanged(null, null); // Cargar plazas y tarifas normales
+                        return;
+                    }
+
+                    // --- ES ABONADO, VIGENTE Y SU PLAZA ESTÁ LIBRE ---
+
+                    // 4. Autocompletar Categoría y cargar listas
+                    ddlCategoria.SelectedValue = categoriaDelAbono.Categoria_id.ToString();
                     ddlCategoria_SelectedIndexChanged(null, null);
+
+                    // 5. Autocompletar Plaza (Añadiéndola si fue filtrada)
+                    string plazaIdDelAbonoStr = plazaDelAbono.Plaza_id.ToString();
+                    if (ddlPlaza.Items.FindByValue(plazaIdDelAbonoStr) == null)
+                    {
+                        ddlPlaza.Items.Add(new ListItem(plazaDelAbono.Plaza_Nombre, plazaIdDelAbonoStr));
+                    }
+                    ddlPlaza.SelectedValue = plazaIdDelAbonoStr;
+
+                    // 6. Autocompletar Tarifa
+                    string tarifaIdAbonoStr = tarifaDelAbono.Tarifa_id.ToString();
+                    string tarifaDescAbono = tarifaDelAbono.Tipos_Tarifa.Tipos_tarifa_descripcion;
+
+                    if (ddlTarifa.Items.FindByValue(tarifaIdAbonoStr) == null)
+                    {
+                        ddlTarifa.Items.Add(new ListItem(tarifaDescAbono, tarifaIdAbonoStr));
+                    }
+                    ddlTarifa.SelectedValue = tarifaIdAbonoStr;
+
+                    // 7. Mostrar panel de detalles
+                    cvTarifa.Enabled = false;
+                    pnlDetalleTarifa.Visible = true;
+                    litDescripcionTarifa.Text = $"Este vehículo es beneficiario de un Abono <b>'{tarifaDescAbono}'</b>";
+                    litMontoTarifa.Text = "Abonado";
+                    imgCategoria.ImageUrl = ObtenerIconoPorCategoria(categoriaDelAbono.Categoria_descripcion);
+
+                    // 8. Deshabilitar todo
+                    ddlCategoria.Enabled = false;
+                    ddlPlaza.Enabled = false;
+                    ddlTarifa.Enabled = false;
                 }
                 else
                 {
-                    // Si la patente se borra o es nueva, desbloqueamos campos y limpiamos
-                    ddlCategoria.Enabled = true;
-
-                    ddlCategoria.SelectedValue = "0";
+                    // --- NO ES ABONADO VIGENTE O NO EXISTE ---
+                    var vehiculo = db.Vehiculo.FirstOrDefault(v => v.Vehiculo_Patente == patenteIngresada);
+                    if (vehiculo != null)
+                    {
+                        ddlCategoria.SelectedValue = vehiculo.Categoria_id.ToString();
+                        ddlCategoria.Enabled = false;
+                        ddlCategoria_SelectedIndexChanged(null, null);
+                    }
                 }
             }
+        }
+
+        private void ResetearCampos()
+        {
+            // Habilitar controles
+            ddlCategoria.Enabled = true;
+            ddlPlaza.Enabled = true;
+            ddlTarifa.Enabled = true;
+            ddlTarifa.Visible = true;
+            cvTarifa.Enabled = true;
+
+            // Limpiar selecciones
+            ddlCategoria.SelectedValue = "0";
+            LimpiarDropDown(ddlPlaza, "--Seleccione Plaza--");
+            LimpiarDropDown(ddlTarifa, "-- Seleccione Tarifa --");
+
+            // Ocultar panel de detalles
+            pnlDetalleTarifa.Visible = false;
+            litDescripcionTarifa.Text = "";
+            litMontoTarifa.Text = "";
         }
 
 
@@ -138,10 +229,14 @@ namespace Proyecto_Estacionamiento.Pages.Default
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
+                var ahora = DateTime.Now;
+
                 var plazas = db.Plaza
                                .Where(p => p.Est_id == estacionamientoId
                                     && p.Categoria_id == categoriaSeleccionadaId
-                                    && p.Plaza_Disponibilidad == true)
+                                    && p.Plaza_Disponibilidad == true
+                                    && !p.Abono.Any(a => a.Fecha_Vto >= ahora)
+                                    )
                                .OrderBy(p => p.Plaza_id)
                                .ToList();
 
@@ -178,7 +273,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 var tarifas = db.Tarifa
                     .Where(t => t.Est_id == estacionamientoId &&
                                 t.Categoria_id == categoriaSeleccionadaId &&
-                                idsPermitidos.Contains(t.Tipos_Tarifa.Tipos_tarifa_id)) // <-- ¡FILTRO AÑADIDO AQUÍ!
+                                idsPermitidos.Contains(t.Tipos_Tarifa.Tipos_tarifa_id))
                     .Select(t => new
                     {
                         t.Tarifa_id,
@@ -263,16 +358,16 @@ namespace Proyecto_Estacionamiento.Pages.Default
         private string ObtenerIconoPorCategoria(string categoria)
         {
             var mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-    {
-        { "Automóviles y Camionetas", "Automóviles y Camionetas.png" },
-        { "Motocicletas", "Motocicletas.png" },
-        { "Camiones", "Camiones.png" },
-        { "Ómnibus y Minibuses", "Ómnibus y Minibuses.png" },
-        { "Vehículos agrícolas o especiales", "Vehículos agrícolas.png" }, // diferencia aquí
-        { "Casas rodantes y Motorhomes", "Casas rodantes y Motorhomes.png" },
-        { "Remolques y acoplados", "Remolques y acoplados.png" },
-        { "Vehículo para personas con discapacidad", "Vehículo para personas con discapacidad.png" }
-    };
+            {
+                { "Automóviles y Camionetas", "Automóviles y Camionetas.png" },
+                { "Motocicletas", "Motocicletas.png" },
+                { "Camiones", "Camiones.png" },
+                { "Ómnibus y Minibuses", "Ómnibus y Minibuses.png" },
+                { "Vehículos agrícolas o especiales", "Vehículos agrícolas.png" }, // diferencia aquí
+                { "Casas rodantes y Motorhomes", "Casas rodantes y Motorhomes.png" },
+                { "Remolques y acoplados", "Remolques y acoplados.png" },
+                { "Vehículo para personas con discapacidad", "Vehículo para personas con discapacidad.png" }
+            };
 
             if (mapa.ContainsKey(categoria))
                 return "~/Images/" + mapa[categoria];
@@ -296,7 +391,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                // 🔍 Validar ocupación activa
+                // Validar ocupación activa
                 var ocupacionActiva = db.Ocupacion
                     .FirstOrDefault(o => o.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada
                                        && o.Ocu_fecha_Hora_Fin == null);
@@ -342,10 +437,11 @@ namespace Proyecto_Estacionamiento.Pages.Default
             if (!args.IsValid) cvTarifa.ErrorMessage = "Debe seleccionar una Tarifa.";
         }
 
+
         // Guardar
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            // 1️ Validar todos los CustomValidators del grupo "Ingreso"
+            // Validar todos los CustomValidators del grupo "Ingreso"
             Page.Validate("Ingreso");
             if (!Page.IsValid) return;
 
@@ -357,7 +453,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
                 {
                     try
                     {
-                        // 🔍 Validar existencia de Vehículo
+                        // Validar existencia de Vehículo
                         var vehiculoExistente = db.Vehiculo
                             .FirstOrDefault(v => v.Vehiculo_Patente.Replace(" ", "").ToUpper() == patenteIngresada);
 
@@ -372,7 +468,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
                             db.SaveChanges();
                         }
 
-                        // 🔍 Obtener datos necesarios para Pago y Ocupación
+                        //  Obtener datos necesarios para Pago y Ocupación
                         int? estId = ObtenerEstacionamientoId();
 
                         int tarifaId = int.Parse(ddlTarifa.SelectedValue);
@@ -381,11 +477,11 @@ namespace Proyecto_Estacionamiento.Pages.Default
                         int plazaIdSeleccionada = int.Parse(ddlPlaza.SelectedValue);
                         var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaIdSeleccionada);
 
-                        // 🔹 Cambiar disponibilidad de Plaza
+                        // Cambiar disponibilidad de Plaza
                         plaza.Plaza_Disponibilidad = false;
                         db.SaveChanges();
 
-                        // 🔹 Crear Ocupacion
+                        // Crear Ocupacion
                         var nuevaOcupacion = new Ocupacion
                         {
                             Est_id = (int)estId,
@@ -398,10 +494,10 @@ namespace Proyecto_Estacionamiento.Pages.Default
                         db.Ocupacion.Add(nuevaOcupacion);
                         db.SaveChanges();
 
-                        // 🔹 Confirmar transacción
+                        // Confirmar transacción
                         transaction.Commit();
 
-                        // 🔹 Redirigir después de confirmar
+                        // Redirigir después de confirmar
                         Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=ingreso");
                     }
                     catch (Exception ex)

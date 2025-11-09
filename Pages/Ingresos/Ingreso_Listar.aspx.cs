@@ -209,94 +209,194 @@ namespace Proyecto_Estacionamiento
             public string Plaza_Nombre { get; set; }
             public string Vehiculo_Patente { get; set; }
             public string Tarifa { get; set; }
-            public decimal Tarifa_Monto { get; set; }
+            public double Tarifa_Monto { get; set; }
             public string Entrada { get; set; }
             public string Salida { get; set; }
             public double? Monto { get; set; }
+
+            // Campos para manejar el vencimiento de abonos durante el egreso
+            public DateTime? Fecha_Vto_Abono { get; set; }
+            public double Tarifa_Por_Hora_Fallback { get; set; }
         }
 
         private void CargarIngresos()
         {
             string tipoUsuario = Session["Usu_tipo"] as string;
             int legajo = Convert.ToInt32(Session["Usu_legajo"]);
-            int estId;
+
+            var idsAbonos = new List<int> { 3, 4, 5 };
+            int idTarifaPorHora = 1;
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                IQueryable<Ocupacion> query = db.Ocupacion
-                    .Include("Vehiculo")
-                    .Include("Plaza")
-                    .Include("Tarifa");
-
+                // 1. Determinar los Est_id relevantes para este usuario
+                IQueryable<int> estIdsQuery;
                 if (tipoUsuario == "Dueño")
                 {
                     if (Session["Dueño_EstId"] != null)
                     {
-                        // Caso 1: Dueño eligió un estacionamiento
-                        estId = (int)Session["Dueño_EstId"];
-                        query = query.Where(o => o.Est_id == estId);
+                        int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                        estIdsQuery = db.Estacionamiento.Where(e => e.Est_id == estIdSeleccionado).Select(e => e.Est_id);
                     }
                     else
                     {
-                        // Caso 2: No eligió → mostramos todos sus estacionamientos
-                        var estIds = db.Estacionamiento
-                                       .Where(e => e.Dueño_Legajo == legajo)
-                                       .Select(e => e.Est_id);
-                        query = query.Where(o => estIds.Contains(o.Est_id));
+                        estIdsQuery = db.Estacionamiento.Where(e => e.Dueño_Legajo == legajo).Select(e => e.Est_id);
                     }
                 }
-                else if (tipoUsuario == "Playero")
+                else // Asumir Playero
                 {
-                    estId = (int)Session["Playero_EstId"];
-                    query = query.Where(o => o.Est_id == estId);
+                    int estIdPlayero = (int)Session["Playero_EstId"];
+                    estIdsQuery = db.Estacionamiento.Where(e => e.Est_id == estIdPlayero).Select(e => e.Est_id);
+                }
 
-                    query = query.Where(o =>
-                        o.Est_id == estId
-                    );
+                // 2. Pre-cargar tarifas por hora
+                var tarifasPorHora = db.Tarifa
+                            .Where(t => t.Tipos_Tarifa_Id == idTarifaPorHora && t.Categoria_id != null && t.Est_id.HasValue && estIdsQuery.Contains(t.Est_id.Value))
+                            .ToDictionary(
+                                t => Tuple.Create(t.Est_id.Value, t.Categoria_id.Value),
+                                t => (double)t.Tarifa_Monto 
+                            );
 
-                    // 🔹 Solo ingresos sin salida
+                IQueryable<Ocupacion> query = db.Ocupacion
+                    .Include("Vehiculo.Vehiculo_Abonado.Abono")
+                    .Include("Vehiculo.Categoria_Vehiculo")
+                    .Include("Vehiculo")
+                    .Include("Plaza")
+                    .Include("Plaza.Estacionamiento")
+                    .Include("Tarifa")
+                    .Include("Tarifa.Tipos_Tarifa")
+                    .Include("Pago_Ocupacion");
+
+                // 3. Aplicar filtro principal de Estacionamiento a la consulta
+                query = query.Where(o => estIdsQuery.Contains(o.Est_id));
+
+                if (tipoUsuario == "Playero")
+                {
                     query = query.Where(o => !o.Ocu_fecha_Hora_Fin.HasValue);
                 }
 
                 var ocupaciones = query.ToList();
 
-                var ingresos = ocupaciones.Select(o => new Ocupacion_DTO
-                {
-                    Est_id = o.Est_id,
-                    Plaza_id = o.Plaza_id,
-                    Ocu_fecha_Hora_Inicio = o.Ocu_fecha_Hora_Inicio,
-                    Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
-                    Plaza_Nombre = o.Plaza.Plaza_Nombre,
-                    Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
-                    Tarifa = o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
-                    Tarifa_Monto = (decimal)o.Tarifa.Tarifa_Monto,
-                    Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
-                    Salida = o.Ocu_fecha_Hora_Fin.HasValue ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm") : "",
-                    Monto = o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null
+                var ingresos = ocupaciones.Select(o => {
+
+                    bool esTipoAbono = o.Tarifa.Tipos_Tarifa_Id.HasValue && idsAbonos.Contains(o.Tarifa.Tipos_Tarifa_Id.Value);
+                    DateTime? fechaVtoAbono = null;
+                    double tarifaFallback = 0.0;
+
+                    string tarifaDisplay = o.Tarifa.Tipos_Tarifa != null ? o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion : "N/A";
+                    double tarifaMontoDisplay = (double)o.Tarifa.Tarifa_Monto; 
+                    double? montoDisplay = (o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null);
+
+                    if (esTipoAbono)
+                    {
+                        var vehAbono = o.Vehiculo.Vehiculo_Abonado.FirstOrDefault(va => va.Tarifa_id == o.Tarifa_id);
+                        if (vehAbono != null)
+                            fechaVtoAbono = vehAbono.Abono.Fecha_Vto;
+
+                        var fallbackKey = Tuple.Create(o.Est_id, o.Vehiculo.Categoria_id);
+                        if (tarifasPorHora.ContainsKey(fallbackKey))
+                            tarifaFallback = tarifasPorHora[fallbackKey];
+
+                        if (o.Pago_Ocupacion != null)
+                        {
+                            // CASO: Abono Vencido que generó un Pago
+                            tarifaDisplay = "Abonado (Vencido) - Por hora";
+                            tarifaMontoDisplay = tarifaFallback;
+                            montoDisplay = (double?)o.Pago_Ocupacion.Pago_Importe;
+                        }
+                        else
+                        {
+                            // CASO: Abono Vigente (ingreso o egreso sin pago)
+                            tarifaDisplay = "Abonado";
+                            tarifaMontoDisplay = 0.0;
+                            montoDisplay = (double?)null;
+                        }
+                    }
+
+                    return new Ocupacion_DTO
+                    {
+                        Est_id = o.Est_id,
+                        Plaza_id = o.Plaza_id,
+                        Ocu_fecha_Hora_Inicio = o.Ocu_fecha_Hora_Inicio,
+                        Ocu_fecha_Hora_Fin = o.Ocu_fecha_Hora_Fin,
+                        Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
+                        Plaza_Nombre = o.Plaza.Plaza_Nombre,
+                        Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
+                        Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
+                        Salida = o.Ocu_fecha_Hora_Fin.HasValue ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm") : "",
+
+                        Tarifa = tarifaDisplay,
+                        Tarifa_Monto = tarifaMontoDisplay,
+                        Monto = montoDisplay,
+
+                        Fecha_Vto_Abono = fechaVtoAbono,
+                        Tarifa_Por_Hora_Fallback = tarifaFallback
+                    };
                 })
-                .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
-                .ToList();
+        .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
+        .ToList();
 
-                // Guardamos en sesión para reutilizar al ordenar
                 Session["DatosIngresos"] = ingresos;
-
                 gvIngresos.DataSource = ingresos;
                 gvIngresos.DataKeyNames = new string[] { "Est_id", "Plaza_id", "Ocu_fecha_Hora_Inicio" };
                 gvIngresos.DataBind();
             }
         }
 
+
         private void CargarIngresos(DateTime? desde = null, DateTime? hasta = null, string patente = null)
         {
             string tipoUsuario = Session["Usu_tipo"] as string;
             int legajo = Convert.ToInt32(Session["Usu_legajo"]);
 
+            // Lista de IDs que se consideran "Abono"
+            var idsAbonos = new List<int> { 3, 4, 5 };
+
+            int idTarifaPorHora = 1;
+
+
             using (var db = new ProyectoEstacionamientoEntities())
             {
+                // 1. Determinar los Est_id relevantes para este usuario
+                IQueryable<int> estIdsQuery;
+                if (tipoUsuario == "Dueño")
+                {
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                        estIdsQuery = db.Estacionamiento.Where(e => e.Est_id == estIdSeleccionado).Select(e => e.Est_id);
+                    }
+                    else
+                    {
+                        estIdsQuery = db.Estacionamiento.Where(e => e.Dueño_Legajo == legajo).Select(e => e.Est_id);
+                    }
+                }
+                else // Asumir Playero
+                {
+                    int estIdPlayero = (int)Session["Playero_EstId"];
+                    estIdsQuery = db.Estacionamiento.Where(e => e.Est_id == estIdPlayero).Select(e => e.Est_id);
+                }
+
+                // 2. Pre-cargar tarifas por hora
+                var tarifasPorHora = db.Tarifa
+                            .Where(t => t.Tipos_Tarifa_Id == idTarifaPorHora && t.Categoria_id != null && t.Est_id.HasValue && estIdsQuery.Contains(t.Est_id.Value))
+                            .ToDictionary(
+                                t => Tuple.Create(t.Est_id.Value, t.Categoria_id.Value),
+                                t => (double)t.Tarifa_Monto
+                            );
+
                 IQueryable<Ocupacion> query = db.Ocupacion
+                    .Include("Vehiculo.Vehiculo_Abonado.Abono")
+                    .Include("Vehiculo.Categoria_Vehiculo")
                     .Include("Vehiculo")
                     .Include("Plaza")
-                    .Include("Tarifa");
+                    .Include("Plaza.Estacionamiento") // Necesario para Est_nombre
+                    .Include("Tarifa")
+                    .Include("Tarifa.Tipos_Tarifa")   // Necesario para Tipos_tarifa_descripcion
+                    .Include("Pago_Ocupacion");      // Necesario para Pago_Importe    
+
+                // 3. Aplicar filtro principal de Estacionamiento a la consulta
+                query = query.Where(o => estIdsQuery.Contains(o.Est_id));
 
                 // Filtros
                 if (desde.HasValue)
@@ -338,21 +438,61 @@ namespace Proyecto_Estacionamiento
                 // Ejecutar consulta
                 var ocupaciones = query.ToList();
 
-                var ingresos = ocupaciones.Select(o => new Ocupacion_DTO
-                {
-                    Est_id = o.Est_id,
-                    Plaza_id = o.Plaza_id,
-                    Ocu_fecha_Hora_Inicio = o.Ocu_fecha_Hora_Inicio,
-                    Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
-                    Plaza_Nombre = o.Plaza.Plaza_Nombre,
-                    Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
-                    Tarifa = o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
-                    Tarifa_Monto = (decimal)o.Tarifa.Tarifa_Monto,
-                    Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
-                    Salida = o.Ocu_fecha_Hora_Fin.HasValue
-                                ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm")
-                                : "",
-                    Monto = o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null
+                var ingresos = ocupaciones.Select(o => {
+
+                    bool esTipoAbono = o.Tarifa.Tipos_Tarifa_Id.HasValue && idsAbonos.Contains(o.Tarifa.Tipos_Tarifa_Id.Value);
+                    DateTime? fechaVtoAbono = null;
+                    double tarifaFallback = 0.0;
+
+                    string tarifaDisplay = o.Tarifa.Tipos_Tarifa != null ? o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion : "N/A";
+                    double tarifaMontoDisplay = (double)o.Tarifa.Tarifa_Monto;
+                    double? montoDisplay = (o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null);
+
+                    if (esTipoAbono)
+                    {
+                        var vehAbono = o.Vehiculo.Vehiculo_Abonado.FirstOrDefault(va => va.Tarifa_id == o.Tarifa_id);
+                        if (vehAbono != null)
+                            fechaVtoAbono = vehAbono.Abono.Fecha_Vto;
+
+                        var fallbackKey = Tuple.Create(o.Est_id, o.Vehiculo.Categoria_id);
+                        if (tarifasPorHora.ContainsKey(fallbackKey))
+                            tarifaFallback = tarifasPorHora[fallbackKey];
+
+                        if (o.Pago_Ocupacion != null)
+                        {
+                            // Abono Vencido que generó un Pago
+                            tarifaDisplay = "Abonado (Vencido) - Por hora";
+                            tarifaMontoDisplay = tarifaFallback;
+                            montoDisplay = (double?)o.Pago_Ocupacion.Pago_Importe;
+                        }
+                        else
+                        {
+                            // Abono Vigente
+                            tarifaDisplay = "Abonado";
+                            tarifaMontoDisplay = 0.0;
+                            montoDisplay = (double?)null;
+                        }
+                    }
+
+                    return new Ocupacion_DTO
+                    {
+                        Est_id = o.Est_id,
+                        Plaza_id = o.Plaza_id,
+                        Ocu_fecha_Hora_Inicio = o.Ocu_fecha_Hora_Inicio,
+                        Est_nombre = o.Plaza.Estacionamiento.Est_nombre,
+                        Plaza_Nombre = o.Plaza.Plaza_Nombre,
+                        Vehiculo_Patente = o.Vehiculo.Vehiculo_Patente,
+                        Entrada = o.Ocu_fecha_Hora_Inicio.ToString("dd/MM/yyyy HH:mm"),
+                        Salida = o.Ocu_fecha_Hora_Fin.HasValue
+                                    ? o.Ocu_fecha_Hora_Fin.Value.ToString("dd/MM/yyyy HH:mm")
+                                    : "",
+
+                        Tarifa = tarifaDisplay,
+                        Tarifa_Monto = tarifaMontoDisplay,
+                        Monto = montoDisplay,
+                        Fecha_Vto_Abono = fechaVtoAbono,
+                        Tarifa_Por_Hora_Fallback = tarifaFallback,
+                    };
                 })
                 .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
                 .ToList();
@@ -426,81 +566,120 @@ namespace Proyecto_Estacionamiento
             {
                 int index = Convert.ToInt32(e.CommandArgument);
 
-                // 1. Recuperamos todas las claves necesarias desde DataKeyNames
+                // 1. Recuperar claves
                 int estId = (int)gvIngresos.DataKeys[index].Values["Est_id"];
                 int plazaId = (int)gvIngresos.DataKeys[index].Values["Plaza_id"];
                 DateTime inicio = (DateTime)gvIngresos.DataKeys[index].Values["Ocu_fecha_Hora_Inicio"];
 
-                //1. Obtenemos el id del método de pago seleccionado
-                int metodoPagoId = int.Parse(hfMetodoPago.Value);
+                DateTime fin;
+                if (!DateTime.TryParse(Salida.Value, out fin))
+                {
+                    fin = DateTime.Now; // fallback
+                }
+
+                inicio = new DateTime(inicio.Year, inicio.Month, inicio.Day,
+                                      inicio.Hour, inicio.Minute, inicio.Second);
+
+                string metodoPagoValor = hfMetodoPago.Value;
 
                 using (var db = new ProyectoEstacionamientoEntities())
                 {
-                    db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
-
-                    // 3. Buscar la Ocupación con las 3 claves obtenidas de DataKeyNames, incluyendo tablas relacionadas
-                    inicio = new DateTime(inicio.Year, inicio.Month, inicio.Day,
-                                          inicio.Hour, inicio.Minute, inicio.Second);
-
-                    var ocupacion = db.Ocupacion
-                        .Include("Tarifa.Tipos_Tarifa")
-                        .Include("Pago_Ocupacion")
-                        .FirstOrDefault(o => o.Est_id == estId
-                                          && o.Plaza_id == plazaId
-                                          && DbFunctions.TruncateTime(o.Ocu_fecha_Hora_Inicio) == inicio.Date
-                                          && o.Ocu_fecha_Hora_Inicio.Hour == inicio.Hour
-                                          && o.Ocu_fecha_Hora_Inicio.Minute == inicio.Minute
-                                          && o.Ocu_fecha_Hora_Inicio.Second == inicio.Second);
-
-                    if (ocupacion == null)
-                        throw new Exception($"No se encontró ocupacion con: Est_id={estId}, Plaza_id={plazaId}, Ocu_fecha_Hora_Inicio={inicio:yyyy-MM-dd HH:mm:ss.fff}");
-
-                    // 4. Obtener descripción de la tarifa
-                    string tarifa = ocupacion.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion;
-                    if (string.IsNullOrEmpty(tarifa))
-                        throw new Exception("Descripción de tarifa no encontrada");
-
-                    // 5. Obtener el importe según el tipo de tarifa
-                    decimal tarifaBase = Convert.ToDecimal(ocupacion.Tarifa.Tarifa_Monto);
-
-                    // 6. Obtener el tiempo de Egreso (actual)
-                    DateTime fin;
-                    if (!DateTime.TryParse(Salida.Value, out fin))
+                    if (metodoPagoValor == "ABONO")
                     {
-                        fin = DateTime.Now; // fallback
+                        // --- CASO 1: ES UN ABONADO (VIGENTE) ---
+                        string sqlAbonado = @"
+                    UPDATE Ocupacion SET Ocu_fecha_Hora_Fin = @p0
+                    WHERE Est_id = @p1 AND Plaza_id = @p2
+                        AND CONVERT(DATE, Ocu_fecha_Hora_Inicio) = @p3
+                        AND DATEPART(HOUR, Ocu_fecha_Hora_Inicio) = @p4
+                        AND DATEPART(MINUTE, Ocu_fecha_Hora_Inicio) = @p5
+                        AND DATEPART(SECOND, Ocu_fecha_Hora_Inicio) = @p6;
+                    UPDATE Plaza SET Plaza_Disponibilidad = 1
+                    WHERE Est_id = @p1 AND Plaza_id = @p2;
+                ";
+                        db.Database.ExecuteSqlCommand(sqlAbonado, fin, estId, plazaId, inicio.Date, inicio.Hour, inicio.Minute, inicio.Second);
                     }
-
-                    // 7. Calcular la duración y el monto final
-                    TimeSpan duracion = fin - inicio;
-                    decimal montoFinal = CalcularMonto(tarifa, duracion, tarifaBase);
-
-                    // 8. Registrar en la tabla Pago_Ocupacion
-                    Pago_Ocupacion pago;
-                    pago = new Pago_Ocupacion
+                    else
                     {
-                        Est_id = ocupacion.Est_id,
-                        Metodo_Pago_id = metodoPagoId,
-                        Pago_Importe = Convert.ToDouble(montoFinal),
-                        Pago_Fecha = fin.Date
-                    };
-                    db.Pago_Ocupacion.Add(pago);
-                    db.SaveChanges(); // <-- aquí obtenemos pago.Pago_id (identity)
+                        // --- CASO 2: INGRESO NORMAL o ABONO VENCIDO ---
 
-                    // 9. Asociar Pago_Ocupacion a la Ocupación
-                    ocupacion.Pago_id = pago.Pago_id;
-                    ocupacion.Ocu_fecha_Hora_Fin = fin;
+                        int metodoPagoId = int.Parse(metodoPagoValor);
 
-                    // 10. Actualizar disponibilidad de plaza
-                    var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaId);
-                    if (plaza == null)
-                        throw new Exception("Plaza no encontrada para actualizar disponibilidad");
+                        // Buscamos la ocupación CON TODAS LAS RELACIONES NECESARIAS
+                        var ocupacion = db.Ocupacion
+                            .Include("Tarifa.Tipos_Tarifa")
+                            .Include("Vehiculo.Categoria_Vehiculo") // Necesario para Categoria_id
+                            .Include("Vehiculo.Vehiculo_Abonado.Abono") // Necesario para Fecha_Vto
+                            .FirstOrDefault(o => o.Est_id == estId
+                                             && o.Plaza_id == plazaId
+                                             && DbFunctions.TruncateTime(o.Ocu_fecha_Hora_Inicio) == inicio.Date
+                                             && o.Ocu_fecha_Hora_Inicio.Hour == inicio.Hour
+                                             && o.Ocu_fecha_Hora_Inicio.Minute == inicio.Minute
+                                             && o.Ocu_fecha_Hora_Inicio.Second == inicio.Second);
 
-                    plaza.Plaza_Disponibilidad = true;
+                        if (ocupacion == null)
+                            throw new Exception("No se encontró la ocupación para calcular el pago.");
 
-                    // 11. Actualizar la Tabla Ocupacion en la BD usando SQL directo
-                    string sql = @"
+                        // Definimos las variables para el cálculo
+                        string tarifaParaCalcular;
+                        decimal tarifaBaseParaCalcular;
+                        TimeSpan duracionParaCalcular;
+
+                        var idsAbonos = new List<int> { 3, 4, 5 }; // Semanal, Mensual, Anual
+                        bool esTipoAbono = idsAbonos.Contains(ocupacion.Tarifa.Tipos_Tarifa_Id.Value);
+
+                        if (esTipoAbono)
+                        {
+                            // --- SUBCASO 2a: ES UN ABONO (VENCIDO) ---
+                            var vehAbono = ocupacion.Vehiculo.Vehiculo_Abonado
+                                                .FirstOrDefault(va => va.Tarifa_id == ocupacion.Tarifa_id);
+                            DateTime fechaVto = vehAbono.Abono.Fecha_Vto;
+
+                            // 1. Duración: Solo se cobra el tiempo EXCEDENTE (desde el vencimiento)
+                            duracionParaCalcular = fin - fechaVto;
+
+                            // 2. Tarifa: Se cobra "Por hora"
+                            tarifaParaCalcular = "Por hora";
+
+                            // 3. Tarifa Base: Buscamos la tarifa "Por hora" (ID 1) para esta categoría
+                            int idTarifaPorHora = 1;
+                            int categoriaId = ocupacion.Vehiculo.Categoria_id;
+                            var tarifaFallback = db.Tarifa.FirstOrDefault(t =>
+                                                    t.Est_id == ocupacion.Est_id &&
+                                                    t.Tipos_Tarifa_Id == idTarifaPorHora &&
+                                                    t.Categoria_id == categoriaId);
+
+                            if (tarifaFallback == null)
+                                throw new Exception($"No se encontró tarifa 'Por hora' de fallback para Categoria ID {categoriaId}");
+
+                            tarifaBaseParaCalcular = (decimal)tarifaFallback.Tarifa_Monto;
+                        }
+                        else
+                        {
+                            // --- SUBCASO 2b: ES UN INGRESO NORMAL ---
+                            tarifaParaCalcular = ocupacion.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion;
+                            tarifaBaseParaCalcular = Convert.ToDecimal(ocupacion.Tarifa.Tarifa_Monto);
+                            duracionParaCalcular = fin - inicio; // Duración completa
+                        }
+
+                        // 5. Calcular monto final
+                        decimal montoFinal = CalcularMonto(tarifaParaCalcular, duracionParaCalcular, tarifaBaseParaCalcular);
+
+                        // 6. Registrar Pago_Ocupacion
+                        Pago_Ocupacion pago = new Pago_Ocupacion
+                        {
+                            Est_id = ocupacion.Est_id,
+                            Metodo_Pago_id = metodoPagoId,
+                            Pago_Importe = Convert.ToDouble(montoFinal),
+                            Pago_Fecha = fin.Date
+                        };
+                        db.Pago_Ocupacion.Add(pago);
+                        db.SaveChanges(); // Obtenemos pago.Pago_id
+
+                        // 7. SQL directo para actualizar todo
+                        string sql = @"
                     UPDATE Ocupacion
-                    SET Ocu_fecha_Hora_Fin = @p0,Pago_id = @p10
+                    SET Ocu_fecha_Hora_Fin = @p0, Pago_id = @p10
                     WHERE Est_id = @p1 AND Plaza_id = @p2
                         AND CONVERT(DATE, Ocu_fecha_Hora_Inicio) = @p3
                         AND DATEPART(HOUR, Ocu_fecha_Hora_Inicio) = @p4
@@ -514,27 +693,30 @@ namespace Proyecto_Estacionamiento
                     UPDATE Plaza
                     SET Plaza_Disponibilidad = 1
                     WHERE Est_id = @p1 AND Plaza_id = @p2;
-                    ";
+                ";
 
-                    db.Database.ExecuteSqlCommand(
-                        sql,
-                        fin,                   // @p0
-                        estId,                 // @p1
-                        plazaId,               // @p2
-                        inicio.Date,           // @p3
-                        inicio.Hour,           // @p4
-                        inicio.Minute,         // @p5
-                        inicio.Second,         // @p6
-                        (double)montoFinal,    // @p7
-                        fin.Date,               // @p8
-                        pago.Pago_id,          // @p9 (Pago_Ocupacion update)
-                        pago.Pago_id           // @p10 (Ocupacion.Pago_id)
-                    );
+                        db.Database.ExecuteSqlCommand(
+                            sql,
+                            fin,                   // @p0
+                            estId,                 // @p1
+                            plazaId,               // @p2
+                            inicio.Date,           // @p3
+                            inicio.Hour,           // @p4
+                            inicio.Minute,         // @p5
+                            inicio.Second,         // @p6
+                            (double)montoFinal,    // @p7
+                            fin.Date,              // @p8
+                            pago.Pago_id,          // @p9
+                            pago.Pago_id           // @p10
+                        );
+                    }
 
+                    // Redirigir (común para ambos casos)
+                    Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso");
                 }
             }
-            Response.Redirect($"~/Pages/Ingresos/Ingreso_Listar.aspx?exito=1&accion=egreso");
         }
+
 
         // Método para calcular el monto según tarifa y duración
         private decimal CalcularMonto(string tarifa, TimeSpan duracion, decimal tarifaBase)

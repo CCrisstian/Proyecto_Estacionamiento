@@ -22,7 +22,10 @@
         <Columns>
 
             <asp:BoundField DataField="Categoria" HeaderText="Categoría" />
-            <asp:BoundField DataField="CantPlazasDisponibles" HeaderText="Cant. Disponible" />
+            <asp:BoundField DataField="CantPlazasDisponibles" HeaderText="Cant. Disponible" ItemStyle-HorizontalAlign="center"/>
+            <asp:BoundField DataField="CantPlazasOcupadas" HeaderText="Cant. Ocupadas" ItemStyle-HorizontalAlign="center"/>
+            <asp:BoundField DataField="CantTotalPlazas" HeaderText="Total" ItemStyle-HorizontalAlign="center"/>
+
         </Columns>
 
     </asp:GridView>

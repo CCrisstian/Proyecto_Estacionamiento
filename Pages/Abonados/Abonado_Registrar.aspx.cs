@@ -384,10 +384,13 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
+                var ahora = DateTime.Now;
+
                 var plazas = db.Plaza
                                .Where(p => p.Est_id == estacionamientoId
                                     && p.Categoria_id == categoriaSeleccionadaId
-                                    && p.Plaza_Disponibilidad == true)
+                                    && p.Plaza_Disponibilidad == true
+                                    && !p.Abono.Any(a => a.Fecha_Vto >= ahora))
                                .OrderBy(p => p.Plaza_id)
                                .ToList();
 
@@ -793,21 +796,7 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         db.SaveChanges();
 
                         // ==========================================================
-                        // 3. ACTUALIZAR "Plaza"
-                        // ==========================================================
-                        var plaza = db.Plaza.FirstOrDefault(p => p.Est_id == estId && p.Plaza_id == plazaId);
-                        if (plaza != null)
-                        {
-                            plaza.Plaza_Disponibilidad = false;
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException($"La plaza con ID {plazaId} no fue encontrada.");
-                        }
-                        // No guardamos aún, lo haremos junto con el pago y vehículos
-
-                        // ==========================================================
-                        // 4. INSERTAR "Pagos_Abonados"
+                        // 3. INSERTAR "Pagos_Abonados"
                         // ==========================================================
                         var nuevoPago = new Pagos_Abonados();
                         nuevoPago.Id_Abono = nuevoAbono.Id_Abono;
@@ -818,7 +807,7 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         db.Pagos_Abonados.Add(nuevoPago);
 
                         // ==========================================================
-                        // 5 & 6. INSERTAR "Vehiculo" Y "Vehiculo_Abonado"
+                        // 4 & 5. INSERTAR "Vehiculo" Y "Vehiculo_Abonado"
                         // ==========================================================
                         try
                         {
@@ -860,7 +849,7 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         }
 
                         // ==========================================================
-                        // 7. CONFIRMACIÓN FINAL
+                        // 6. CONFIRMACIÓN FINAL
                         // ==========================================================
                         transaction.Commit();
                         Response.Redirect($"~/Pages/Abonados/Abonados_Listar.aspx?exito=1");

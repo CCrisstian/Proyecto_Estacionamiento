@@ -67,9 +67,13 @@
                 <asp:BoundField DataField="Vehiculo_Patente" HeaderText="Patente" SortExpression="Vehiculo_Patente" />
                 <asp:BoundField DataField="Plaza_Nombre" HeaderText="Plaza" />
                 <asp:BoundField DataField="Tarifa" HeaderText="Tarifa" />
-                <asp:BoundField DataField="Tarifa_Monto" HeaderText="Monto" />
+                <asp:BoundField DataField="Tarifa_Monto" HeaderText="Monto" DataFormatString="{0:C}"
+                    NullDisplayText=""
+                    HtmlEncode="False" />
                 <asp:BoundField DataField="Salida" HeaderText="Salida" />
-                <asp:BoundField DataField="Monto" HeaderText="Total" />
+                <asp:BoundField DataField="Monto" HeaderText="Total" DataFormatString="{0:C}"
+                    NullDisplayText=""
+                    HtmlEncode="False" />
 
                 <asp:TemplateField>
                     <ItemTemplate>
@@ -82,7 +86,9 @@
                             OnClientClick="return confirmarEgreso(this);"
                             data-tarifa='<%# Eval("Tarifa") %>'
                             data-tarifa-monto='<%# Eval("Tarifa_Monto") %>'
-                            data-entrada='<%# Eval("Entrada") %>' />
+                            data-entrada='<%# Eval("Entrada") %>'
+                            data-vto-abono='<%# Eval("Fecha_Vto_Abono") != null ? Eval("Fecha_Vto_Abono", "{0:o}") : "" %>'
+                            data-tarifa-fallback='<%# Eval("Tarifa_Por_Hora_Fallback") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
 
@@ -126,11 +132,12 @@
             var tarifaMonto = btn.dataset.tarifaMonto;
             var entrada = btn.dataset.entrada;
 
+            var vtoAbonoStr = btn.dataset.vtoAbono;
+            var tarifaFallback = parseFloat(btn.dataset.tarifaFallback.replace(',', '.').trim());
+
             // Capturamos la fecha/hora actual
             var ahora = new Date();
-
-            // Guardamos la fecha en ISO (segura para .NET/SQL)
-            var salidaISO = ahora.toISOString()
+            var salidaISO = ahora.toISOString();
 
             // Pasamos el valor al HiddenField
             document.getElementById("<%= Salida.ClientID %>").value = salidaISO;
@@ -145,16 +152,6 @@
                 return `${dia}/${mes}/${anio} ${horas}:${minutos}`;
             }
 
-            var salida = formatearFecha(ahora);
-
-            // Parseamos la tarifa base, reemplazando coma por punto
-            var tarifaBase = parseFloat(tarifaMonto.replace(',', '.').trim());
-            if (isNaN(tarifaBase)) {
-                console.error("Tarifa inválida:", tarifaMonto);
-                Swal.fire("Error", "El monto base es inválido.", "error");
-                return false;
-            }
-
             function parseFecha(fechaStr) {
                 // fechaStr = "dd/MM/yyyy HH:mm"
                 const partes = fechaStr.split(/[/ :]/); // separa por /, espacio y :
@@ -166,23 +163,95 @@
                 return new Date(anio, mes, dia, horas, minutos);
             }
 
+            var salida = formatearFecha(ahora);
             var entradaDate = parseFecha(entrada);
-            var duracionHoras = (ahora - entradaDate) / (1000 * 60 * 60); // horas como decimal
 
-            var total = calcularMonto(tarifa, duracionHoras, tarifaBase);
-            var totalFmt = total.toFixed(2);
+            var total = 0;
+            var totalFmt = "0.00";
+            var esIngresoNormal = true; // Flag para saber si pedir método de pago
+            var htmlMensajeCalculo = "";
 
-            // Primer Swal mostrando datos y total
-            Swal.fire({
-                html: `
+            if (tarifa === "Abonado") {
+                // Es un Abono, verificar si venció
+                var vtoAbonoDate = new Date(vtoAbonoStr); // JS puede parsear ISO 8601
+
+                if (ahora <= vtoAbonoDate) {
+                    // --- CASO 1: ABONO VIGENTE ---
+                    esIngresoNormal = false; // Es egreso de abonado, no hay pago
+
+                    var fila = btn.closest('tr');
+                    var patente = fila.cells[2].innerText;
+                    var plaza = fila.cells[3].innerText;
+
+                    Swal.fire({
+                        title: "Registrar Egreso de Abonado",
+                        html: `
+                    <div style="text-align:left; font-family:monospace;">
+                        <hr/>
+                        <p><b>Ingreso:</b> ${entrada}</p>
+                        <p><b>Salida:</b> ${salida}</p>
+                    </div>`,
+                        icon: "info",
+                        showDenyButton: true,
+                        confirmButtonText: "Sí, continuar",
+                        denyButtonText: "Cancelar",
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('<%= hfMetodoPago.ClientID %>').value = "ABONO";
+                            __doPostBack(btn.name, "");
+                        } else if (result.isDenied) {
+                            Swal.fire("Egreso cancelado", "", "info");
+                        }
+                    });
+                    return false; // Salir de la función aquí
+
+                } else {
+                    // --- CASO 2: ABONO VENCIDO ---
+                    // Se cobra "Por hora" desde el momento del vencimiento
+
+                    // Calculamos duración excedida
+                    var duracionExcedidaHoras = (ahora - vtoAbonoDate) / (1000 * 60 * 60);
+                    total = calcularMonto("Por hora", duracionExcedidaHoras, tarifaFallback);
+                    totalFmt = total.toFixed(2);
+
+                    htmlMensajeCalculo = `
+                    <div style="text-align:left; font-family:monospace;">
+                    <h2 style="text-align:center;">Registrar Egreso</h2>
+                    <hr/>
+                    <p style="color: red;"><b>Su Abono ha Vencido: ${formatearFecha(vtoAbonoDate)}</b></p>
+                    <p><b>Se le cobrara una Tarifa por hora: </b> $${tarifaFallback.toFixed(2)}</p>
+                    <p><b>Ingreso:</b> ${entrada}</p>
+                    <p><b>Salida:</b> ${salida}</p>
+                    <hr/>
+                    <h3><b>TOTAL A PAGAR:</b> $${totalFmt}</h3>
+                `;
+                }
+
+            } else {
+                // --- CASO 3: INGRESO NORMAL ---
+                var tarifaBase = parseFloat(tarifaMonto.replace(',', '.').trim());
+                var duracionHoras = (ahora - entradaDate) / (1000 * 60 * 60);
+
+                total = calcularMonto(tarifa, duracionHoras, tarifaBase);
+                totalFmt = total.toFixed(2);
+
+                htmlMensajeCalculo = `
                 <div style="text-align:left; font-family:monospace;">
+                    <h2 style="text-align:center;">Registrar Egreso</h2>
+                    <hr/>
                     <p><b>Tarifa:</b> ${tarifa}</p>
                     <p><b>Monto:</b> ${tarifaBase.toFixed(2)}</p>
                     <p><b>Ingreso:</b> ${entrada}</p>
                     <p><b>Salida:</b> ${salida}</p>
                     <hr/>
                     <h3><b>TOTAL A PAGAR:</b> $${totalFmt}</h3>
-                </div>`,
+                </div>`;
+            }
+
+            // Primer Swal (Mostrar Total)
+            Swal.fire({
+                html: htmlMensajeCalculo,
                 icon: "warning",
                 showDenyButton: true,
                 confirmButtonText: "Sí, continuar",
@@ -190,20 +259,20 @@
                 reverseButtons: true
             }).then((firstResult) => {
                 if (firstResult.isConfirmed) {
-                    // Bloque de método de pago
+                    // Segundo Swal (Método de Pago)
                     var opciones = '<option value="0">Seleccione Método de Pago</option>';
-        <% foreach (var mp in ddlMetodoDePago.Items.Cast<ListItem>())
+                <% foreach (var mp in ddlMetodoDePago.Items.Cast<ListItem>())
         { %>
                     opciones += '<option value="<%= mp.Value %>"><%= mp.Text %></option>';
-        <% } %>
+                <% } %>
 
                     Swal.fire({
                         title: "Registrar Egreso",
                         html: `
-                        <label>Método de Pago:</label>
-                        <select id="swalMetodoPago" class="swal2-input">
-                            ${opciones}
-                        </select>`,
+                    <label>Método de Pago:</label>
+                    <select id="swalMetodoPago" class="swal2-input">
+                        ${opciones}
+                    </select>`,
                         focusConfirm: false,
                         showDenyButton: true,
                         confirmButtonText: "Guardar",
@@ -225,9 +294,9 @@
                     });
                 }
             });
-            return false;
+            return false; // Prevenir postback original
         }
-    </script>
+</script>
 
     <% if (Request.QueryString["exito"] == "1")
         {
