@@ -209,7 +209,7 @@ namespace Proyecto_Estacionamiento
             public string Plaza_Nombre { get; set; }
             public string Vehiculo_Patente { get; set; }
             public string Tarifa { get; set; }
-            public double Tarifa_Monto { get; set; }
+            public double? Tarifa_Monto { get; set; }
             public string Entrada { get; set; }
             public string Salida { get; set; }
             public double? Monto { get; set; }
@@ -254,7 +254,7 @@ namespace Proyecto_Estacionamiento
                             .Where(t => t.Tipos_Tarifa_Id == idTarifaPorHora && t.Categoria_id != null && t.Est_id.HasValue && estIdsQuery.Contains(t.Est_id.Value))
                             .ToDictionary(
                                 t => Tuple.Create(t.Est_id.Value, t.Categoria_id.Value),
-                                t => (double)t.Tarifa_Monto 
+                                t => (double)t.Tarifa_Monto
                             );
 
                 IQueryable<Ocupacion> query = db.Ocupacion
@@ -277,14 +277,15 @@ namespace Proyecto_Estacionamiento
 
                 var ocupaciones = query.ToList();
 
-                var ingresos = ocupaciones.Select(o => {
+                var ingresos = ocupaciones.Select(o =>
+                {
 
                     bool esTipoAbono = o.Tarifa.Tipos_Tarifa_Id.HasValue && idsAbonos.Contains(o.Tarifa.Tipos_Tarifa_Id.Value);
                     DateTime? fechaVtoAbono = null;
                     double tarifaFallback = 0.0;
 
                     string tarifaDisplay = o.Tarifa.Tipos_Tarifa != null ? o.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion : "N/A";
-                    double tarifaMontoDisplay = (double)o.Tarifa.Tarifa_Monto; 
+                    double? tarifaMontoDisplay = (double)o.Tarifa.Tarifa_Monto;
                     double? montoDisplay = (o.Pago_Ocupacion != null ? (double?)o.Pago_Ocupacion.Pago_Importe : null);
 
                     if (esTipoAbono)
@@ -308,7 +309,7 @@ namespace Proyecto_Estacionamiento
                         {
                             // CASO: Abono Vigente (ingreso o egreso sin pago)
                             tarifaDisplay = "Abonado";
-                            tarifaMontoDisplay = 0.0;
+                            tarifaMontoDisplay = null;
                             montoDisplay = (double?)null;
                         }
                     }
@@ -438,7 +439,8 @@ namespace Proyecto_Estacionamiento
                 // Ejecutar consulta
                 var ocupaciones = query.ToList();
 
-                var ingresos = ocupaciones.Select(o => {
+                var ingresos = ocupaciones.Select(o =>
+                {
 
                     bool esTipoAbono = o.Tarifa.Tipos_Tarifa_Id.HasValue && idsAbonos.Contains(o.Tarifa.Tipos_Tarifa_Id.Value);
                     DateTime? fechaVtoAbono = null;
@@ -620,12 +622,12 @@ namespace Proyecto_Estacionamiento
                         if (ocupacion == null)
                             throw new Exception("No se encontró la ocupación para calcular el pago.");
 
-                        // Definimos las variables para el cálculo
                         string tarifaParaCalcular;
                         decimal tarifaBaseParaCalcular;
                         TimeSpan duracionParaCalcular;
+                        decimal montoFinal = 0m; // Inicializar monto en 0
 
-                        var idsAbonos = new List<int> { 3, 4, 5 }; // Semanal, Mensual, Anual
+                        var idsAbonos = new List<int> { 3, 4, 5 };
                         bool esTipoAbono = idsAbonos.Contains(ocupacion.Tarifa.Tipos_Tarifa_Id.Value);
 
                         if (esTipoAbono)
@@ -635,24 +637,29 @@ namespace Proyecto_Estacionamiento
                                                 .FirstOrDefault(va => va.Tarifa_id == ocupacion.Tarifa_id);
                             DateTime fechaVto = vehAbono.Abono.Fecha_Vto;
 
-                            // 1. Duración: Solo se cobra el tiempo EXCEDENTE (desde el vencimiento)
+                            // Calculamos la duración excedida
                             duracionParaCalcular = fin - fechaVto;
 
-                            // 2. Tarifa: Se cobra "Por hora"
-                            tarifaParaCalcular = "Por hora";
+                            // --- Aplicar regla de 15 minutos ---
+                            if (duracionParaCalcular.TotalMinutes >= 15)
+                            {
+                                tarifaParaCalcular = "Por hora";
+                                int idTarifaPorHora = 1;
+                                int categoriaId = ocupacion.Vehiculo.Categoria_id;
+                                var tarifaFallback = db.Tarifa.FirstOrDefault(t =>
+                                                        t.Est_id == ocupacion.Est_id &&
+                                                        t.Tipos_Tarifa_Id == idTarifaPorHora &&
+                                                        t.Categoria_id == categoriaId);
 
-                            // 3. Tarifa Base: Buscamos la tarifa "Por hora" (ID 1) para esta categoría
-                            int idTarifaPorHora = 1;
-                            int categoriaId = ocupacion.Vehiculo.Categoria_id;
-                            var tarifaFallback = db.Tarifa.FirstOrDefault(t =>
-                                                    t.Est_id == ocupacion.Est_id &&
-                                                    t.Tipos_Tarifa_Id == idTarifaPorHora &&
-                                                    t.Categoria_id == categoriaId);
+                                if (tarifaFallback == null)
+                                    throw new Exception($"No se encontró tarifa 'Por hora' de fallback para Categoria ID {categoriaId}");
 
-                            if (tarifaFallback == null)
-                                throw new Exception($"No se encontró tarifa 'Por hora' de fallback para Categoria ID {categoriaId}");
+                                tarifaBaseParaCalcular = (decimal)tarifaFallback.Tarifa_Monto;
 
-                            tarifaBaseParaCalcular = (decimal)tarifaFallback.Tarifa_Monto;
+                                // Calculamos el monto solo si excedió los 15 min
+                                montoFinal = CalcularMonto(tarifaParaCalcular, duracionParaCalcular, tarifaBaseParaCalcular);
+                            }
+                            // Si la duración es < 15 min, montoFinal permanece en 0m
                         }
                         else
                         {
@@ -660,21 +667,26 @@ namespace Proyecto_Estacionamiento
                             tarifaParaCalcular = ocupacion.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion;
                             tarifaBaseParaCalcular = Convert.ToDecimal(ocupacion.Tarifa.Tarifa_Monto);
                             duracionParaCalcular = fin - inicio; // Duración completa
+                            montoFinal = CalcularMonto(tarifaParaCalcular, duracionParaCalcular, tarifaBaseParaCalcular);
                         }
 
-                        // 5. Calcular monto final
-                        decimal montoFinal = CalcularMonto(tarifaParaCalcular, duracionParaCalcular, tarifaBaseParaCalcular);
+                        // --- INICIO DE LÓGICA DE PAGO (Solo si hay monto) ---
+                        int? pagoId = null; // El Pago_id será nulo por defecto
 
-                        // 6. Registrar Pago_Ocupacion
-                        Pago_Ocupacion pago = new Pago_Ocupacion
+                        if (montoFinal > 0)
                         {
-                            Est_id = ocupacion.Est_id,
-                            Metodo_Pago_id = metodoPagoId,
-                            Pago_Importe = Convert.ToDouble(montoFinal),
-                            Pago_Fecha = fin.Date
-                        };
-                        db.Pago_Ocupacion.Add(pago);
-                        db.SaveChanges(); // Obtenemos pago.Pago_id
+                            // 6. Registrar Pago_Ocupacion SOLO SI HAY ALGO QUE COBRAR
+                            Pago_Ocupacion pago = new Pago_Ocupacion
+                            {
+                                Est_id = ocupacion.Est_id,
+                                Metodo_Pago_id = metodoPagoId,
+                                Pago_Importe = Convert.ToDouble(montoFinal),
+                                Pago_Fecha = fin.Date
+                            };
+                            db.Pago_Ocupacion.Add(pago);
+                            db.SaveChanges(); // Obtenemos pago.Pago_id
+                            pagoId = pago.Pago_id; // Asignamos el ID generado
+                        }
 
                         // 7. SQL directo para actualizar todo
                         string sql = @"
@@ -686,9 +698,12 @@ namespace Proyecto_Estacionamiento
                         AND DATEPART(MINUTE, Ocu_fecha_Hora_Inicio) = @p5
                         AND DATEPART(SECOND, Ocu_fecha_Hora_Inicio) = @p6;
 
+                    -- Solo actualizamos Pago_Ocupacion si creamos uno
+                    " + (pagoId.HasValue ? @"
                     UPDATE Pago_Ocupacion
                     SET Pago_Importe = @p7, Pago_Fecha = @p8
                     WHERE Pago_id = @p9;
+                    " : "") + @"
 
                     UPDATE Plaza
                     SET Plaza_Disponibilidad = 1
@@ -706,9 +721,10 @@ namespace Proyecto_Estacionamiento
                             inicio.Second,         // @p6
                             (double)montoFinal,    // @p7
                             fin.Date,              // @p8
-                            pago.Pago_id,          // @p9
-                            pago.Pago_id           // @p10
+                            (object)pagoId ?? DBNull.Value, // @p9 (Usa el ID o DBNull si no hubo pago)
+                            (object)pagoId ?? DBNull.Value  // @p10 (Usa el ID o DBNull si no hubo pago)
                         );
+                        // --- FIN DE LÓGICA DE PAGO ---
                     }
 
                     // Redirigir (común para ambos casos)

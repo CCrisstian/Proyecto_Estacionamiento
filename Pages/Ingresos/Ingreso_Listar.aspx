@@ -208,24 +208,60 @@
 
                 } else {
                     // --- CASO 2: ABONO VENCIDO ---
-                    // Se cobra "Por hora" desde el momento del vencimiento
+                    var duracionExcedidaMs = ahora - vtoAbonoDate;
+                    var duracionExcedidaMinutos = duracionExcedidaMs / (1000 * 60);
 
-                    // Calculamos duración excedida
-                    var duracionExcedidaHoras = (ahora - vtoAbonoDate) / (1000 * 60 * 60);
-                    total = calcularMonto("Por hora", duracionExcedidaHoras, tarifaFallback);
-                    totalFmt = total.toFixed(2);
+                    if (duracionExcedidaMinutos < 15) {
+                        // --- SUBCASO 2a: ABONO VENCIDO < 15 MIN ---
 
-                    htmlMensajeCalculo = `
-                    <div style="text-align:left; font-family:monospace;">
-                    <h2 style="text-align:center;">Registrar Egreso</h2>
-                    <hr/>
-                    <p style="color: red;"><b>Su Abono ha Vencido: ${formatearFecha(vtoAbonoDate)}</b></p>
-                    <p><b>Se le cobrara una Tarifa por hora: </b> $${tarifaFallback.toFixed(2)}</p>
-                    <p><b>Ingreso:</b> ${entrada}</p>
-                    <p><b>Salida:</b> ${salida}</p>
-                    <hr/>
-                    <h3><b>TOTAL A PAGAR:</b> $${totalFmt}</h3>
-                `;
+                        var fila = btn.closest('tr');
+                        var patente = fila.cells[2].innerText;
+                        var plaza = fila.cells[3].innerText;
+
+                        Swal.fire({
+                            title: "Registrar Egreso de Abonado",
+                            html: `
+                        <div style="text-align:left; font-family:monospace;">
+                            <p style="color:orange; font-weight:bold;">Abono vencido recientemente, menos de 15 min.</p>
+                            <p><b>Ingreso:</b> ${entrada}</p>
+                            <p><b>Salida:</b> ${salida}</p>
+                        </div>`,
+                            icon: "info",
+                            showDenyButton: true,
+                            confirmButtonText: "Sí, continuar",
+                            denyButtonText: "Cancelar",
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Usamos "ABONO" para que el C# sepa que no debe generar pago
+                                document.getElementById('<%= hfMetodoPago.ClientID %>').value = "ABONO";
+                            __doPostBack(btn.name, "");
+                        } else if (result.isDenied) {
+                            Swal.fire("Egreso cancelado", "", "info");
+                        }
+                    });
+                        return false; // Salir de la función aquí
+
+                    } else {
+                        // --- SUBCASO 2b: ABONO VENCIDO > 15 MIN ---
+                        // Se cobra "Por hora" desde el vencimiento
+                        var duracionExcedidaHoras = duracionExcedidaMs / (1000 * 60 * 60);
+                        total = calcularMonto("Por hora", duracionExcedidaHoras, tarifaFallback);
+                        totalFmt = total.toFixed(2);
+
+                        htmlMensajeCalculo = `
+                        <div style="text-align:left; font-family:monospace;">
+                            <h2 style="text-align:center;">Registrar Egreso</h2>
+                            <hr/>
+                            <p style="color:red; font-weight:bold;">Su Abono ha Vencido: ${formatearFecha(vtoAbonoDate)}</p>
+                            <p><b>Se le cobrará una Tarifa por hora:</b> $${tarifaFallback.toFixed(2)}</p>
+                            <hr/>
+                            <p><b>Ingreso:</b> ${entrada}</p>
+                            <p><b>Salida:</b> ${salida}</p>
+                            <hr/>
+                            <h3><b>TOTAL A PAGAR:</b> $${totalFmt}</h3>
+                        </div>`;
+                    }
                 }
 
             } else {
@@ -296,7 +332,7 @@
             });
             return false; // Prevenir postback original
         }
-</script>
+    </script>
 
     <% if (Request.QueryString["exito"] == "1")
         {

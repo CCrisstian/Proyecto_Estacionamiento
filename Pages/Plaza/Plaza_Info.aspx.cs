@@ -24,6 +24,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 if (!string.IsNullOrEmpty(estacionamiento))
                 {
                     Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{estacionamiento}</strong>'";
+                    gvPlazas.Columns[0].Visible = false; // Ocultar columna de estacionamiento
                 }
                 else
                 {
@@ -35,6 +36,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 int legajo = Convert.ToInt32(Session["Usu_legajo"]);
                 if (tipoUsuario == "Playero")
                 {
+                    gvPlazas.Columns[0].Visible = false; // Ocultar columna de estacionamiento para Playero
                     gvPlazas.Columns[2].Visible = false; // Ocultar columna de plazas ocupadas para Playero
                     gvPlazas.Columns[3].Visible = false; // Ocultar columna de total de plazas para Playero
                 }
@@ -45,6 +47,7 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
 
         public class PlazaInfoDTO
         {
+            public string Estacionamiento { get; set; }
             public string Categoria { get; set; }
             public int CantPlazasDisponibles { get; set; }
 
@@ -60,46 +63,64 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 IQueryable<Proyecto_Estacionamiento.Plaza> query = db.Plaza
-                                                                     .Include("Categoria_Vehiculo")
-                                                                     .Include("Estacionamiento")
-                                                                     .Include("Ocupacion"); // Incluir Ocupacion para la lógica
+                                                                      .Include("Categoria_Vehiculo")
+                                                                      .Include("Estacionamiento")
+                                                                      .Include("Ocupacion");
 
                 if (tipoUsuario == "Dueño")
                 {
-                    // --- LÓGICA DEL DUEÑO (NUEVA) ---
+                    List<PlazaInfoDTO> plazasDTO;
 
-                    // 1. Filtrar por sus estacionamientos (como antes)
                     if (Session["Dueño_EstId"] != null)
                     {
+                        // --- CASO 1: DUEÑO SELECCIONÓ UN ESTACIONAMIENTO (Lógica casi igual) ---
                         int estIdSeleccionado = (int)Session["Dueño_EstId"];
                         query = query.Where(p => p.Est_id == estIdSeleccionado);
+
+                        plazasDTO = query
+                            .GroupBy(p => p.Categoria_Vehiculo.Categoria_descripcion)
+                            .Select(g => new PlazaInfoDTO
+                            {
+                                // Estacionamiento es el mismo para todos en este grupo
+                                Estacionamiento = g.FirstOrDefault().Estacionamiento.Est_nombre,
+                                Categoria = g.Key,
+                                CantPlazasDisponibles = g.Count(p => p.Plaza_Disponibilidad == true && !p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null)),
+                                CantPlazasOcupadas = g.Count(p => p.Plaza_Disponibilidad == false || p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null)),
+                                CantTotalPlazas = g.Count()
+                            })
+                            .OrderBy(x => x.Categoria)
+                            .ToList();
                     }
                     else
                     {
+                        // --- CASO 2: DUEÑO NO SELECCIONÓ (NUEVA LÓGICA) ---
                         var estIds = db.Estacionamiento
                                        .Where(e => e.Dueño_Legajo == legajo)
                                        .Select(e => e.Est_id)
                                        .ToList();
                         query = query.Where(p => estIds.Contains(p.Est_id));
+
+                        plazasDTO = query
+                            // Agrupamos por Estacionamiento Y luego por Categoría
+                            .GroupBy(p => new {
+                                NombreEstacionamiento = p.Estacionamiento.Est_nombre,
+                                NombreCategoria = p.Categoria_Vehiculo.Categoria_descripcion
+                            })
+                            .Select(g => new PlazaInfoDTO
+                            {
+                                Estacionamiento = g.Key.NombreEstacionamiento, // Usamos la clave de agrupación
+                                Categoria = g.Key.NombreCategoria,             // Usamos la clave de agrupación
+                                CantPlazasDisponibles = g.Count(p => p.Plaza_Disponibilidad == true && !p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null)),
+                                CantPlazasOcupadas = g.Count(p => p.Plaza_Disponibilidad == false || p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null)),
+                                CantTotalPlazas = g.Count()
+                            })
+                            // Ordenamos por Estacionamiento, luego por Categoría
+                            .OrderBy(x => x.Estacionamiento)
+                            .ThenBy(x => x.Categoria)
+                            .ToList();
                     }
 
-                    // 2. Agrupar por categoría y calcular Disponibles, Ocupadas y Total
-                    var plazasDTO = query
-                        .GroupBy(p => p.Categoria_Vehiculo.Categoria_descripcion)
-                        .Select(g => new PlazaInfoDTO
-                        {
-                            Categoria = g.Key,
-                            // Disponible: Flag en true Y sin ocupación activa
-                            CantPlazasDisponibles = g.Count(p => p.Plaza_Disponibilidad == true && !p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null)),
-                            // Ocupada: Flag en false (ej. abono, mantenimiento) O con ocupación activa
-                            CantPlazasOcupadas = g.Count(p => p.Plaza_Disponibilidad == false || p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null)),
-                            // Total: Todas las plazas del grupo
-                            CantTotalPlazas = g.Count()
-                        })
-                        .OrderBy(x => x.Categoria)
-                        .ToList();
-
-                    // 3. Calcular Totales Generales para el Footer
+                    // El resto de la lógica es común para ambos casos del Dueño
                     _totalDisponibles = plazasDTO.Sum(p => p.CantPlazasDisponibles);
                     _totalOcupadas = plazasDTO.Sum(p => p.CantPlazasOcupadas);
                     _totalGeneral = plazasDTO.Sum(p => p.CantTotalPlazas);
@@ -109,15 +130,14 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                 }
                 else if (tipoUsuario == "Playero")
                 {
-                    // --- LÓGICA DEL PLAYERO (LA ORIGINAL) ---
+                    // --- LÓGICA DEL PLAYERO (SE MANTIENE IGUAL) ---
                     int estId = (int)Session["Playero_EstId"];
                     query = query.Where(p => p.Est_id == estId);
 
-                    var plazasDTO = query
-                        .Where(p => p.Plaza_Disponibilidad == true
-                                 && !p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null))
+                    var plazasPlayeroDTO = query
+                        .Where(p => p.Plaza_Disponibilidad == true && !p.Ocupacion.Any(o => o.Ocu_fecha_Hora_Fin == null))
                         .GroupBy(p => p.Categoria_Vehiculo.Categoria_descripcion)
-                        .Select(g => new PlazaInfoDTO // Usa el DTO original
+                        .Select(g => new
                         {
                             Categoria = g.Key,
                             CantPlazasDisponibles = g.Count()
@@ -125,11 +145,11 @@ namespace Proyecto_Estacionamiento.Pages.Plaza
                         .OrderBy(x => x.Categoria)
                         .ToList();
 
-                    gvPlazas.DataSource = plazasDTO;
+                    gvPlazas.DataSource = plazasPlayeroDTO;
                     gvPlazas.DataBind();
                 }
 
-                Session["DatosPlazas"] = gvPlazas.DataSource; // Guardar los datos (DTO)
+                Session["DatosPlazas"] = gvPlazas.DataSource;
             }
         }
 

@@ -15,12 +15,13 @@
 
     <asp:GridView ID="gvPlazas" runat="server" AutoGenerateColumns="False"
         CssClass="grid"
-        Width="50%">
+        Width="80%">
 
         <AlternatingRowStyle BackColor="White" />
 
         <Columns>
 
+            <asp:BoundField DataField="Estacionamiento" HeaderText="Estacionamiento" />
             <asp:BoundField DataField="Categoria" HeaderText="Categoría" />
             <asp:BoundField DataField="CantPlazasDisponibles" HeaderText="Cant. Disponible" ItemStyle-HorizontalAlign="center"/>
             <asp:BoundField DataField="CantPlazasOcupadas" HeaderText="Cant. Ocupadas" ItemStyle-HorizontalAlign="center"/>
