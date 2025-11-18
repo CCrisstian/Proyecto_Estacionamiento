@@ -24,6 +24,7 @@ namespace Proyecto_Estacionamiento
 
                 string tipoUsuario = Session["Usu_tipo"] as string;
                 int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
                 if (tipoUsuario != "Playero")
                 {
                     btnIngreso.Visible = false;

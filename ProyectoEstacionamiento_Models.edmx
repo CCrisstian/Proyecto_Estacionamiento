@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ProyectoEstacionamientoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Abono">
           <Key>
             <PropertyRef Name="Id_Abono" />
@@ -63,10 +63,13 @@
         <EntityType Name="Incidencias">
           <Key>
             <PropertyRef Name="Playero_legajo" />
+            <PropertyRef Name="Inci_fecha_Hora" />
           </Key>
           <Property Name="Playero_legajo" Type="int" Nullable="false" />
-          <Property Name="Inci_fecha_Hora" Type="datetime" />
-          <Property Name="Inci_descripcion" Type="varchar" MaxLength="100" />
+          <Property Name="Inci_fecha_Hora" Type="datetime" Nullable="false" />
+          <Property Name="Inci_descripcion" Type="varchar" MaxLength="1000" />
+          <Property Name="Inci_Motivo" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Inci_Estado" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Metodos_De_Pago">
           <Key>
@@ -281,7 +284,7 @@
         </Association>
         <Association Name="FK_Incidencias_Playero">
           <End Role="Playero" Type="Self.Playero" Multiplicity="1" />
-          <End Role="Incidencias" Type="Self.Incidencias" Multiplicity="0..1" />
+          <End Role="Incidencias" Type="Self.Incidencias" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Playero">
               <PropertyRef Name="Playero_legajo" />
@@ -664,8 +667,7 @@
             <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ProyectoEstacionamientoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -742,15 +744,6 @@
           <NavigationProperty Name="Plaza" Relationship="Self.FK_Plaza_Estacionamiento" FromRole="Estacionamiento" ToRole="Plaza" />
           <NavigationProperty Name="Tarifa" Relationship="Self.FK_Tarifa_Estacionamiento" FromRole="Estacionamiento" ToRole="Tarifa" />
         </EntityType>
-        <EntityType Name="Incidencias">
-          <Key>
-            <PropertyRef Name="Playero_legajo" />
-          </Key>
-          <Property Name="Playero_legajo" Type="Int32" Nullable="false" />
-          <Property Name="Inci_fecha_Hora" Type="DateTime" Precision="3" />
-          <Property Name="Inci_descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Playero" Relationship="Self.FK_Incidencias_Playero" FromRole="Incidencias" ToRole="Playero" />
-        </EntityType>
         <EntityType Name="Metodos_De_Pago">
           <Key>
             <PropertyRef Name="Metodo_pago_id" />
@@ -812,9 +805,9 @@
           <Property Name="Est_id" Type="Int32" />
           <Property Name="Playero_activo" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Estacionamiento" Relationship="Self.FK_Playero_Estacionamiento" FromRole="Playero" ToRole="Estacionamiento" />
-          <NavigationProperty Name="Incidencias" Relationship="Self.FK_Incidencias_Playero" FromRole="Playero" ToRole="Incidencias" />
           <NavigationProperty Name="Usuarios" Relationship="Self.FK_Playero_Usuarios" FromRole="Playero" ToRole="Usuarios" />
           <NavigationProperty Name="Turno" Relationship="Self.FK_Turno_Playero" FromRole="Playero" ToRole="Turno" />
+          <NavigationProperty Name="Incidencias" Relationship="ProyectoEstacionamientoModel.FK_Incidencias_Playero" FromRole="Playero" ToRole="Incidencias" />
         </EntityType>
         <EntityType Name="Plaza">
           <Key>
@@ -1119,18 +1112,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Incidencias_Playero">
-          <End Role="Playero" Type="Self.Playero" Multiplicity="1" />
-          <End Role="Incidencias" Type="Self.Incidencias" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Playero">
-              <PropertyRef Name="Playero_legajo" />
-            </Principal>
-            <Dependent Role="Incidencias">
-              <PropertyRef Name="Playero_legajo" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Pago_Ocupacion_Metodos_De_Pago">
           <End Role="Metodos_De_Pago" Type="Self.Metodos_De_Pago" Multiplicity="1" />
           <End Role="Pago_Ocupacion" Type="Self.Pago_Ocupacion" Multiplicity="*" />
@@ -1259,7 +1240,6 @@
           <EntitySet Name="Categoria_Vehiculo" EntityType="Self.Categoria_Vehiculo" />
           <EntitySet Name="Dueño" EntityType="Self.Dueño" />
           <EntitySet Name="Estacionamiento" EntityType="Self.Estacionamiento" />
-          <EntitySet Name="Incidencias" EntityType="Self.Incidencias" />
           <EntitySet Name="Metodos_De_Pago" EntityType="Self.Metodos_De_Pago" />
           <EntitySet Name="Ocupacion" EntityType="Self.Ocupacion" />
           <EntitySet Name="Pago_Ocupacion" EntityType="Self.Pago_Ocupacion" />
@@ -1337,10 +1317,6 @@
             <End Role="Estacionamiento" EntitySet="Estacionamiento" />
             <End Role="Tarifa" EntitySet="Tarifa" />
           </AssociationSet>
-          <AssociationSet Name="FK_Incidencias_Playero" Association="Self.FK_Incidencias_Playero">
-            <End Role="Playero" EntitySet="Playero" />
-            <End Role="Incidencias" EntitySet="Incidencias" />
-          </AssociationSet>
           <AssociationSet Name="FK_Pago_Ocupacion_Metodos_De_Pago" Association="Self.FK_Pago_Ocupacion_Metodos_De_Pago">
             <End Role="Metodos_De_Pago" EntitySet="Metodos_De_Pago" />
             <End Role="Pago_Ocupacion" EntitySet="Pago_Ocupacion" />
@@ -1381,7 +1357,36 @@
             <End Role="Vehiculo" EntitySet="Vehiculo" />
             <End Role="Vehiculo_Abonado" EntitySet="Vehiculo_Abonado" />
           </AssociationSet>
+          <EntitySet Name="Incidencias" EntityType="ProyectoEstacionamientoModel.Incidencias" />
+          <AssociationSet Name="FK_Incidencias_Playero" Association="ProyectoEstacionamientoModel.FK_Incidencias_Playero">
+            <End Role="Playero" EntitySet="Playero" />
+            <End Role="Incidencias" EntitySet="Incidencias" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Incidencias">
+          <Key>
+            <PropertyRef Name="Playero_legajo" />
+            <PropertyRef Name="Inci_fecha_Hora" />
+          </Key>
+          <Property Name="Playero_legajo" Type="Int32" Nullable="false" />
+          <Property Name="Inci_fecha_Hora" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Inci_descripcion" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="Inci_Motivo" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Inci_Estado" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Playero" Relationship="ProyectoEstacionamientoModel.FK_Incidencias_Playero" FromRole="Incidencias" ToRole="Playero" />
+        </EntityType>
+        <Association Name="FK_Incidencias_Playero">
+          <End Type="ProyectoEstacionamientoModel.Playero" Role="Playero" Multiplicity="1" />
+          <End Type="ProyectoEstacionamientoModel.Incidencias" Role="Incidencias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Playero">
+              <PropertyRef Name="Playero_legajo" />
+            </Principal>
+            <Dependent Role="Incidencias">
+              <PropertyRef Name="Playero_legajo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1444,15 +1449,6 @@
                 <ScalarProperty Name="Est_Disponibilidad" ColumnName="Est_Disponibilidad" />
                 <ScalarProperty Name="Est_Latitud" ColumnName="Est_Latitud" />
                 <ScalarProperty Name="Est_Longitud" ColumnName="Est_Longitud" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Incidencias">
-            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Incidencias">
-              <MappingFragment StoreEntitySet="Incidencias">
-                <ScalarProperty Name="Playero_legajo" ColumnName="Playero_legajo" />
-                <ScalarProperty Name="Inci_fecha_Hora" ColumnName="Inci_fecha_Hora" />
-                <ScalarProperty Name="Inci_descripcion" ColumnName="Inci_descripcion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1596,6 +1592,17 @@
                 <ScalarProperty Name="Vehiculo_Patente" ColumnName="Vehiculo_Patente" />
                 <ScalarProperty Name="Tarifa_id" ColumnName="Tarifa_id" />
                 <ScalarProperty Name="Id_Abono" ColumnName="Id_Abono" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Incidencias">
+            <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Incidencias">
+              <MappingFragment StoreEntitySet="Incidencias">
+                <ScalarProperty Name="Inci_Estado" ColumnName="Inci_Estado" />
+                <ScalarProperty Name="Inci_Motivo" ColumnName="Inci_Motivo" />
+                <ScalarProperty Name="Inci_descripcion" ColumnName="Inci_descripcion" />
+                <ScalarProperty Name="Inci_fecha_Hora" ColumnName="Inci_fecha_Hora" />
+                <ScalarProperty Name="Playero_legajo" ColumnName="Playero_legajo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

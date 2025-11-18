@@ -1,0 +1,2 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Reporte_Descargar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Reportes.Reporte_Descargar" %>
+<%-- Esta página se deja en blanco intencionalmente. El PDF se genera en el Page_Load del code-behind. --%>

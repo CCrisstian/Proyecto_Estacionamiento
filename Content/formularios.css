@@ -2,6 +2,11 @@
     margin-bottom: 16px;
 }
 
+    .form-group label {
+        min-width: 150px;
+        font-weight: bold;
+    }
+
 .form-inline {
     display: flex;
     align-items: center;
@@ -43,6 +48,7 @@ button.btn-danger {
 .formulario-plaza,
 .formulario-tarifa,
 .formulario-ingreso,
+.formulario-reportes,
 .formulario-metodospago {
     background-color: #f9f9f9;
     padding: 20px;

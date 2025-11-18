@@ -71,7 +71,16 @@
 
             <!-- Parte superior -->
             <div class="header-top">
-                <asp:Image ID="Image2" runat="server" Height="59px" ImageUrl="~/Images/LogoACE_SinFondo.PNG" Width="60px" />
+                
+                <%-- ENVOLVEMOS LA IMAGEN CON UN HIPERVÍNCULO --%>
+                <asp:HyperLink ID="hlLogo" runat="server" NavigateUrl="~/Pages/Default/Inicio.aspx">
+                    <asp:Image ID="Image2" runat="server" 
+                        Height="59px" 
+                        ImageUrl="~/Images/LogoACE_SinFondo.PNG" 
+                        Width="60px" 
+                        ToolTip="Ir a Inicio" />
+                </asp:HyperLink>
+                
                 <asp:Label ID="lblUsuario" runat="server" CssClass="usuario-logueado"></asp:Label>
             </div>
 
@@ -79,7 +88,6 @@
             <div class="header-bottom">
                 <asp:Panel ID="PanelMenu" runat="server" CssClass="tabs">
                     <ul class="menu-list">
-                        <li id="menuInicio" runat="server" class="tab"><a runat="server" href="~/Pages/Default/Inicio.aspx">INICIO</a></li>
 
                         <li id="menuIngresos" runat="server" class="tab"><a runat="server" href="~/Pages/Ingresos/Ingreso_Listar.aspx">INGRESOS</a></li>
 
@@ -98,6 +106,8 @@
                         <li id="menuTurno" runat="server" class="tab"><a runat="server" href="~/Pages/Turnos/Turno_Listar">TURNOS</a></li>
 
                         <li id="menuAbonado" runat="server" class="tab"><a runat="server" href="~/Pages/Abonados/Abonados_Listar.aspx">ABONADOS</a></li>
+
+                        <li id="menuReportes" runat="server" class="tab"><a runat="server" href="~/Pages/Reportes/Reportes_Listar.aspx">REPORTES</a></li>
 
                         <li id="menuLogout" runat="server" class="logout">
                             <asp:Button ID="btnLogout" runat="server" Text="Cerrar Sesión" OnClick="BtnLogout_Click" CssClass="btn btn-danger" />

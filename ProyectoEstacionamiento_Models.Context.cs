@@ -30,7 +30,6 @@ namespace Proyecto_Estacionamiento
         public virtual DbSet<Categoria_Vehiculo> Categoria_Vehiculo { get; set; }
         public virtual DbSet<Dueño> Dueño { get; set; }
         public virtual DbSet<Estacionamiento> Estacionamiento { get; set; }
-        public virtual DbSet<Incidencias> Incidencias { get; set; }
         public virtual DbSet<Metodos_De_Pago> Metodos_De_Pago { get; set; }
         public virtual DbSet<Ocupacion> Ocupacion { get; set; }
         public virtual DbSet<Pago_Ocupacion> Pago_Ocupacion { get; set; }
@@ -44,5 +43,6 @@ namespace Proyecto_Estacionamiento
         public virtual DbSet<Usuarios> Usuarios { get; set; }
         public virtual DbSet<Vehiculo> Vehiculo { get; set; }
         public virtual DbSet<Vehiculo_Abonado> Vehiculo_Abonado { get; set; }
+        public virtual DbSet<Incidencias> Incidencias { get; set; }
     }
 }

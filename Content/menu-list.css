@@ -27,16 +27,14 @@
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: space-between; /* reparte los botones */
     align-items: stretch;
     width: 100%;
 }
 
     /* Cada ítem */
     .menu-list li {
-        flex: 1; /* cada item ocupa mismo espacio */
+        flex: auto;
         text-align: center; /* centra el texto */
-        display: inline-block;
     }
 
     /* Links del menú */
@@ -46,6 +44,7 @@
         font-weight: bold;
         display: block;
         transition: background-color 0.3s;
+        font-size: 14px;
     }
 
         /* Hover */
@@ -69,6 +68,9 @@
 }
 
 .menu-list li.logout {
-    flex: none; /* el logout no se expande, queda del tamaño del botón */
+    flex: none;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
 }
 

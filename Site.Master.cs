@@ -18,15 +18,13 @@ namespace Proyecto_Estacionamiento
 
                 if (tipoUsuario != "Dueño")
                 {
-                    menuInicio.Visible = false;
                     menuEstacionamiento.Visible = false;
                     menuPlayero.Visible = false;
+                    hlLogo.Enabled = false;
                 }
 
                 string currentUrl = Request.Url.AbsolutePath.ToLower();
 
-                if (currentUrl.Contains("/default/"))
-                    menuInicio.Attributes["class"] = "tab active";
                 if (currentUrl.Contains("/ingresos/"))
                     menuIngresos.Attributes["class"] = "tab active";
                 else if (currentUrl.Contains("/estacionamiento/"))
@@ -43,6 +41,8 @@ namespace Proyecto_Estacionamiento
                     menuTurno.Attributes["class"] = "tab active";
                 else if (currentUrl.Contains("/abonados/"))
                     menuAbonado.Attributes["class"] = "tab active";
+                else if (currentUrl.Contains("/reportes/"))
+                    menuReportes.Attributes["class"] = "tab active";
 
                 string usuarioNombre = Session["Usu_nombre"] as string;
 

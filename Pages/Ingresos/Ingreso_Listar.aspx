@@ -222,7 +222,9 @@
                             title: "Registrar Egreso de Abonado",
                             html: `
                         <div style="text-align:left; font-family:monospace;">
+                            <hr/>
                             <p style="color:orange; font-weight:bold;">Abono vencido recientemente, menos de 15 min.</p>
+                            <hr/>
                             <p><b>Ingreso:</b> ${entrada}</p>
                             <p><b>Salida:</b> ${salida}</p>
                         </div>`,

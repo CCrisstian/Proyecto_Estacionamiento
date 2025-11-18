@@ -18,6 +18,7 @@ namespace Proyecto_Estacionamiento
         public Playero()
         {
             this.Turno = new HashSet<Turno>();
+            this.Incidencias = new HashSet<Incidencias>();
         }
     
         public int Playero_legajo { get; set; }
@@ -25,9 +26,10 @@ namespace Proyecto_Estacionamiento
         public bool Playero_activo { get; set; }
     
         public virtual Estacionamiento Estacionamiento { get; set; }
-        public virtual Incidencias Incidencias { get; set; }
         public virtual Usuarios Usuarios { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Turno> Turno { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Incidencias> Incidencias { get; set; }
     }
 }
