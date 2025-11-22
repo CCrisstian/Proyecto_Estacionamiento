@@ -104,21 +104,9 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 }
                 else if (tipoUsuario == "Playero")
                 {
-                    // Estacionamiento asignado al playero
-                    var estId = db.Playero
-                                  .Where(p => p.Playero_legajo == legajo)
-                                  .Select(p => p.Est_id)
-                                  .FirstOrDefault();
-
-                    if (estId.HasValue)
-                    {
-                        query = query.Where(t => t.Playero.Est_id == estId.Value);
-                    }
-                    else
-                    {
-                        // No mostrar nada si no tiene estacionamiento asignado
-                        query = query.Where(t => false);
-                    }
+                    // --- Lógica del Playero ---
+                    // El playero solo ve las incidencias donde SU legajo sea el creador
+                    query = query.Where(t => t.Playero_Legajo == legajo);
                 }
 
                 // Ejecutamos la consulta principal de Turnos

@@ -39,12 +39,7 @@
             CssClass="grid" Width="100%" CellPadding="4" ForeColor="#333333" GridLines="None">
 
             <Columns>
-                <asp:TemplateField HeaderText="Playero">
-                    <ItemTemplate>
-                        <%# Eval("Playero") %>
-                    </ItemTemplate>
-                </asp:TemplateField>
-
+                <asp:BoundField DataField="Playero" HeaderText="Playero" />
                 <asp:BoundField DataField="Inicio" HeaderText="Inicio de Turno" />
 
                 <asp:BoundField DataField="Fin" HeaderText="Fin de Turno" />
