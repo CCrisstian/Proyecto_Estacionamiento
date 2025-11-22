@@ -19,7 +19,7 @@
             <div class="form-group form-inline">
                 <label for="txtPatente">Patente:</label>
                 <asp:TextBox ID="txtPatente" runat="server" MaxLength="100" CssClass="form-control"
-                    AutoPostBack="true" OnTextChanged="txtPatente_TextChanged" />
+                    AutoPostBack="true" OnTextChanged="TxtPatente_TextChanged" />
                 <asp:CustomValidator ID="cvPatente" runat="server"
                     OnServerValidate="cvPatente_ServerValidate" Display="Dynamic" ForeColor="Red" ValidationGroup="Ingreso" />
             </div>

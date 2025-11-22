@@ -17,10 +17,24 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                 string tipoUsuario = Session["Usu_tipo"] as string;
 
                 int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
                 if (tipoUsuario != "Playero")
                 {
                     btnRegistrar.Visible = false;
-
+                }
+                else
+                {
+                    if (Session["Turno_Id_Actual"] == null)
+                    {
+                        btnRegistrar.Enabled = false;
+                        btnRegistrar.CssClass = "btn btn-secondary";
+                        btnRegistrar.ToolTip = "Debe iniciar un Turno para registrar Abonados.";
+                    }
+                    else
+                    {
+                        btnRegistrar.Enabled = true;
+                        btnRegistrar.CssClass = "btn btn-success";
+                    }
                 }
 
                 string estacionamiento = Session["Usu_estacionamiento"] as string;
@@ -99,7 +113,8 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                             FechaDesde = a.Fecha_Desde,
                             FechaVto = a.Fecha_Vto,
                             PatentesList = a.Vehiculo_Abonado.Select(va => va.Vehiculo_Patente),
-                            TipoAbono = a.Vehiculo_Abonado.FirstOrDefault().Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
+                            TipoAbono = a.Pagos_Abonados.OrderByDescending(p => p.Fecha_Pago)
+                            .FirstOrDefault().Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
                         })
                         .ToList() // Traemos los datos a memoria...
                         .Select(dto => new // ...y formateamos

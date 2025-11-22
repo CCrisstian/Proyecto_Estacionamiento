@@ -8,9 +8,9 @@ using iTextSharp.text.pdf;
 using System.IO;
 using System.Data.Entity;
 
-namespace Proyecto_Estacionamiento.Pages.Reportes
+namespace Proyecto_Estacionamiento.Pages.Incidencia
 {
-    public partial class Reporte_Descargar : System.Web.UI.Page
+    public partial class Incidencia_Descargar : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -70,14 +70,14 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
                     var fontBody = FontFactory.GetFont(FontFactory.HELVETICA, 12);
                     var fontInfo = FontFactory.GetFont(FontFactory.HELVETICA_OBLIQUE, 10);
 
-                    document.Add(new Paragraph("Reporte de Incidencia", fontTitulo) { Alignment = Element.ALIGN_CENTER });
-                    document.Add(new Paragraph("Estacionamiento: " + incidencia.Playero.Estacionamiento.Est_nombre, fontInfo) { Alignment = Element.ALIGN_CENTER });
+                    document.Add(new Paragraph("Incidencia", fontTitulo) { Alignment = Element.ALIGN_CENTER });
                     document.Add(Chunk.NEWLINE);
+                    document.Add(new Paragraph($"Estacionamiento: { incidencia.Playero.Estacionamiento.Est_nombre}", fontBody));
                     document.Add(new Paragraph($"Fecha y Hora: {incidencia.Inci_fecha_Hora:dd/MM/yyyy HH:mm}", fontBody));
                     document.Add(new Paragraph($"Playero a cargo: {incidencia.Playero.Usuarios.Usu_ap}, {incidencia.Playero.Usuarios.Usu_nom}", fontBody));
                     document.Add(new Paragraph($"Estado: {(incidencia.Inci_Estado ? "Resuelto" : "Pendiente")}", fontBody));
                     document.Add(Chunk.NEWLINE);
-                    document.Add(new Paragraph("Motivo del Reporte:", fontSubtitulo));
+                    document.Add(new Paragraph("Motivo de la Incidencia:", fontSubtitulo));
                     document.Add(new Paragraph(incidencia.Inci_Motivo, fontBody));
                     document.Add(Chunk.NEWLINE);
                     document.Add(new Paragraph("Descripción Detallada:", fontSubtitulo));
@@ -89,7 +89,7 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
                     // 5. ENVIAR EL PDF AL NAVEGADOR
                     Response.Clear();
                     Response.ContentType = "application/pdf";
-                    string nombreArchivo = $"Reporte_Incidencia_{incidencia.Playero.Usuarios.Usu_ap}_{fechaHora:yyyyMMddHHmm}.pdf";
+                    string nombreArchivo = $"Incidencia_{incidencia.Playero.Usuarios.Usu_ap}_{fechaHora:yyyyMMddHHmm}.pdf";
                     Response.AddHeader("content-disposition", "attachment;filename=" + nombreArchivo);
                     Response.Buffer = true;
                     Response.BinaryWrite(ms.ToArray());

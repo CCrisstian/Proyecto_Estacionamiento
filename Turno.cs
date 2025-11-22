@@ -14,6 +14,13 @@ namespace Proyecto_Estacionamiento
     
     public partial class Turno
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Turno()
+        {
+            this.Pago_Ocupacion = new HashSet<Pago_Ocupacion>();
+            this.Pagos_Abonados = new HashSet<Pagos_Abonados>();
+        }
+    
         public System.DateTime Turno_FechaHora_Inicio { get; set; }
         public int Turno_id { get; set; }
         public int Playero_Legajo { get; set; }
@@ -22,6 +29,10 @@ namespace Proyecto_Estacionamiento
         public Nullable<double> Caja_Monto_fin { get; set; }
         public Nullable<double> Caja_Monto_total { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Pago_Ocupacion> Pago_Ocupacion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Pagos_Abonados> Pagos_Abonados { get; set; }
         public virtual Playero Playero { get; set; }
     }
 }

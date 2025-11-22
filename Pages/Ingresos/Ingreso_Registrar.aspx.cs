@@ -47,28 +47,24 @@ namespace Proyecto_Estacionamiento.Pages.Default
 
         // Metodo para autocompletar los campos del Vehículo si se ingresa una patente existente
 
-        protected void txtPatente_TextChanged(object sender, EventArgs e)
+        protected void TxtPatente_TextChanged(object sender, EventArgs e)
         {
             string patenteIngresada = txtPatente.Text.Trim().Replace(" ", "").ToUpper();
-
-            // 1. Limpiar todos los campos y habilitarlos
             ResetearCampos();
 
-            if (string.IsNullOrWhiteSpace(patenteIngresada))
-            {
-                return; // Si borró la patente, salir.
-            }
+            if (string.IsNullOrWhiteSpace(patenteIngresada)) return;
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 int? estId = ObtenerEstacionamientoId();
 
-                // 2. Buscar si la patente tiene un ABONO VIGENTE en este estacionamiento
+                // 2. Buscar si la patente tiene un ABONO VIGENTE
                 var abonoVehiculo = db.Vehiculo_Abonado
                     .Include("Abono")
                     .Include("Abono.Plaza")
-                    .Include("Tarifa")
-                    .Include("Tarifa.Tipos_Tarifa")
+                    .Include("Abono.Pagos_Abonados")              
+                    .Include("Abono.Pagos_Abonados.Tarifa")       
+                    .Include("Abono.Pagos_Abonados.Tarifa.Tipos_Tarifa") 
                     .Include("Vehiculo")
                     .Include("Vehiculo.Categoria_Vehiculo")
                     .FirstOrDefault(va =>
@@ -79,30 +75,34 @@ namespace Proyecto_Estacionamiento.Pages.Default
 
                 if (abonoVehiculo != null)
                 {
-                    // --- ES UN ABONADO VIGENTE ---
-
                     var plazaDelAbono = abonoVehiculo.Abono.Plaza;
-                    var tarifaDelAbono = abonoVehiculo.Tarifa;
                     var categoriaDelAbono = abonoVehiculo.Vehiculo.Categoria_Vehiculo;
 
-                    // 3. Comprobar si su plaza asignada está disponible
+                    
+                    var ultimoPago = abonoVehiculo.Abono.Pagos_Abonados
+                                        .OrderByDescending(p => p.Fecha_Pago)
+                                        .FirstOrDefault();
+
+                    // Si por alguna razón no hay pagos (raro), no podemos determinar la tarifa
+                    if (ultimoPago == null) return;
+
+                    var tarifaDelAbono = ultimoPago.Tarifa;
+                    
+
                     if (!plazaDelAbono.Plaza_Disponibilidad)
                     {
                         string script = $"Swal.fire({{icon: 'error', title: 'Plaza Ocupada', text: 'La plaza {plazaDelAbono.Plaza_Nombre} asignada a este abono ya se encuentra ocupada. Se registrará como un ingreso normal.'}});";
                         ScriptManager.RegisterStartupScript(this, GetType(), "alertPlazaOcupada", script, true);
-
                         ddlCategoria.SelectedValue = categoriaDelAbono.Categoria_id.ToString();
-                        ddlCategoria_SelectedIndexChanged(null, null); // Cargar plazas y tarifas normales
+                        ddlCategoria_SelectedIndexChanged(null, null);
                         return;
                     }
 
-                    // --- ES ABONADO, VIGENTE Y SU PLAZA ESTÁ LIBRE ---
-
-                    // 4. Autocompletar Categoría y cargar listas
+                    // Autocompletar
                     ddlCategoria.SelectedValue = categoriaDelAbono.Categoria_id.ToString();
                     ddlCategoria_SelectedIndexChanged(null, null);
 
-                    // 5. Autocompletar Plaza (Añadiéndola si fue filtrada)
+                    // Plaza
                     string plazaIdDelAbonoStr = plazaDelAbono.Plaza_id.ToString();
                     if (ddlPlaza.Items.FindByValue(plazaIdDelAbonoStr) == null)
                     {
@@ -110,7 +110,7 @@ namespace Proyecto_Estacionamiento.Pages.Default
                     }
                     ddlPlaza.SelectedValue = plazaIdDelAbonoStr;
 
-                    // 6. Autocompletar Tarifa
+                    // Tarifa (Usando tarifaDelAbono recuperada del pago)
                     string tarifaIdAbonoStr = tarifaDelAbono.Tarifa_id.ToString();
                     string tarifaDescAbono = tarifaDelAbono.Tipos_Tarifa.Tipos_tarifa_descripcion;
 
@@ -120,21 +120,19 @@ namespace Proyecto_Estacionamiento.Pages.Default
                     }
                     ddlTarifa.SelectedValue = tarifaIdAbonoStr;
 
-                    // 7. Mostrar panel de detalles
+                    // Visual
                     cvTarifa.Enabled = false;
                     pnlDetalleTarifa.Visible = true;
                     litDescripcionTarifa.Text = $"Este vehículo es beneficiario de un Abono <b>'{tarifaDescAbono}'</b>";
                     litMontoTarifa.Text = "Abonado";
                     imgCategoria.ImageUrl = ObtenerIconoPorCategoria(categoriaDelAbono.Categoria_descripcion);
 
-                    // 8. Deshabilitar todo
                     ddlCategoria.Enabled = false;
                     ddlPlaza.Enabled = false;
                     ddlTarifa.Enabled = false;
                 }
                 else
                 {
-                    // --- NO ES ABONADO VIGENTE O NO EXISTE ---
                     var vehiculo = db.Vehiculo.FirstOrDefault(v => v.Vehiculo_Patente == patenteIngresada);
                     if (vehiculo != null)
                     {

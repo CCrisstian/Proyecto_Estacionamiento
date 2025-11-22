@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Reporte_Registrar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Reportes.Reporte_Registrar" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Incidencia_Registrar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Incidencia.Incidencia_Registrar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="ingreso-container">
@@ -6,7 +6,7 @@
         <asp:Panel ID="pnlFormulario" runat="server" CssClass="formulario-reportes">
 
             <div class="header-row">
-                <h2>Registrar Reporte de Incidencia</h2>
+                <h2>Registrar Incidencia</h2>
             </div>
             <br />
 
@@ -17,7 +17,7 @@
                     ControlToValidate="ddlMotivo"
                     ErrorMessage="Debe seleccionar un motivo."
                     Display="Dynamic" ForeColor="Red" InitialValue=""
-                    ValidationGroup="Reporte" />
+                    ValidationGroup="Incidencia" />
             </div>
 
             <div class="form-group">
@@ -31,7 +31,7 @@
                     ControlToValidate="txtDescripcion"
                     ErrorMessage="Debe ingresar una descripción."
                     Display="Dynamic" ForeColor="Red"
-                    ValidationGroup="Reporte" />
+                    ValidationGroup="Incidencia" />
             </div>
 
             <div class="form-group form-inline">
@@ -47,9 +47,9 @@
             <div class="form-group">
                 <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CausesValidation="False" CssClass="btn btn-danger"
                     OnClick="BtnCancelar_Click" />
-                <asp:Button ID="btnGuardar" runat="server" Text="Guardar Reporte"
+                <asp:Button ID="btnGuardar" runat="server" Text="Guardar Incidencia"
                     OnClientClick="return confirmarGuardado();"
-                    ValidationGroup="Reporte" CssClass="btn btn-primary"
+                    ValidationGroup="Incidencia" CssClass="btn btn-primary"
                     OnClick="BtnGuardar_Click" />
             </div>
 

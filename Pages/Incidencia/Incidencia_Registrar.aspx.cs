@@ -6,9 +6,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Proyecto_Estacionamiento.Pages.Reportes
+namespace Proyecto_Estacionamiento.Pages.Incidencia
 {
-    public partial class Reporte_Registrar : System.Web.UI.Page
+    public partial class Incidencia_Registrar : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -47,7 +47,7 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
         protected void BtnGuardar_Click(object sender, EventArgs e)
         {
             // 1. Validar que los campos requeridos estén llenos
-            Page.Validate("Reporte");
+            Page.Validate("Incidencia");
             if (!Page.IsValid)
             {
                 return;
@@ -80,7 +80,7 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
                 }
 
                 // 5. Redirigir a una página de éxito o listado
-                Response.Redirect("Reportes_Listar.aspx?exito=1");
+                Response.Redirect("Incidencias_Listar.aspx?exito=1");
             }
             catch (Exception ex)
             {
@@ -91,7 +91,7 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
 
         protected void BtnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Reportes/Reportes_Listar.aspx");
+            Response.Redirect("~/Pages/Incidencia/Incidencias_Listar.aspx");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Proyecto_Estacionamiento
         public System.DateTime TAB_Fecha_Alta { get; set; }
         public string TAB_Nombre { get; set; }
         public string TAB_Apellido { get; set; }
-        public int TAB_Telefono { get; set; }
+        public long TAB_Telefono { get; set; }
         public string Tipo_Identificacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

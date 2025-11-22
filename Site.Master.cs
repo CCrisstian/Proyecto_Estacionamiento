@@ -41,8 +41,8 @@ namespace Proyecto_Estacionamiento
                     menuTurno.Attributes["class"] = "tab active";
                 else if (currentUrl.Contains("/abonados/"))
                     menuAbonado.Attributes["class"] = "tab active";
-                else if (currentUrl.Contains("/reportes/"))
-                    menuReportes.Attributes["class"] = "tab active";
+                else if (currentUrl.Contains("/incidencia/"))
+                    menuIncidencias.Attributes["class"] = "tab active";
 
                 string usuarioNombre = Session["Usu_nombre"] as string;
 

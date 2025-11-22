@@ -769,7 +769,7 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                             titularParaAbono = new Titular_Abono();
                             titularParaAbono.Numero_Identificacion = numeroIdParsed;
                             titularParaAbono.Tipo_Identificacion = tipoIdSeleccionado;
-                            titularParaAbono.TAB_Telefono = Convert.ToInt32(txtTelefono.Text.Trim());
+                            titularParaAbono.TAB_Telefono = Convert.ToInt64(txtTelefono.Text.Trim());
                             titularParaAbono.TAB_Nombre = txtNombre.Text.Trim();
                             titularParaAbono.TAB_Apellido = string.IsNullOrWhiteSpace(txtApellido.Text) ? null : txtApellido.Text.Trim();
                             titularParaAbono.TAB_Fecha_Alta = fechaDesde;
@@ -798,13 +798,26 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         // ==========================================================
                         // 3. INSERTAR "Pagos_Abonados"
                         // ==========================================================
+
+                        // Validar turno
+                        if (Session["Turno_Id_Actual"] == null)
+                        {
+                            lblError.Text = "Error: Debe iniciar un turno de caja para registrar el cobro del abono.";
+                            return;
+                        }
+                        int turnoIdActual = (int)Session["Turno_Id_Actual"];
+
                         var nuevoPago = new Pagos_Abonados();
                         nuevoPago.Id_Abono = nuevoAbono.Id_Abono;
                         nuevoPago.Est_id = nuevoAbono.Est_id;
                         nuevoPago.Fecha_Pago = fechaDesde;
                         nuevoPago.Metodo_Pago_id = Convert.ToInt32(ddlMetodoPago.SelectedValue);
                         nuevoPago.PA_Monto = Convert.ToDouble(lblTotal.Text);
+                        int tarifaId = Convert.ToInt32(ddlTipoAbono.SelectedValue);
+                        nuevoPago.Tarifa_id = tarifaId;
+                        nuevoPago.Turno_id = turnoIdActual; // <-- Asignacion del TURNO
                         db.Pagos_Abonados.Add(nuevoPago);
+                        db.SaveChanges();
 
                         // ==========================================================
                         // 4 & 5. INSERTAR "Vehiculo" Y "Vehiculo_Abonado"
@@ -812,7 +825,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                         try
                         {
                             int categoriaId = Convert.ToInt32(ddlCategoriaVehiculo.SelectedValue);
-                            int tarifaId = Convert.ToInt32(ddlTipoAbono.SelectedValue);
                             var patentesUnicas = txtPatente.Text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim().ToUpper()).Distinct();
 
                             if (!patentesUnicas.Any())
@@ -832,7 +844,6 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                                 var nuevaRelacion = new Vehiculo_Abonado
                                 {
                                     Vehiculo_Patente = patente,
-                                    Tarifa_id = tarifaId,
                                     Id_Abono = nuevoAbono.Id_Abono
                                 };
                                 db.Vehiculo_Abonado.Add(nuevaRelacion);
@@ -859,7 +870,7 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
-                lblError.Text = "Ocurrió un error inesperado al guardar los datos. Verifique la información.";
+                lblError.Text = "Error: " + ex.Message;
             }
         }
 

@@ -9,9 +9,9 @@ using iTextSharp.text.pdf;
 using System.IO; // Necesario para MemoryStream
 using System.Data.Entity;
 
-namespace Proyecto_Estacionamiento.Pages.Reportes
+namespace Proyecto_Estacionamiento.Pages.Incidencia
 {
-    public partial class Reportes_Listar : System.Web.UI.Page
+    public partial class Incidencias_Listar : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -33,19 +33,15 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
 
                 if (tipoUsuario != "Playero")
                 {
-                    btnReporte.Visible = false;
-                }
-                else
-                {
-                    gvReportes.Visible = false;
+                    btnIncidencia.Visible = false;
                 }
 
-                CargarReportes();
+                CargarIncidencias();
             }
         }
 
         // DTO para poblar la grilla
-        public class ReporteDTO
+        public class IncidenciaDTO
         {
             public int Playero_legajo { get; set; }
             public DateTime Inci_fecha_Hora { get; set; }
@@ -58,42 +54,50 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
             public string DownloadUrl { get; set; }
         }
 
-        private void CargarReportes()
+        private void CargarIncidencias()
         {
-
+            // 1. Obtenemos el tipo de usuario y el legajo
+            string tipoUsuario = Session["Usu_tipo"] as string;
             int legajo = Convert.ToInt32(Session["Usu_legajo"]);
 
-            using (var db = new ProyectoEstacionamientoEntities()) // Usa el nombre de tu Contexto EF
+            using (var db = new ProyectoEstacionamientoEntities())
             {
-                // Consulta base sobre Incidencias, incluyendo al Playero y sus datos de Usuario
+                // Consulta base
                 IQueryable<Incidencias> query = db.Incidencias
                                                  .Include("Playero")
                                                  .Include("Playero.Usuarios");
 
-                // TAREA: Filtrar por Estacionamiento
-                if (Session["Dueño_EstId"] != null)
+                // 2. Aplicamos el filtro según el Rol
+                if (tipoUsuario == "Dueño")
                 {
-                    // Caso 1: Dueño seleccionó un Estacionamiento
-                    int estIdSeleccionado = (int)Session["Dueño_EstId"];
-                    // Filtra incidencias donde el Est_id del Playero coincida
-                    query = query.Where(i => i.Playero.Est_id == estIdSeleccionado);
+                    // --- Lógica del Dueño ---
+                    if (Session["Dueño_EstId"] != null)
+                    {
+                        int estIdSeleccionado = (int)Session["Dueño_EstId"];
+                        query = query.Where(i => i.Playero.Est_id == estIdSeleccionado);
+                    }
+                    else
+                    {
+                        var estIdsDelDueño = db.Estacionamiento
+                                               .Where(e => e.Dueño_Legajo == legajo)
+                                               .Select(e => e.Est_id);
+
+                        query = query.Where(i => i.Playero.Est_id.HasValue && estIdsDelDueño.Contains(i.Playero.Est_id.Value));
+                    }
                 }
-                else
+                else if (tipoUsuario == "Playero")
                 {
-                    // Caso 2: Dueño no seleccionó -> Mostrar todos sus estacionamientos
-                    var estIdsDelDueño = db.Estacionamiento
-                                           .Where(e => e.Dueño_Legajo == legajo)
-                                           .Select(e => e.Est_id);
-
-                    // Filtra incidencias donde el Est_id del Playero esté en la lista de Estacionamientos del Dueño
-                    query = query.Where(i => i.Playero.Est_id.HasValue && estIdsDelDueño.Contains(i.Playero.Est_id.Value));
+                    // --- Lógica del Playero ---
+                    // El playero solo ve las incidencias donde SU legajo sea el creador
+                    query = query.Where(i => i.Playero_legajo == legajo);
                 }
 
-                var reportesDTO = query
-                    .OrderBy(i => i.Playero.Usuarios.Usu_ap) // Ordena por Apellido de Playero
-                    .ThenByDescending(i => i.Inci_fecha_Hora) // Luego por fecha (más nuevas primero)
-                    .ToList() // Trae los datos a memoria
-                    .Select(i => new ReporteDTO // Proyecta al DTO
+                // 3. Proyección y Ordenamiento (Se mantiene igual)
+                var incidenciasDTO = query
+                    .OrderBy(i => i.Playero.Usuarios.Usu_ap)
+                    .ThenByDescending(i => i.Inci_fecha_Hora)
+                    .ToList()
+                    .Select(i => new IncidenciaDTO
                     {
                         Playero_legajo = i.Playero_legajo,
                         Inci_fecha_Hora = i.Inci_fecha_Hora,
@@ -101,26 +105,25 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
                         FechaHoraStr = i.Inci_fecha_Hora.ToString("dd/MM/yyyy HH:mm"),
                         Inci_Motivo = i.Inci_Motivo,
                         Inci_Estado = i.Inci_Estado,
-                        EstadoStr = i.Inci_Estado ? "Resuelto" : "Pendiente", // Convierte Bit a Texto
+                        EstadoStr = i.Inci_Estado ? "Resuelto" : "Pendiente",
                         Inci_descripcion = i.Inci_descripcion,
-                        DownloadUrl = $"Reporte_Descargar.aspx?legajo={i.Playero_legajo}&fechaTicks={i.Inci_fecha_Hora.Ticks}"
+                        DownloadUrl = $"Incidencia_Descargar.aspx?legajo={i.Playero_legajo}&fechaTicks={i.Inci_fecha_Hora.Ticks}"
                     })
                     .ToList();
 
-                gvReportes.DataSource = reportesDTO;
-                // Usar PK compuesta para DataKeyNames
-                gvReportes.DataKeyNames = new string[] { "Playero_legajo", "Inci_fecha_Hora" };
-                gvReportes.DataBind();
+                gvIncidencias.DataSource = incidenciasDTO;
+                gvIncidencias.DataKeyNames = new string[] { "Playero_legajo", "Inci_fecha_Hora" };
+                gvIncidencias.DataBind();
             }
         }
 
-        protected void btnReporte_Click(object sender, EventArgs e)
+        protected void btnIncidencia_Click(object sender, EventArgs e)
         {
-            Response.Redirect("Reporte_Registrar.aspx");
+            Response.Redirect("Incidencia_Registrar.aspx");
         }
 
 
-        protected void gvReportes_RowCreated(object sender, GridViewRowEventArgs e)
+        protected void gvIncidencias_RowCreated(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {

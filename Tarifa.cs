@@ -18,7 +18,7 @@ namespace Proyecto_Estacionamiento
         public Tarifa()
         {
             this.Ocupacion = new HashSet<Ocupacion>();
-            this.Vehiculo_Abonado = new HashSet<Vehiculo_Abonado>();
+            this.Pagos_Abonados = new HashSet<Pagos_Abonados>();
         }
     
         public int Tarifa_id { get; set; }
@@ -34,6 +34,6 @@ namespace Proyecto_Estacionamiento
         public virtual ICollection<Ocupacion> Ocupacion { get; set; }
         public virtual Tipos_Tarifa Tipos_Tarifa { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Vehiculo_Abonado> Vehiculo_Abonado { get; set; }
+        public virtual ICollection<Pagos_Abonados> Pagos_Abonados { get; set; }
     }
 }

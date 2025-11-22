@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Security;
 
 namespace Proyecto_Estacionamiento.Pages.Login
@@ -68,8 +69,8 @@ namespace Proyecto_Estacionamiento.Pages.Login
                         reader.Close();
 
                         string queryEst = @"SELECT Est_id, Est_nombre 
-                        FROM Estacionamiento 
-                        WHERE Dueño_Legajo = @legajo";
+                FROM Estacionamiento 
+                WHERE Dueño_Legajo = @legajo";
 
                         SqlCommand cmdEst = new SqlCommand(queryEst, conn);
                         cmdEst.Parameters.AddWithValue("@legajo", legajo);
@@ -105,13 +106,15 @@ namespace Proyecto_Estacionamiento.Pages.Login
                     }
                     else
                     {
+                        // ES PLAYERO
                         // Cerramos el reader anterior
                         reader.Close();
 
+                        // 1. Obtener datos del Estacionamiento
                         string queryEst = @"SELECT e.Est_id, e.Est_nombre 
-                        FROM Playero p 
-                        INNER JOIN Estacionamiento e ON p.Est_id = e.Est_id
-                        WHERE p.Playero_legajo = @legajo";
+                            FROM Playero p 
+                            INNER JOIN Estacionamiento e ON p.Est_id = e.Est_id
+                            WHERE p.Playero_legajo = @legajo";
 
                         SqlCommand cmdEst = new SqlCommand(queryEst, conn);
                         cmdEst.Parameters.AddWithValue("@legajo", legajo);
@@ -126,7 +129,32 @@ namespace Proyecto_Estacionamiento.Pages.Login
                             }
                         }
 
-                        Response.Redirect("~/Pages/Ingresos/Ingreso_Listar.aspx");
+                        // RECUPERAR TURNO ABIERTO
+                        string queryTurno = @"SELECT TOP 1 Turno_id 
+                                      FROM Turno 
+                                      WHERE Playero_Legajo = @legajo AND Turno_FechaHora_fin IS NULL 
+                                      ORDER BY Turno_FechaHora_Inicio DESC";
+
+                        using (SqlCommand cmdTurno = new SqlCommand(queryTurno, conn))
+                        {
+                            cmdTurno.Parameters.AddWithValue("@legajo", legajo);
+
+                            // ExecuteScalar devuelve la primera columna de la primera fila (el ID) o null
+                            object resultado = cmdTurno.ExecuteScalar();
+
+                            if (resultado != null)
+                            {
+                                // ¡Encontramos un turno abierto! Lo guardamos en sesión.
+                                Session["Turno_Id_Actual"] = Convert.ToInt32(resultado);
+                            }
+                            else
+                            {
+                                // No hay turno abierto, nos aseguramos de que la sesión esté limpia
+                                Session["Turno_Id_Actual"] = null;
+                            }
+                        }
+
+                        Response.Redirect("~/Pages/Turnos/Turno_Listar.aspx");
                     }
 
                 }

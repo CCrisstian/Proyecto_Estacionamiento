@@ -38,6 +38,18 @@ namespace Proyecto_Estacionamiento
                 }
                 else
                 {
+                    if (Session["Turno_Id_Actual"] == null)
+                    {
+                        btnIngreso.Enabled = false;
+                        btnIngreso.CssClass = "btn btn-secondary"; // Cambiar color a gris visualmente
+                        btnIngreso.ToolTip = "Debe iniciar un Turno para registrar Ingresos.";
+                    }
+                    else
+                    {
+                        btnIngreso.Enabled = true;
+                        btnIngreso.CssClass = "btn btn-success";
+                    }
+
                     CargarMetodosDePagoEnDropDown(); // llena ddlMetodoDePago
                     gvIngresos.Columns[0].Visible = false;
                     gvIngresos.Columns[4].Visible = false;
@@ -260,6 +272,7 @@ namespace Proyecto_Estacionamiento
 
                 IQueryable<Ocupacion> query = db.Ocupacion
                     .Include("Vehiculo.Vehiculo_Abonado.Abono")
+                    .Include("Vehiculo.Vehiculo_Abonado.Abono.Pagos_Abonados")
                     .Include("Vehiculo.Categoria_Vehiculo")
                     .Include("Vehiculo")
                     .Include("Plaza")
@@ -291,15 +304,29 @@ namespace Proyecto_Estacionamiento
 
                     if (esTipoAbono)
                     {
-                        var vehAbono = o.Vehiculo.Vehiculo_Abonado.FirstOrDefault(va => va.Tarifa_id == o.Tarifa_id);
-                        if (vehAbono != null)
-                            fechaVtoAbono = vehAbono.Abono.Fecha_Vto;
+                        // Buscamos el abono a través del vehículo
+                        var vehAbonoRelacion = o.Vehiculo.Vehiculo_Abonado.FirstOrDefault(); // Asumimos un abono activo por vehículo
+
+                        if (vehAbonoRelacion != null)
+                        {
+                            // Verificamos la tarifa mirando el último pago del abono
+                            var ultimoPago = vehAbonoRelacion.Abono.Pagos_Abonados
+                                               .OrderByDescending(p => p.Fecha_Pago)
+                                               .FirstOrDefault();
+
+                            // Si la tarifa del último pago coincide con la tarifa de la ocupación
+                            if (ultimoPago != null && ultimoPago.Tarifa_id == o.Tarifa_id)
+                            {
+                                fechaVtoAbono = vehAbonoRelacion.Abono.Fecha_Vto;
+                            }
+                        }
 
                         var fallbackKey = Tuple.Create(o.Est_id, o.Vehiculo.Categoria_id);
                         if (tarifasPorHora.ContainsKey(fallbackKey))
-                            tarifaFallback = tarifasPorHora[fallbackKey];
+                            tarifaFallback = (double)tarifasPorHora[fallbackKey];
+                    
 
-                        if (o.Pago_Ocupacion != null)
+                    if (o.Pago_Ocupacion != null)
                         {
                             // CASO: Abono Vencido que generó un Pago
                             tarifaDisplay = "Abonado (Vencido) - Por hora";
@@ -389,6 +416,7 @@ namespace Proyecto_Estacionamiento
 
                 IQueryable<Ocupacion> query = db.Ocupacion
                     .Include("Vehiculo.Vehiculo_Abonado.Abono")
+                    .Include("Vehiculo.Vehiculo_Abonado.Abono.Pagos_Abonados")
                     .Include("Vehiculo.Categoria_Vehiculo")
                     .Include("Vehiculo")
                     .Include("Plaza")
@@ -453,15 +481,29 @@ namespace Proyecto_Estacionamiento
 
                     if (esTipoAbono)
                     {
-                        var vehAbono = o.Vehiculo.Vehiculo_Abonado.FirstOrDefault(va => va.Tarifa_id == o.Tarifa_id);
-                        if (vehAbono != null)
-                            fechaVtoAbono = vehAbono.Abono.Fecha_Vto;
+                        // Buscamos el abono a través del vehículo
+                        var vehAbonoRelacion = o.Vehiculo.Vehiculo_Abonado.FirstOrDefault(); // Asumimos un abono activo por vehículo
+
+                        if (vehAbonoRelacion != null)
+                        {
+                            // Verificamos la tarifa mirando el último pago del abono
+                            var ultimoPago = vehAbonoRelacion.Abono.Pagos_Abonados
+                                               .OrderByDescending(p => p.Fecha_Pago)
+                                               .FirstOrDefault();
+
+                            // Si la tarifa del último pago coincide con la tarifa de la ocupación
+                            if (ultimoPago != null && ultimoPago.Tarifa_id == o.Tarifa_id)
+                            {
+                                fechaVtoAbono = vehAbonoRelacion.Abono.Fecha_Vto;
+                            }
+                        }
 
                         var fallbackKey = Tuple.Create(o.Est_id, o.Vehiculo.Categoria_id);
                         if (tarifasPorHora.ContainsKey(fallbackKey))
-                            tarifaFallback = tarifasPorHora[fallbackKey];
+                            tarifaFallback = (double)tarifasPorHora[fallbackKey];
 
-                        if (o.Pago_Ocupacion != null)
+
+                    if (o.Pago_Ocupacion != null)
                         {
                             // Abono Vencido que generó un Pago
                             tarifaDisplay = "Abonado (Vencido) - Por hora";
@@ -608,10 +650,21 @@ namespace Proyecto_Estacionamiento
 
                         int metodoPagoId = int.Parse(metodoPagoValor);
 
+                        // VALIDAR QUE HAYA TURNO ABIERTO
+                        if (Session["Turno_Id_Actual"] == null)
+                        {
+                            // Puedes mostrar un mensaje de error o redirigir
+                            string script = "Swal.fire('Error', 'Debe iniciar un turno de caja para poder cobrar.', 'error');";
+                            ScriptManager.RegisterStartupScript(this, GetType(), "alertaTurno", script, true);
+                            return;
+                        }
+                        int turnoIdActual = (int)Session["Turno_Id_Actual"];
+
                         // Buscamos la ocupación CON TODAS LAS RELACIONES NECESARIAS
                         var ocupacion = db.Ocupacion
                             .Include("Tarifa.Tipos_Tarifa")
                             .Include("Vehiculo.Categoria_Vehiculo") // Necesario para Categoria_id
+                            .Include("Vehiculo.Vehiculo_Abonado.Abono.Pagos_Abonados")
                             .Include("Vehiculo.Vehiculo_Abonado.Abono") // Necesario para Fecha_Vto
                             .FirstOrDefault(o => o.Est_id == estId
                                              && o.Plaza_id == plazaId
@@ -634,9 +687,29 @@ namespace Proyecto_Estacionamiento
                         if (esTipoAbono)
                         {
                             // --- SUBCASO 2a: ES UN ABONO (VENCIDO) ---
-                            var vehAbono = ocupacion.Vehiculo.Vehiculo_Abonado
-                                                .FirstOrDefault(va => va.Tarifa_id == ocupacion.Tarifa_id);
-                            DateTime fechaVto = vehAbono.Abono.Fecha_Vto;
+
+                            // --- Obtener FechaVto desde el último pago ---
+                            var vehAbonoRelacion = ocupacion.Vehiculo.Vehiculo_Abonado.FirstOrDefault();
+                            DateTime fechaVto = DateTime.MinValue; // Valor por defecto seguro
+
+                            if (vehAbonoRelacion != null)
+                            {
+                                var ultimoPago = vehAbonoRelacion.Abono.Pagos_Abonados
+                                                    .OrderByDescending(p => p.Fecha_Pago)
+                                                    .FirstOrDefault();
+
+                                // Validamos que el último pago corresponda a la tarifa de la ocupación
+                                if (ultimoPago != null && ultimoPago.Tarifa_id == ocupacion.Tarifa_id)
+                                {
+                                    fechaVto = vehAbonoRelacion.Abono.Fecha_Vto;
+                                }
+                                else
+                                {
+                                    // Si no coincide, algo está mal en los datos o no es el abono correcto.
+                                    // Podrías lanzar error o manejarlo.
+                                    throw new Exception("Error de integridad: La tarifa de la ocupación no coincide con el último pago del abono.");
+                                }
+                            }
 
                             // Calculamos la duración excedida
                             duracionParaCalcular = fin - fechaVto;
@@ -676,20 +749,29 @@ namespace Proyecto_Estacionamiento
 
                         if (montoFinal > 0)
                         {
-                            // 6. Registrar Pago_Ocupacion SOLO SI HAY ALGO QUE COBRAR
+                            // 6. Validar que haya turno abierto
+                            if (Session["Turno_Id_Actual"] == null)
+                            {
+                                // Mostrar error: "Debe iniciar un turno antes de cobrar."
+                                return;
+                            }
+                            int turnoId = (int)Session["Turno_Id_Actual"];
+
+                            // 7. Registrar Pago_Ocupacion SOLO SI HAY ALGO QUE COBRAR
                             Pago_Ocupacion pago = new Pago_Ocupacion
                             {
                                 Est_id = ocupacion.Est_id,
                                 Metodo_Pago_id = metodoPagoId,
                                 Pago_Importe = Convert.ToDouble(montoFinal),
-                                Pago_Fecha = fin.Date
+                                Pago_Fecha = fin.Date,
+                                Turno_id = turnoId // <-- Asignacion del TURNO
                             };
                             db.Pago_Ocupacion.Add(pago);
                             db.SaveChanges(); // Obtenemos pago.Pago_id
                             pagoId = pago.Pago_id; // Asignamos el ID generado
                         }
 
-                        // 7. SQL directo para actualizar todo
+                        // 8. SQL directo para actualizar todo
                         string sql = @"
                     UPDATE Ocupacion
                     SET Ocu_fecha_Hora_Fin = @p0, Pago_id = @p10

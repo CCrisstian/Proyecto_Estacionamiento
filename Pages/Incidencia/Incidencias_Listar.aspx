@@ -1,22 +1,27 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Reportes_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Reportes.Reportes_Listar" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Incidencias_Listar.aspx.cs" Inherits="Proyecto_Estacionamiento.Pages.Incidencia.Incidencias_Listar" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="header-row">
-        <h2>Reportes</h2>
+        <h2>Incidencias</h2>
         <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
 
-    <asp:Button ID="btnReporte" runat="server" Text="Registrar Reporte" OnClick="btnReporte_Click" CssClass="btn btn-success" />
+    <br />
+
+    <asp:Button ID="btnIncidencia" runat="server" Text="Registrar Incidencia" OnClick="btnIncidencia_Click" CssClass="btn btn-success" />
+
+    <br />
+    <br />
 
     <div class="grid-wrapper">
-        <asp:GridView ID="gvReportes" runat="server"
+        <asp:GridView ID="gvIncidencias" runat="server"
             AutoGenerateColumns="False"
             DataKeyNames="Playero_legajo,Inci_fecha_Hora"
             CssClass="grid"
             Width="100%"
-            EmptyDataText="No se encontraron reportes de incidencias."
-            OnRowCreated="gvReportes_RowCreated">
+            EmptyDataText="No se encontraron incidencias."
+            OnRowCreated="gvIncidencias_RowCreated">
 
             <Columns>
 
@@ -51,7 +56,7 @@
 
                         <asp:HyperLink ID="hlDescargar" runat="server"
                             Text="💾"
-                            ToolTip="Descargar Reporte (PDF)"
+                            ToolTip="Descargar Incidencia (PDF)"
                             CssClass="btn"
                             NavigateUrl='<%# Eval("DownloadUrl") %>'
                             Target="_blank" />

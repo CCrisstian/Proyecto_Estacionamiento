@@ -22,9 +22,9 @@ namespace Proyecto_Estacionamiento
         public Nullable<int> Pago_id { get; set; }
         public Nullable<System.DateTime> Ocu_fecha_Hora_Fin { get; set; }
     
-        public virtual Pago_Ocupacion Pago_Ocupacion { get; set; }
         public virtual Plaza Plaza { get; set; }
         public virtual Tarifa Tarifa { get; set; }
         public virtual Vehiculo Vehiculo { get; set; }
+        public virtual Pago_Ocupacion Pago_Ocupacion { get; set; }
     }
 }

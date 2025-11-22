@@ -75,9 +75,9 @@
                 <%-- ENVOLVEMOS LA IMAGEN CON UN HIPERVÍNCULO --%>
                 <asp:HyperLink ID="hlLogo" runat="server" NavigateUrl="~/Pages/Default/Inicio.aspx">
                     <asp:Image ID="Image2" runat="server" 
-                        Height="59px" 
                         ImageUrl="~/Images/LogoACE_SinFondo.PNG" 
-                        Width="60px" 
+                        Height="65px" 
+                        Width="65px" 
                         ToolTip="Ir a Inicio" />
                 </asp:HyperLink>
                 
@@ -107,7 +107,7 @@
 
                         <li id="menuAbonado" runat="server" class="tab"><a runat="server" href="~/Pages/Abonados/Abonados_Listar.aspx">ABONADOS</a></li>
 
-                        <li id="menuReportes" runat="server" class="tab"><a runat="server" href="~/Pages/Reportes/Reportes_Listar.aspx">REPORTES</a></li>
+                        <li id="menuIncidencias" runat="server" class="tab"><a runat="server" href="~/Pages/Incidencia/Incidencias_Listar.aspx">INCIDENCIAS</a></li>
 
                         <li id="menuLogout" runat="server" class="logout">
                             <asp:Button ID="btnLogout" runat="server" Text="Cerrar Sesión" OnClick="BtnLogout_Click" CssClass="btn btn-danger" />

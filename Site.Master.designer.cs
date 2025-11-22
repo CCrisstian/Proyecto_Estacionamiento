@@ -132,13 +132,13 @@ namespace Proyecto_Estacionamiento
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuAbonado;
 
         /// <summary>
-        /// Control menuReportes.
+        /// Control menuIncidencias.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuReportes;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl menuIncidencias;
 
         /// <summary>
         /// Control menuLogout.

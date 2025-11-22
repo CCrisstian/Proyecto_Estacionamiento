@@ -7,6 +7,8 @@
         <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
 
+    <br />
+
     <div class="ingreso-layout">
 
         <asp:Button ID="btnIngreso" runat="server" Text="Registrar Ingreso" OnClick="btnIngreso_Click" CssClass="btn btn-success" />

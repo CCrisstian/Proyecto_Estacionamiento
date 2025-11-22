@@ -16,6 +16,8 @@
         <asp:Label ID="Estacionamiento_Nombre" runat="server" CssClass="right-text"></asp:Label>
     </div>
 
+    <br />
+
     <asp:Button ID="btnRegistrar" runat="server" Text="Registrar Abonado" OnClick="btnRegistrar_Click" CssClass="btn btn-success" />
 
     <br />

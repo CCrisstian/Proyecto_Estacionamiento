@@ -144,7 +144,6 @@
     <Content Include="Images\Automóviles y Camionetas.png" />
     <Content Include="Images\Camiones.png" />
     <Content Include="Images\Casas rodantes y Motorhomes.png" />
-    <Content Include="Images\EnConstruccion.png" />
     <Content Include="Images\LogoACE_SinFondo.PNG" />
     <Content Include="Images\Motocicletas.png" />
     <Content Include="Images\Remolques y acoplados.png" />
@@ -169,11 +168,12 @@
     <Content Include="Pages\Plaza\Plaza_Info.aspx" />
     <Content Include="Pages\Plaza\Plaza_Listar.aspx" />
     <Content Include="Pages\Plaza\Plaza_Crear_Editar.aspx" />
-    <Content Include="Pages\Reportes\Reportes_Listar.aspx" />
-    <Content Include="Pages\Reportes\Reporte_Descargar.aspx" />
-    <Content Include="Pages\Reportes\Reporte_Registrar.aspx" />
+    <Content Include="Pages\Incidencia\Incidencias_Listar.aspx" />
+    <Content Include="Pages\Incidencia\Incidencia_Descargar.aspx" />
+    <Content Include="Pages\Incidencia\Incidencia_Registrar.aspx" />
     <Content Include="Pages\Tarifas\Tarifa_Listar.aspx" />
     <Content Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx" />
+    <Content Include="Pages\Turnos\Turno_Descargar.aspx" />
     <Content Include="Pages\Turnos\Turno_Listar.aspx" />
     <Content Include="Pages\Login\Web.config" />
     <Content Include="ProyectoEstacionamiento_Models.Context.tt">
@@ -389,26 +389,26 @@
     <Compile Include="Pages\Plaza\Plaza_Crear_Editar.aspx.designer.cs">
       <DependentUpon>Plaza_Crear_Editar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Reportes\Reportes_Listar.aspx.cs">
-      <DependentUpon>Reportes_Listar.aspx</DependentUpon>
+    <Compile Include="Pages\Incidencia\Incidencias_Listar.aspx.cs">
+      <DependentUpon>Incidencias_Listar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Reportes\Reportes_Listar.aspx.designer.cs">
-      <DependentUpon>Reportes_Listar.aspx</DependentUpon>
+    <Compile Include="Pages\Incidencia\Incidencias_Listar.aspx.designer.cs">
+      <DependentUpon>Incidencias_Listar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Reportes\Reporte_Descargar.aspx.cs">
-      <DependentUpon>Reporte_Descargar.aspx</DependentUpon>
+    <Compile Include="Pages\Incidencia\Incidencia_Descargar.aspx.cs">
+      <DependentUpon>Incidencia_Descargar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Reportes\Reporte_Descargar.aspx.designer.cs">
-      <DependentUpon>Reporte_Descargar.aspx</DependentUpon>
+    <Compile Include="Pages\Incidencia\Incidencia_Descargar.aspx.designer.cs">
+      <DependentUpon>Incidencia_Descargar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Reportes\Reporte_Registrar.aspx.cs">
-      <DependentUpon>Reporte_Registrar.aspx</DependentUpon>
+    <Compile Include="Pages\Incidencia\Incidencia_Registrar.aspx.cs">
+      <DependentUpon>Incidencia_Registrar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Reportes\Reporte_Registrar.aspx.designer.cs">
-      <DependentUpon>Reporte_Registrar.aspx</DependentUpon>
+    <Compile Include="Pages\Incidencia\Incidencia_Registrar.aspx.designer.cs">
+      <DependentUpon>Incidencia_Registrar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Tarifas\Tarifa_Listar.aspx.cs">
       <DependentUpon>Tarifa_Listar.aspx</DependentUpon>
@@ -423,6 +423,13 @@
     </Compile>
     <Compile Include="Pages\Tarifas\Tarifa_Crear_Editar.aspx.designer.cs">
       <DependentUpon>Tarifa_Crear_Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Turnos\Turno_Descargar.aspx.cs">
+      <DependentUpon>Turno_Descargar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Turnos\Turno_Descargar.aspx.designer.cs">
+      <DependentUpon>Turno_Descargar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Turnos\Turno_Listar.aspx.cs">
       <DependentUpon>Turno_Listar.aspx</DependentUpon>

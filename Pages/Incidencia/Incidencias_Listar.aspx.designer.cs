@@ -7,11 +7,11 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace Proyecto_Estacionamiento.Pages.Reportes
+namespace Proyecto_Estacionamiento.Pages.Incidencia
 {
 
 
-    public partial class Reportes_Listar
+    public partial class Incidencias_Listar
     {
 
         /// <summary>
@@ -24,21 +24,21 @@ namespace Proyecto_Estacionamiento.Pages.Reportes
         protected global::System.Web.UI.WebControls.Label Estacionamiento_Nombre;
 
         /// <summary>
-        /// Control btnReporte.
+        /// Control btnIncidencia.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnReporte;
+        protected global::System.Web.UI.WebControls.Button btnIncidencia;
 
         /// <summary>
-        /// Control gvReportes.
+        /// Control gvIncidencias.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvReportes;
+        protected global::System.Web.UI.WebControls.GridView gvIncidencias;
     }
 }

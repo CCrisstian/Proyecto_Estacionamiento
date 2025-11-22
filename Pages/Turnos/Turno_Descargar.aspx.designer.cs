@@ -7,11 +7,11 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace Proyecto_Estacionamiento.Pages.Reportes
+namespace Proyecto_Estacionamiento.Pages.Turnos
 {
 
 
-    public partial class Reporte_Descargar
+    public partial class Turno_Descargar
     {
     }
 }

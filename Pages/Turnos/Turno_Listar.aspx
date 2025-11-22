@@ -24,12 +24,6 @@
         </div>
 
         <div class="form-row">
-            <asp:Label ID="lblMontoFin" runat="server" Text="Monto de Fin:" CssClass="form-label" />
-
-            <div>
-                <asp:TextBox ID="txtMontoFin" runat="server" CssClass="form-control" />
-            </div>
-
             <asp:Button ID="btnFinTurno" runat="server" Text="Fin de Turno"
                 CssClass="btn btn-danger"
                 OnClick="btnFinTurno_Click"
@@ -45,31 +39,63 @@
             CssClass="grid" Width="100%" CellPadding="4" ForeColor="#333333" GridLines="None">
 
             <Columns>
-                <asp:BoundField DataField="Estacionamiento" HeaderText="Estacionamiento" />
-
                 <asp:TemplateField HeaderText="Playero">
                     <ItemTemplate>
-                        <%# Eval("ApellidoPlayero") %>, <%# Eval("NombrePlayero") %>
+                        <%# Eval("Playero") %>
                     </ItemTemplate>
                 </asp:TemplateField>
 
-                <asp:BoundField DataField="Turno_FechaHora_Inicio" HeaderText="Inicio de Turno"
-                    DataFormatString="{0:dd/MM/yyyy HH:mm}" HtmlEncode="false" />
-                <asp:BoundField DataField="Turno_FechaHora_fin" HeaderText="Fin de Turno"
-                    DataFormatString="{0:dd/MM/yyyy HH:mm}" HtmlEncode="false" />
-                <asp:BoundField DataField="Caja_Monto_Inicio" HeaderText="Monto Inicio"
-                    DataFormatString="{0:C}" HtmlEncode="false" />
-                <asp:BoundField DataField="Caja_Monto_fin" HeaderText="Monto Fin"
-                    DataFormatString="{0:C}" HtmlEncode="false" />
-                <asp:BoundField DataField="Caja_Monto_total" HeaderText="Total Recaudado"
-                    DataFormatString="{0:C}" HtmlEncode="false" />
-            </Columns>
+                <asp:BoundField DataField="Inicio" HeaderText="Inicio de Turno" />
 
+                <asp:BoundField DataField="Fin" HeaderText="Fin de Turno" />
+
+                <asp:BoundField DataField="MontoInicio" HeaderText="Monto Inicio" />
+                <asp:BoundField DataField="MontoFin" HeaderText="Monto Fin" />
+                <asp:BoundField DataField="TotalRecaudado" HeaderText="Total Recaudado" />
+
+                <asp:TemplateField>
+                    <ItemTemplate>
+                        <a href="#"
+                            class="btn btn-info btn-sm"
+                            onclick="mostrarDetalleTurno(this); return false;"
+                            data-detalle='<%# Server.HtmlEncode(Eval("DetalleHtml").ToString()) %>'>🔍
+                        </a>
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+                <asp:TemplateField>
+                    <ItemTemplate>
+                        <asp:HyperLink ID="hlDescargar" runat="server"
+                            Text="💾"
+                            ToolTip="Descargar"
+                            CssClass="btn btn-secondary btn-sm"
+                            NavigateUrl='<%# Eval("DownloadUrl") %>'
+                            Target="_blank" />
+                    </ItemTemplate>
+                </asp:TemplateField>
+
+            </Columns>
         </asp:GridView>
+
     </div>
 
     <%-- SweetAlert2 para mensajes de confirmación --%>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+        function mostrarDetalleTurno(btn) {
+            // Obtenemos el HTML del atributo data-detalle
+            var htmlDetalle = btn.dataset.detalle;
+
+            Swal.fire({
+                title: 'Detalle de Movimientos',
+                html: htmlDetalle, // Inyectamos el HTML generado en C#
+                width: '800px',    // Hacemos el modal más ancho para las tablas
+                showCloseButton: true,
+                showConfirmButton: false, // Solo botón de cierre X
+                focusConfirm: false
+            });
+        }
+    </script>
     <script>
         function confirmarAccion(btn, tipo) {
             let mensaje = tipo === "inicio"

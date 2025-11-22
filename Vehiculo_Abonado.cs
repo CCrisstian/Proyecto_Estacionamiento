@@ -16,11 +16,9 @@ namespace Proyecto_Estacionamiento
     {
         public int VA_id { get; set; }
         public string Vehiculo_Patente { get; set; }
-        public int Tarifa_id { get; set; }
         public int Id_Abono { get; set; }
     
         public virtual Abono Abono { get; set; }
-        public virtual Tarifa Tarifa { get; set; }
         public virtual Vehiculo Vehiculo { get; set; }
     }
 }

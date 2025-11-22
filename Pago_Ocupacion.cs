@@ -25,10 +25,12 @@ namespace Proyecto_Estacionamiento
         public int Metodo_Pago_id { get; set; }
         public double Pago_Importe { get; set; }
         public Nullable<System.DateTime> Pago_Fecha { get; set; }
+        public int Turno_id { get; set; }
     
         public virtual Estacionamiento Estacionamiento { get; set; }
         public virtual Metodos_De_Pago Metodos_De_Pago { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ocupacion> Ocupacion { get; set; }
+        public virtual Turno Turno { get; set; }
     }
 }
