@@ -196,16 +196,25 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         tablaCaja.AddCell(new PdfPCell(new Phrase("Concepto", fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY });
                         tablaCaja.AddCell(new PdfPCell(new Phrase("Monto", fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY, HorizontalAlignment = Element.ALIGN_RIGHT });
 
-                        // Filas Caja
+                        // 1. Monto Inicio (Siempre debería tener valor, pero por seguridad usamos HasValue)
+                        string montoInicioStr = turno.Caja_Monto_Inicio.HasValue ? turno.Caja_Monto_Inicio.Value.ToString("C") : "$ 0.00";
                         tablaCaja.AddCell(new PdfPCell(new Phrase("Monto Inicio", fNormal)));
-                        tablaCaja.AddCell(new PdfPCell(new Phrase(turno.Caja_Monto_Inicio.Value.ToString("C"), fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
+                        tablaCaja.AddCell(new PdfPCell(new Phrase(montoInicioStr, fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
+
+                        // 2. Total Recaudado (Calculado al vuelo si es NULL, o tomado de la BD)
+                        double recaudadoActual = turno.Caja_Monto_total ?? (totalOcupacionReal + totalAbonoReal);
+                        // Si es null en BD (turno abierto), usamos la suma que calculamos antes (totalOcupacionReal + totalAbonoReal)
 
                         tablaCaja.AddCell(new PdfPCell(new Phrase("Total Recaudado", fNormal)));
-                        tablaCaja.AddCell(new PdfPCell(new Phrase(turno.Caja_Monto_total.Value.ToString("C"), fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
+                        tablaCaja.AddCell(new PdfPCell(new Phrase(recaudadoActual.ToString("C"), fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
 
-                        // Fila Final (Total Caja)
-                        tablaCaja.AddCell(new PdfPCell(new Phrase("Monto Fin (Caja)", fBold)));
-                        tablaCaja.AddCell(new PdfPCell(new Phrase(turno.Caja_Monto_fin.Value.ToString("C"), fBold)) { HorizontalAlignment = Element.ALIGN_RIGHT });
+                        // 3. Monto Fin (Caja)
+                        // Si el turno está abierto, calculamos lo que DEBERÍA haber (Inicio + Recaudado)
+                        double montoFinCalculado = (turno.Caja_Monto_Inicio ?? 0) + recaudadoActual;
+                        string etiquetaMontoFin = turno.Turno_FechaHora_fin.HasValue ? "Monto Fin" : "Monto Parcial";
+
+                        tablaCaja.AddCell(new PdfPCell(new Phrase(etiquetaMontoFin, fBold)));
+                        tablaCaja.AddCell(new PdfPCell(new Phrase(montoFinCalculado.ToString("C"), fBold)) { HorizontalAlignment = Element.ALIGN_RIGHT });
 
                         doc.Add(tablaCaja);
 

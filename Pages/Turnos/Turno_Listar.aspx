@@ -53,22 +53,22 @@
                 <asp:BoundField DataField="MontoFin" HeaderText="Monto Fin" />
                 <asp:BoundField DataField="TotalRecaudado" HeaderText="Total Recaudado" />
 
-                <asp:TemplateField>
+                <asp:TemplateField HeaderText="Detalle" ItemStyle-CssClass="grid-cell-centered">
                     <ItemTemplate>
                         <a href="#"
-                            class="btn btn-info btn-sm"
+                            class="btn btn-sm"
                             onclick="mostrarDetalleTurno(this); return false;"
                             data-detalle='<%# Server.HtmlEncode(Eval("DetalleHtml").ToString()) %>'>🔍
                         </a>
                     </ItemTemplate>
                 </asp:TemplateField>
 
-                <asp:TemplateField>
+                <asp:TemplateField HeaderText="Descargar" ItemStyle-CssClass="grid-cell-centered">
                     <ItemTemplate>
                         <asp:HyperLink ID="hlDescargar" runat="server"
                             Text="💾"
                             ToolTip="Descargar"
-                            CssClass="btn btn-secondary btn-sm"
+                            CssClass="btn btn-sm"
                             NavigateUrl='<%# Eval("DownloadUrl") %>'
                             Target="_blank" />
                     </ItemTemplate>
