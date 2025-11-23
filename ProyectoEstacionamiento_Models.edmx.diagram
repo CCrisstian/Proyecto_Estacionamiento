@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="77fa1c4ddae8413891139595bcd6e06c" Name="Diagram1" ZoomLevel="164">
+      <Diagram DiagramId="77fa1c4ddae8413891139595bcd6e06c" Name="Diagram1" ZoomLevel="81">
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Abono" Width="1.5" PointX="12.75" PointY="15.375" IsExpanded="true" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Acepta_Metodo_De_Pago" Width="1.5" PointX="7.5" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Categoria_Vehiculo" Width="1.5" PointX="8.25" PointY="0.75" IsExpanded="true" />
@@ -34,8 +34,6 @@
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Ocupacion_Vehiculo" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Playero_Usuarios" ManuallyRouted="false" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Tarifa_Tipos_Tarifa" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Incidencias" Width="1.5" PointX="9.75" PointY="3.875" />
-        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Incidencias_Playero" />
         <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Vehiculo_Abonado" Width="1.5" PointX="18.75" PointY="12.125" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_VehiculoAbonado_Abono" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Vehiculo_Abonado_Vehiculo" />
@@ -53,6 +51,8 @@
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Tarifa" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Pagos_Abonados_Turno" />
         <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Turno_Playero" />
+        <EntityTypeShape EntityType="ProyectoEstacionamientoModel.Incidencias" Width="1.5" PointX="9.75" PointY="4" />
+        <AssociationConnector Association="ProyectoEstacionamientoModel.FK_Incidencias_Playero" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

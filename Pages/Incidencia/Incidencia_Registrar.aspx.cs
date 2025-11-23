@@ -60,7 +60,6 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                 DateTime fechaHoraIncidencia = DateTime.Now; // Captura automática
                 string motivo = ddlMotivo.SelectedValue;
                 string descripcion = txtDescripcion.Text.Trim();
-                bool estado = (ddlEstado.SelectedValue == "1"); // 1 = Resuelto, 0 = Pendiente
 
                 // 3. Crear la nueva Incidencia
                 var nuevaIncidencia = new Incidencias
@@ -69,7 +68,6 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                     Inci_fecha_Hora = fechaHoraIncidencia,
                     Inci_Motivo = motivo,
                     Inci_descripcion = descripcion,
-                    Inci_Estado = estado
                 };
 
                 // 4. Guardar en la base de datos

@@ -19,11 +19,6 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     lblMontoInicio.Visible = false;
                     txtMontoInicio.Visible = false;
 
-                    if (Session["Dueño_EstId"] != null)
-                    {
-                        GridViewTurnos.Columns[0].Visible = false;
-                    }
-
                     // Verificar si hay turno abierto y recuperar ID si se perdió la sesión
                     if (Session["Turno_Id_Actual"] == null)
                     {
@@ -325,37 +320,64 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         return;
                     }
 
-                    // 2. Calcular Totales (Sumando desde las tablas de pagos usando el Turno_id)
                     int turnoId = turnoAbierto.Turno_id;
 
-                    // Suma de Ocupaciones (Manejo de nulos con ??)
+                    // ====================================================================
+                    // 2. CÁLCULO DE TOTALES (RECAUDACIÓN GLOBAL)
+                    // ====================================================================
+
+                    // Suma de TODAS las Ocupaciones (Efectivo, Tarjeta, etc.)
                     double totalOcupaciones = db.Pago_Ocupacion
                                                 .Where(p => p.Turno_id == turnoId)
                                                 .Sum(p => (double?)p.Pago_Importe) ?? 0;
 
-                    // Suma de Abonos
+                    // Suma de TODOS los Abonos (Efectivo, Tarjeta, etc.)
                     double totalAbonos = db.Pagos_Abonados
                                            .Where(p => p.Turno_id == turnoId)
                                            .Sum(p => (double?)p.PA_Monto) ?? 0;
 
-                    double totalRecaudado = totalOcupaciones + totalAbonos;
+                    // TOTAL RECAUDADO (Para estadísticas y reportes de ventas)
+                    double totalRecaudadoGlobal = totalOcupaciones + totalAbonos;
 
-                    // 3. Actualizar el Turno
+
+                    // ====================================================================
+                    // 3. CÁLCULO DE EFECTIVO (CAJA FÍSICA)
+                    // ====================================================================
+
+                    // Suma de Ocupaciones SOLO en EFECTIVO
+                    double efectivoOcupaciones = db.Pago_Ocupacion
+                                                   .Where(p => p.Turno_id == turnoId &&
+                                                               p.Metodos_De_Pago.Metodo_pago_descripcion == "Efectivo")
+                                                   .Sum(p => (double?)p.Pago_Importe) ?? 0;
+
+                    // Suma de Abonos SOLO en EFECTIVO
+                    double efectivoAbonos = db.Pagos_Abonados
+                                              .Where(p => p.Turno_id == turnoId &&
+                                                          p.Acepta_Metodo_De_Pago.Metodos_De_Pago.Metodo_pago_descripcion == "Efectivo")
+                                              .Sum(p => (double?)p.PA_Monto) ?? 0;
+
+                    double totalEfectivoIngresado = efectivoOcupaciones + efectivoAbonos;
+
+
+                    // ====================================================================
+                    // 4. ACTUALIZAR EL TURNO
+                    // ====================================================================
+
                     DateTime fechaFin = DateTime.Now;
-                    // Truncar milisegundos para evitar problemas de SQL
+                    // Truncar milisegundos
                     fechaFin = new DateTime(fechaFin.Year, fechaFin.Month, fechaFin.Day, fechaFin.Hour, fechaFin.Minute, fechaFin.Second);
 
                     turnoAbierto.Turno_FechaHora_fin = fechaFin;
 
-                    // Guardamos lo que se recaudó en este turno
-                    turnoAbierto.Caja_Monto_total = totalRecaudado;
+                    // A. Caja_Monto_total
+                    turnoAbierto.Caja_Monto_total = totalRecaudadoGlobal;
 
-                    // Calculamos cuánto dinero debería haber en la caja (Inicio + Recaudado)
-                    turnoAbierto.Caja_Monto_fin = (turnoAbierto.Caja_Monto_Inicio ?? 0) + totalRecaudado;
+                    // B. Caja_Monto_fin = Efectivo en caja 
+                    turnoAbierto.Caja_Monto_fin = (turnoAbierto.Caja_Monto_Inicio ?? 0) + totalEfectivoIngresado;
 
                     db.SaveChanges();
 
-                    // 4. Limpiar sesión del turno
+                    // 5. Limpiar sesión del turno
                     Session["Turno_Id_Actual"] = null;
                 }
 

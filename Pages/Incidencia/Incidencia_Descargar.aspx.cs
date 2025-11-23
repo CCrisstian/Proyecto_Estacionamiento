@@ -64,22 +64,66 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                     PdfWriter writer = PdfWriter.GetInstance(document, ms);
                     document.Open();
 
-                    // (Aquí va toda tu lógica de iTextSharp para crear el PDF)
+                    // --- FUENTES ---
+                    var fTituloBlanco = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 24, BaseColor.WHITE);
                     var fontTitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18);
                     var fontSubtitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14);
                     var fontBody = FontFactory.GetFont(FontFactory.HELVETICA, 12);
+                    var fontBodyBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
                     var fontInfo = FontFactory.GetFont(FontFactory.HELVETICA_OBLIQUE, 10);
 
-                    document.Add(new Paragraph("Incidencia", fontTitulo) { Alignment = Element.ALIGN_CENTER });
+                    // --- ENCABEZADO ---
+                    PdfPTable headerTable = new PdfPTable(2);
+                    headerTable.WidthPercentage = 100;
+                    // Ajustamos anchos: columna logo pequeña, columna título grande
+                    headerTable.SetWidths(new float[] { 1f, 4f });
+
+                    // 1. Celda del LOGO
+                    string imagePath = Server.MapPath("~/Images/LogoACE_SinFondo.PNG"); // Ruta relativa del servidor
+                    iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
+                    logo.ScaleToFit(60f, 60f); // Ajustar tamaño
+
+                    PdfPCell cellLogo = new PdfPCell(logo);
+                    cellLogo.Border = PdfPCell.NO_BORDER;
+                    cellLogo.BackgroundColor = new BaseColor(50, 160, 65); // Verde
+                    cellLogo.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cellLogo.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    cellLogo.Padding = 10f;
+                    headerTable.AddCell(cellLogo);
+
+                    // 2. Celda del TÍTULO
+                    PdfPCell cellTitulo = new PdfPCell(new Phrase("Reporte de Incidencia", fTituloBlanco));
+                    cellTitulo.Border = PdfPCell.NO_BORDER;
+                    cellTitulo.BackgroundColor = new BaseColor(50, 160, 65); // Verde
+                    cellTitulo.HorizontalAlignment = Element.ALIGN_CENTER;
+                    cellTitulo.VerticalAlignment = Element.ALIGN_MIDDLE;
+                    cellTitulo.Padding = 20f; // Espacio vertical
+                    headerTable.AddCell(cellTitulo);
+                    headerTable.SpacingAfter = 20f;
+
+                    document.Add(headerTable);
+
+                    void AgregarLinea(string etiqueta, string valor)
+                    {
+                        var p = new Paragraph();
+                        p.Add(new Chunk(etiqueta + ": ", fontBodyBold)); // Etiqueta en Negrita
+                        p.Add(new Chunk(valor, fontBody));             // Valor Normal
+                        document.Add(p);
+                    }
+                    // --------------------------------------
+
+                    // Usamos la función para agregar las líneas
+                    AgregarLinea("Estacionamiento", incidencia.Playero.Estacionamiento.Est_nombre);
+                    AgregarLinea("Fecha y Hora", $"{incidencia.Inci_fecha_Hora:dd/MM/yyyy HH:mm}");
+                    AgregarLinea("Playero", $"{incidencia.Playero.Usuarios.Usu_ap}, {incidencia.Playero.Usuarios.Usu_nom}");
+
                     document.Add(Chunk.NEWLINE);
-                    document.Add(new Paragraph($"Estacionamiento: { incidencia.Playero.Estacionamiento.Est_nombre}", fontBody));
-                    document.Add(new Paragraph($"Fecha y Hora: {incidencia.Inci_fecha_Hora:dd/MM/yyyy HH:mm}", fontBody));
-                    document.Add(new Paragraph($"Playero a cargo: {incidencia.Playero.Usuarios.Usu_ap}, {incidencia.Playero.Usuarios.Usu_nom}", fontBody));
-                    document.Add(new Paragraph($"Estado: {(incidencia.Inci_Estado ? "Resuelto" : "Pendiente")}", fontBody));
-                    document.Add(Chunk.NEWLINE);
+                    
                     document.Add(new Paragraph("Motivo de la Incidencia:", fontSubtitulo));
                     document.Add(new Paragraph(incidencia.Inci_Motivo, fontBody));
+                    
                     document.Add(Chunk.NEWLINE);
+                    
                     document.Add(new Paragraph("Descripción Detallada:", fontSubtitulo));
                     document.Add(new Paragraph(incidencia.Inci_descripcion, fontBody));
 

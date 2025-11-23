@@ -18,7 +18,6 @@ namespace Proyecto_Estacionamiento
         public System.DateTime Inci_fecha_Hora { get; set; }
         public string Inci_descripcion { get; set; }
         public string Inci_Motivo { get; set; }
-        public bool Inci_Estado { get; set; }
     
         public virtual Playero Playero { get; set; }
     }

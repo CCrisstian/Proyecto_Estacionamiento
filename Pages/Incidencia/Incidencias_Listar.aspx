@@ -31,15 +31,6 @@
 
                 <asp:BoundField DataField="Inci_Motivo" HeaderText="Motivo" SortExpression="Inci_Motivo" />
 
-                <asp:TemplateField HeaderText="Estado" SortExpression="Inci_Estado">
-                    <ItemTemplate>
-                        <asp:Label ID="lblEstado" runat="server"
-                            Text='<%# Eval("EstadoStr") %>'
-                            Font-Bold="true"
-                            ForeColor='<%# (bool)Eval("Inci_Estado") ? System.Drawing.Color.Green : System.Drawing.Color.Red %>' />
-                    </ItemTemplate>
-                </asp:TemplateField>
-
                 <asp:TemplateField HeaderText="Descripción" ItemStyle-CssClass="grid-cell-centered">
                     <ItemTemplate>
                         <a href="#"

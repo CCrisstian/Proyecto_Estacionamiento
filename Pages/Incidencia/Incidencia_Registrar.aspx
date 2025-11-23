@@ -34,14 +34,6 @@
                     ValidationGroup="Incidencia" />
             </div>
 
-            <div class="form-group form-inline">
-                <label for="ddlEstado">Estado:</label>
-                <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-control">
-                    <asp:ListItem Text="Pendiente" Value="0" Selected="True" />
-                    <asp:ListItem Text="Resuelto" Value="1" />
-                </asp:DropDownList>
-            </div>
-
             <br />
 
             <div class="form-group">

@@ -10,6 +10,14 @@ namespace Proyecto_Estacionamiento.Pages.Default
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // VALIDACIÓN DE SEGURIDAD
+            // Si no hay usuario logueado, lo mandamos al Login inmediatamente.
+            if (Session["Usu_legajo"] == null || Session["Usu_tipo"] == null)
+            {
+                Response.Redirect("~/Pages/Login/Login.aspx");
+                return; // Detenemos la ejecución para que no siga cargando y falle
+            }
+
             if (!IsPostBack)
             {
                 string estacionamiento = Session["Usu_estacionamiento"] as string;

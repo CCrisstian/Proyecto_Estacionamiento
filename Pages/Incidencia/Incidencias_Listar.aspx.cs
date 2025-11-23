@@ -35,6 +35,10 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                 {
                     btnIncidencia.Visible = false;
                 }
+                else
+                {
+                    gvIncidencias.Columns[0].Visible = false;
+                }
 
                 CargarIncidencias();
             }
@@ -48,8 +52,6 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
             public string PlayeroNombre { get; set; }
             public string FechaHoraStr { get; set; }
             public string Inci_Motivo { get; set; }
-            public bool Inci_Estado { get; set; }
-            public string EstadoStr { get; set; }
             public string Inci_descripcion { get; set; }
             public string DownloadUrl { get; set; }
         }
@@ -104,8 +106,6 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                         PlayeroNombre = $"{i.Playero.Usuarios.Usu_nom}, {i.Playero.Usuarios.Usu_ap}",
                         FechaHoraStr = i.Inci_fecha_Hora.ToString("dd/MM/yyyy HH:mm"),
                         Inci_Motivo = i.Inci_Motivo,
-                        Inci_Estado = i.Inci_Estado,
-                        EstadoStr = i.Inci_Estado ? "Resuelto" : "Pendiente",
                         Inci_descripcion = i.Inci_descripcion,
                         DownloadUrl = $"Incidencia_Descargar.aspx?legajo={i.Playero_legajo}&fechaTicks={i.Inci_fecha_Hora.Ticks}"
                     })
