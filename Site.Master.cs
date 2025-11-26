@@ -20,7 +20,11 @@ namespace Proyecto_Estacionamiento
                 {
                     menuEstacionamiento.Visible = false;
                     menuPlayero.Visible = false;
+                    menuReportes.Visible = false;
                     hlLogo.Enabled = false;
+                }else
+                {
+                    menuIncidencias.Visible = false;
                 }
 
                 string currentUrl = Request.Url.AbsolutePath.ToLower();
@@ -41,6 +45,8 @@ namespace Proyecto_Estacionamiento
                     menuTurno.Attributes["class"] = "tab active";
                 else if (currentUrl.Contains("/abonados/"))
                     menuAbonado.Attributes["class"] = "tab active";
+                else if (currentUrl.Contains("/reporte/"))
+                    menuReportes.Attributes["class"] = "tab active";
                 else if (currentUrl.Contains("/incidencia/"))
                     menuIncidencias.Attributes["class"] = "tab active";
 

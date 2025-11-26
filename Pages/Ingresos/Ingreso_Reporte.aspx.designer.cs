@@ -7,11 +7,11 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace Proyecto_Estacionamiento.Pages.Turnos
+namespace Proyecto_Estacionamiento.Pages.Ingresos
 {
 
 
-    public partial class Turno_Listar
+    public partial class Ingreso_Reporte
     {
 
         /// <summary>
@@ -24,40 +24,13 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         protected global::System.Web.UI.WebControls.Label Estacionamiento_Nombre;
 
         /// <summary>
-        /// Control lblMontoInicio.
+        /// Control ButtonVolver.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMontoInicio;
-
-        /// <summary>
-        /// Control txtMontoInicio.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMontoInicio;
-
-        /// <summary>
-        /// Control btnInicioTurno.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnInicioTurno;
-
-        /// <summary>
-        /// Control btnFinTurno.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFinTurno;
+        protected global::System.Web.UI.WebControls.Button ButtonVolver;
 
         /// <summary>
         /// Control lblEstacionamiento.
@@ -159,21 +132,30 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         protected global::System.Web.UI.WebControls.CustomValidator cvHasta;
 
         /// <summary>
-        /// Control btnFiltrarTurno.
+        /// Control GenerarReporte.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFiltrarTurno;
+        protected global::System.Web.UI.WebControls.Button GenerarReporte;
 
         /// <summary>
-        /// Control GridViewTurnos.
+        /// Control lblMensaje.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewTurnos;
+        protected global::System.Web.UI.WebControls.Label lblMensaje;
+
+        /// <summary>
+        /// Control rvIngresos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::Microsoft.Reporting.WebForms.ReportViewer rvIngresos;
     }
 }

@@ -71,16 +71,16 @@
 
             <!-- Parte superior -->
             <div class="header-top">
-                
+
                 <%-- ENVOLVEMOS LA IMAGEN CON UN HIPERVÍNCULO --%>
                 <asp:HyperLink ID="hlLogo" runat="server" NavigateUrl="~/Pages/Default/Inicio.aspx">
-                    <asp:Image ID="Image2" runat="server" 
-                        ImageUrl="~/Images/LogoACE_SinFondo.PNG" 
-                        Height="65px" 
-                        Width="65px" 
+                    <asp:Image ID="Image2" runat="server"
+                        ImageUrl="~/Images/LogoACE_SinFondo.PNG"
+                        Height="65px"
+                        Width="65px"
                         ToolTip="Ir a Inicio" />
                 </asp:HyperLink>
-                
+
                 <asp:Label ID="lblUsuario" runat="server" CssClass="usuario-logueado"></asp:Label>
             </div>
 
@@ -106,6 +106,8 @@
                         <li id="menuTurno" runat="server" class="tab"><a runat="server" href="~/Pages/Turnos/Turno_Listar">TURNOS</a></li>
 
                         <li id="menuAbonado" runat="server" class="tab"><a runat="server" href="~/Pages/Abonados/Abonados_Listar.aspx">ABONADOS</a></li>
+
+                        <li id="menuReportes" runat="server" class="tab"><a runat="server" href="~/Pages/Reporte/Reportes_Listar.aspx">REPORTES</a></li>
 
                         <li id="menuIncidencias" runat="server" class="tab"><a runat="server" href="~/Pages/Incidencia/Incidencias_Listar.aspx">INCIDENCIAS</a></li>
 

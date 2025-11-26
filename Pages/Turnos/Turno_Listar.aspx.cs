@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Proyecto_Estacionamiento.Pages.Turnos
 {
@@ -36,8 +37,7 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                             }
                         }
                     }
-                }
-                else
+                }else
                 {
                     GridViewTurnos.Columns[0].Visible = false;
                 }
@@ -53,8 +53,159 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     Estacionamiento_Nombre.Visible = false;
                 }
 
+                CargarLogicaEstacionamiento();
+
+                // Fechas por defecto
+                txtDesde.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                txtHasta.Text = DateTime.Now.ToString("dd/MM/yyyy");
+
                 CargarTurnos();
             }
+        }
+
+        private void CargarLogicaEstacionamiento()
+        {
+            string tipoUsuario = Session["Usu_tipo"] as string;
+
+            // --- CASO A: PLAYERO ---
+            if (tipoUsuario == "Playero")
+            {
+                // El playero ya tiene su estacionamiento asignado en sesión (desde el Login)
+                // No debe ver el selector.
+                lblEstacionamiento.Visible = false;
+                ddlEstacionamiento.Visible = false;
+
+                // El nombre del estacionamiento ya se carga en el Page_Load principal
+                // con Estacionamiento_Nombre.Text, así que no necesitamos hacer nada más aquí.
+                return;
+            }
+
+            // --- CASO B: DUEÑO ---
+            if (Session["Dueño_EstId"] != null)
+            {
+                // CASO B.1: Estacionamiento YA seleccionado (vino desde el menú principal)
+                string nombreEst = Session["Usu_estacionamiento"] as string;
+                Estacionamiento_Nombre.Text = $"Estacionamiento: '<strong>{nombreEst}</strong>'";
+                Estacionamiento_Nombre.Visible = true;
+
+                // Ocultar selección manual
+                lblEstacionamiento.Visible = false;
+                ddlEstacionamiento.Visible = false;
+            }
+            else
+            {
+                // CASO B.2: NO hay estacionamiento seleccionado -> Permitir elegir de la lista
+                Estacionamiento_Nombre.Visible = false;
+
+                lblEstacionamiento.Visible = true;
+                ddlEstacionamiento.Visible = true;
+
+                CargarComboEstacionamientos(); // Este método ya funciona bien para Dueños
+            }
+        }
+
+        private void CargarComboEstacionamientos()
+        {
+            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+
+            using (var db = new ProyectoEstacionamientoEntities())
+            {
+                var lista = db.Estacionamiento
+                              .Where(e => e.Dueño_Legajo == legajo)
+                              .Select(e => new { e.Est_id, e.Est_nombre })
+                              .ToList();
+
+                ddlEstacionamiento.DataSource = lista;
+                ddlEstacionamiento.DataTextField = "Est_nombre";
+                ddlEstacionamiento.DataValueField = "Est_id";
+                ddlEstacionamiento.DataBind();
+
+                // Agregar opción por defecto
+                ddlEstacionamiento.Items.Insert(0, new ListItem("-- Seleccione --", "0"));
+            }
+        }
+
+        // Evento al cambiar la selección (opcional, por si quieres actualizar algo en pantalla)
+        protected void ddlEstacionamiento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Si necesitas hacer algo cuando cambia, ej. limpiar el reporte
+        }
+
+
+        // VALIDACIÓN - Estacionamiento
+        protected void CvEstacionamiento_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            // Solo validamos si el control está visible (es decir, si el dueño no tenía uno preseleccionado)
+            if (ddlEstacionamiento.Visible)
+            {
+                if (ddlEstacionamiento.SelectedValue == "0")
+                {
+                    ((CustomValidator)source).ErrorMessage = "Debe seleccionar un Estacionamiento.";
+                    args.IsValid = false;
+                    return;
+                }
+            }
+            args.IsValid = true;
+        }
+
+        // VALIDACIÓN - Fecha Desde
+        protected void CvDesde_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string valor = txtDesde.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                ((CustomValidator)source).ErrorMessage = "La fecha 'Desde' es obligatoria.";
+                args.IsValid = false;
+                return;
+            }
+
+            if (!DateTime.TryParse(valor, out _))
+            {
+                ((CustomValidator)source).ErrorMessage = "Formato de fecha inválido.";
+                args.IsValid = false;
+                return;
+            }
+
+            args.IsValid = true;
+        }
+
+        // VALIDACIÓN - Desde > Hasta
+        protected void CvHasta_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            var validator = (CustomValidator)source;
+            string valorHasta = txtHasta.Text.Trim();
+            string valorDesde = txtDesde.Text.Trim();
+
+            // A. Validar vacío
+            if (string.IsNullOrWhiteSpace(valorHasta))
+            {
+                validator.ErrorMessage = "La fecha 'Hasta' es obligatoria.";
+                args.IsValid = false;
+                return;
+            }
+
+            // B. Validar formato
+            if (!DateTime.TryParse(valorHasta, out DateTime fechaHasta))
+            {
+                validator.ErrorMessage = "Formato de fecha inválido.";
+                args.IsValid = false;
+                return;
+            }
+
+            // C. Validar Rango (Desde > Hasta)
+            // Solo comparamos si la fecha 'Desde' también es válida
+            if (DateTime.TryParse(valorDesde, out DateTime fechaDesde))
+            {
+                if (fechaDesde > fechaHasta)
+                {
+                    validator.ErrorMessage = "La fecha 'Desde' no puede ser mayor que 'Hasta'.";
+                    args.IsValid = false;
+                    return;
+                }
+            }
+
+            args.IsValid = true;
         }
 
         public class TurnoDTO
@@ -70,57 +221,113 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
             public string DownloadUrl { get; set; }
         }
 
+        protected void btnFiltrarTurno_Click(object sender, EventArgs e)
+        {
+            // Verificar que la página antes de consultar
+            if (Page.IsValid)
+            {
+                CargarTurnos();
+            }
+        }
+
         private void CargarTurnos()
         {
+
             string tipoUsuario = Session["Usu_tipo"] as string;
-            int legajo = Convert.ToInt32(Session["Usu_legajo"]);
+            // Manejo seguro de nulos para el legajo
+            int legajo = Session["Usu_legajo"] != null ? Convert.ToInt32(Session["Usu_legajo"]) : 0;
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
                 IQueryable<Turno> query = db.Turno;
 
+                // ---------------------------------------------------------
+                // 1. FILTRO DE SEGURIDAD / CONTEXTO (Base lógica existente)
+                // ---------------------------------------------------------
                 if (tipoUsuario == "Dueño")
                 {
                     if (Session["Dueño_EstId"] != null)
                     {
-                        // Filtrar solo por el estacionamiento seleccionado
+                        // El dueño entró a gestionar un estacionamiento específico desde el Dashboard
                         int estIdSeleccionado = (int)Session["Dueño_EstId"];
                         query = query.Where(t => t.Playero.Est_id == estIdSeleccionado);
                     }
                     else
                     {
-                        // Mostrar todos los turnos de los estacionamientos del Dueño
+                        // El dueño está viendo el global. 
+                        // AQUI aplicamos el filtro del DropDown si el usuario seleccionó algo
+
+                        // Primero filtramos solo lo que le pertenece al dueño
                         var estIds = db.Estacionamiento
                                        .Where(e => e.Dueño_Legajo == legajo)
                                        .Select(e => e.Est_id);
 
                         query = query.Where(t => t.Playero.Est_id.HasValue && estIds.Contains(t.Playero.Est_id.Value));
+
+                        // Lógica del DropDown (ddlEstacionamiento)
+                        // Solo filtramos si el combo es visible, tiene items y no es la opción por defecto (ej. valor "-1" o vacío)
+                        if (ddlEstacionamiento.Visible &&
+                            !string.IsNullOrEmpty(ddlEstacionamiento.SelectedValue) &&
+                            ddlEstacionamiento.SelectedValue != "-1") // Asumiendo que -1 es "Todos"
+                        {
+                            int idEstacionamientoFiltro = int.Parse(ddlEstacionamiento.SelectedValue);
+                            query = query.Where(t => t.Playero.Est_id == idEstacionamientoFiltro);
+                        }
                     }
                 }
                 else if (tipoUsuario == "Playero")
                 {
-                    // --- Lógica del Playero ---
-                    // El playero solo ve las incidencias donde SU legajo sea el creador
+                    // El playero solo ve sus turnos
                     query = query.Where(t => t.Playero_Legajo == legajo);
                 }
 
-                // Ejecutamos la consulta principal de Turnos
+                // ---------------------------------------------------------
+                // 2. FILTROS DE FECHAS (Nuevos parámetros)
+                // ---------------------------------------------------------
+
+                DateTime fechaDesde;
+                DateTime fechaHasta;
+
+                // Intentamos parsear la fecha Desde (formato dd/MM/yyyy)
+                if (!string.IsNullOrEmpty(txtDesde.Text) &&
+                    DateTime.TryParseExact(txtDesde.Text, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out fechaDesde))
+                {
+                    // Filtramos turnos MAYORES o IGUALES a la fecha desde (a las 00:00:00)
+                    query = query.Where(t => t.Turno_FechaHora_Inicio >= fechaDesde);
+                }
+
+                // Intentamos parsear la fecha Hasta
+                if (!string.IsNullOrEmpty(txtHasta.Text) &&
+                    DateTime.TryParseExact(txtHasta.Text, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out fechaHasta))
+                {
+                    // Importante: Al filtrar "Hasta", queremos incluir todo ese día.
+                    // Si el usuario pone 25/11/2023, internamente es 25/11/2023 00:00:00.
+                    // Debemos comparar contra el final del día o sumar un día.
+                    DateTime finDelDia = fechaHasta.AddDays(1).AddTicks(-1); // 23:59:59.999
+
+                    query = query.Where(t => t.Turno_FechaHora_Inicio <= finDelDia);
+                }
+
+                // ---------------------------------------------------------
+                // 3. EJECUCIÓN Y PROYECCIÓN
+                // ---------------------------------------------------------
+
                 var turnosBase = query
                     .OrderByDescending(t => t.Turno_FechaHora_Inicio)
-                    .ToList(); // Traemos los turnos a memoria
+                    .ToList(); // Ejecuta SQL aquí
 
-                // Proyectamos a DTO y construimos el HTML de detalle para cada uno
                 var turnosDTO = turnosBase.Select(t => new TurnoDTO
                 {
                     Turno_id = t.Turno_id,
-                    Playero = $"{t.Playero.Usuarios.Usu_ap}, {t.Playero.Usuarios.Usu_nom}",
+                    Playero = t.Playero != null && t.Playero.Usuarios != null
+                              ? $"{t.Playero.Usuarios.Usu_ap}, {t.Playero.Usuarios.Usu_nom}"
+                              : "Desconocido", // Null check por seguridad
                     Inicio = t.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"),
-                    Fin = t.Turno_FechaHora_fin.HasValue ? t.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "",
+                    Fin = t.Turno_FechaHora_fin.HasValue ? t.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso",
                     MontoInicio = t.Caja_Monto_Inicio.HasValue ? t.Caja_Monto_Inicio.Value.ToString("C") : "$ 0.00",
-                    MontoFin = t.Caja_Monto_fin.HasValue ? t.Caja_Monto_fin.Value.ToString("C") : "",
-                    TotalRecaudado = t.Caja_Monto_total.HasValue ? t.Caja_Monto_total.Value.ToString("C") : "",
+                    MontoFin = t.Caja_Monto_fin.HasValue ? t.Caja_Monto_fin.Value.ToString("C") : "-",
+                    TotalRecaudado = t.Caja_Monto_total.HasValue ? t.Caja_Monto_total.Value.ToString("C") : "-",
 
-                    // --- CONSTRUCCIÓN DEL DETALLE HTML ---
                     DetalleHtml = ConstruirDetalleHtml(t.Turno_id),
                     DownloadUrl = $"Turno_Descargar.aspx?turnoId={t.Turno_id}"
                 })
@@ -128,6 +335,13 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
                 GridViewTurnos.DataSource = turnosDTO;
                 GridViewTurnos.DataBind();
+
+                // Opcional: Mostrar mensaje si no hay resultados
+                if (turnosDTO.Count == 0)
+                {
+                    // lblMensaje.Text = "No se encontraron turnos con los filtros seleccionados.";
+                    // lblMensaje.Visible = true;
+                }
             }
         }
 

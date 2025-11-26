@@ -106,37 +106,40 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         var fNormal = FontFactory.GetFont(FontFactory.HELVETICA, 10);
                         var fBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
 
-                        // --- ENCABEZADO ---
-                        PdfPTable headerTable = new PdfPTable(2);
-                        headerTable.WidthPercentage = 100;
-                        // Ajustamos anchos: columna logo pequeña, columna título grande
-                        headerTable.SetWidths(new float[] { 1f, 4f });
+                        // --- FUNCIÓN LOCAL PARA REPETIR EL ENCABEZADO ---
+                        Action AgregarEncabezado = () =>
+                        {
+                            PdfPTable headerTable = new PdfPTable(2);
+                            headerTable.WidthPercentage = 100;
+                            headerTable.SetWidths(new float[] { 1f, 4f });
 
-                        // 1. Celda del LOGO
-                        string imagePath = Server.MapPath("~/Images/LogoACE_SinFondo.PNG"); // Ruta relativa del servidor
-                        iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
-                        logo.ScaleToFit(60f, 60f); // Ajustar tamaño
+                            // 1. Logo
+                            string imagePath = Server.MapPath("~/Images/LogoACE_SinFondo.PNG");
+                            iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
+                            logo.ScaleToFit(60f, 60f);
 
-                        PdfPCell cellLogo = new PdfPCell(logo);
-                        cellLogo.Border = PdfPCell.NO_BORDER;
-                        cellLogo.BackgroundColor = new BaseColor(50, 160, 65); // Verde
-                        cellLogo.HorizontalAlignment = Element.ALIGN_CENTER;
-                        cellLogo.VerticalAlignment = Element.ALIGN_MIDDLE;
-                        cellLogo.Padding = 10f;
-                        headerTable.AddCell(cellLogo);
+                            PdfPCell cellLogo = new PdfPCell(logo);
+                            cellLogo.Border = PdfPCell.NO_BORDER;
+                            cellLogo.BackgroundColor = new BaseColor(50, 160, 65);
+                            cellLogo.HorizontalAlignment = Element.ALIGN_CENTER;
+                            cellLogo.VerticalAlignment = Element.ALIGN_MIDDLE;
+                            cellLogo.Padding = 10f;
+                            headerTable.AddCell(cellLogo);
 
-                        // 2. Celda del TÍTULO
-                        PdfPCell cellTitulo = new PdfPCell(new Phrase("Reporte de Cierre de Turno", fTituloBlanco));
-                        cellTitulo.Border = PdfPCell.NO_BORDER;
-                        cellTitulo.BackgroundColor = new BaseColor(50, 160, 65); // Verde
-                        cellTitulo.HorizontalAlignment = Element.ALIGN_CENTER;
-                        cellTitulo.VerticalAlignment = Element.ALIGN_MIDDLE;
-                        cellTitulo.Padding = 20f; // Espacio vertical
-                        headerTable.AddCell(cellTitulo);
-                        headerTable.SpacingAfter = 20f;
+                            // 2. Título
+                            PdfPCell cellTitulo = new PdfPCell(new Phrase("Reporte de Cierre de Turno", fTituloBlanco));
+                            cellTitulo.Border = PdfPCell.NO_BORDER;
+                            cellTitulo.BackgroundColor = new BaseColor(50, 160, 65);
+                            cellTitulo.HorizontalAlignment = Element.ALIGN_CENTER;
+                            cellTitulo.VerticalAlignment = Element.ALIGN_MIDDLE;
+                            cellTitulo.Padding = 20f;
+                            headerTable.AddCell(cellTitulo);
+                            headerTable.SpacingAfter = 20f;
 
-                        doc.Add(headerTable);
+                            doc.Add(headerTable);
+                        };
 
+                        // Función auxiliar para líneas de texto
                         void AgregarLinea(string etiqueta, string valor)
                         {
                             var p = new Paragraph();
@@ -144,17 +147,23 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                             p.Add(new Chunk(valor, fNormal));
                             doc.Add(p);
                         }
-                        
+
+                        // =========================================================
+                        // PAGINA 1: DATOS GENERALES + TABLA OCUPACIÓN
+                        // =========================================================
+                        AgregarEncabezado(); // Inserta Header
+
+                        // Parámetros
                         AgregarLinea("Estacionamiento", turno.Playero.Estacionamiento.Est_nombre);
                         AgregarLinea("Playero", $"{turno.Playero.Usuarios.Usu_nom} {turno.Playero.Usuarios.Usu_ap}");
                         AgregarLinea("Inicio", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
                         AgregarLinea("Fin", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
                         doc.Add(Chunk.NEWLINE);
 
-                        // --- TABLA 1: OCUPACIÓN ---
-                        doc.Add(new Paragraph("Detalle de Pagos por: Ocupación", fSubtitulo));
+                        // Tabla Ocupación
+                        doc.Add(new Paragraph("Detalle de Cobros por: Ocupación", fSubtitulo));
                         PdfPTable tOcup = new PdfPTable(5) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
-                        string[] hOcup = { "Ingreso", "Egreso", "Plaza", "Pago", "Monto" };
+                        string[] hOcup = { "Ingreso", "Egreso", "Plaza", "Cobro", "Monto" };
                         foreach (var h in hOcup) tOcup.AddCell(new PdfPCell(new Phrase(h, fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY });
 
                         foreach (var item in listaOcupacion)
@@ -170,12 +179,18 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // Totales Ocupación
                         doc.Add(new Paragraph($"Total Efectivo: {efectivoOcupacion:C}", fNormal) { Alignment = Element.ALIGN_RIGHT });
                         doc.Add(new Paragraph($"Total Ocupación: {totalOcupacion:C}", fBold) { Alignment = Element.ALIGN_RIGHT });
-                        doc.Add(Chunk.NEWLINE);
 
-                        // --- TABLA 2: ABONOS ---
-                        doc.Add(new Paragraph("Detalle de Pagos por: Abono", fSubtitulo));
+                        // *** SALTO DE PÁGINA ***
+                        doc.NewPage();
+
+                        // =========================================================
+                        // PAGINA 2: TABLA ABONOS
+                        // =========================================================
+                        AgregarEncabezado(); // Repite Header
+
+                        doc.Add(new Paragraph("Detalle de Cobros por: Abono", fSubtitulo));
                         PdfPTable tAbono = new PdfPTable(4) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
-                        string[] hAbono = { "Fecha", "Plaza", "Pago", "Monto" };
+                        string[] hAbono = { "Fecha", "Plaza", "Cobro", "Monto" };
                         foreach (var h in hAbono) tAbono.AddCell(new PdfPCell(new Phrase(h, fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY });
 
                         foreach (var item in listaAbonos)
@@ -190,34 +205,45 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // Totales Abono
                         doc.Add(new Paragraph($"Total Efectivo: {efectivoAbono:C}", fNormal) { Alignment = Element.ALIGN_RIGHT });
                         doc.Add(new Paragraph($"Total Abono: {totalAbono:C}", fBold) { Alignment = Element.ALIGN_RIGHT });
-                        doc.Add(Chunk.NEWLINE);
-                        doc.Add(Chunk.NEWLINE);
 
-                        // --- TABLA 3: CAJA EFECTIVO ---
+                        // *** SALTO DE PÁGINA ***
+                        doc.NewPage();
+
+
+                        // =========================================================
+                        // PAGINA 3: CAJA EFECTIVO
+                        // =========================================================
+                        AgregarEncabezado(); // Repite Header
+
                         doc.Add(new Paragraph("Detalle de Caja: Efectivo", fSubtitulo));
                         PdfPTable tCaja = new PdfPTable(2) { WidthPercentage = 60, HorizontalAlignment = Element.ALIGN_LEFT, SpacingBefore = 10f };
 
-                        // Monto Inicio
                         double mInicio = turno.Caja_Monto_Inicio ?? 0;
                         tCaja.AddCell(new PdfPCell(new Phrase("Monto Inicio (Efectivo en Caja)", fNormal)));
                         tCaja.AddCell(new PdfPCell(new Phrase(mInicio.ToString("C"), fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
 
-                        // Total Recaudado (Solo Efectivo) - Ahora llamado "Monto Fin"
                         tCaja.AddCell(new PdfPCell(new Phrase("Recaudado en Efectivo", fNormal)));
                         tCaja.AddCell(new PdfPCell(new Phrase(totalEfectivoRecaudado.ToString("C"), fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
 
-                        // Total Caja (Inicio + Efectivo Recaudado)
                         double totalCajaEfectivo = mInicio + totalEfectivoRecaudado;
                         tCaja.AddCell(new PdfPCell(new Phrase("Monto Fin (Efectivo en Caja)", fBold)));
                         tCaja.AddCell(new PdfPCell(new Phrase(totalCajaEfectivo.ToString("C"), fBold)) { HorizontalAlignment = Element.ALIGN_RIGHT });
 
                         doc.Add(tCaja);
+
                         doc.Add(Chunk.NEWLINE);
 
-                        // --- TABLA 4: OTRAS FORMAS DE PAGO ---
+
+                        // =========================================================
+                        // PAGINA 3: OTRAS FORMAS DE PAGO
+                        // =========================================================
+
+
+                        doc.Add(new Paragraph("Detalle de Caja: Otras formas de Pago", fSubtitulo));
+
+                        // Validamos si hay datos para no mostrar tabla vacía, pero mantenemos la página
                         if (todosLosPagos.Any())
                         {
-                            doc.Add(new Paragraph("Detalle de Caja: Otras formas de Pago", fSubtitulo));
                             PdfPTable tOtros = new PdfPTable(2) { WidthPercentage = 50, HorizontalAlignment = Element.ALIGN_LEFT, SpacingBefore = 10f, SpacingAfter = 10f };
                             tOtros.AddCell(new PdfPCell(new Phrase("Forma de Pago", fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY });
                             tOtros.AddCell(new PdfPCell(new Phrase("Total", fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY, HorizontalAlignment = Element.ALIGN_RIGHT });
@@ -229,31 +255,45 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                             }
                             doc.Add(tOtros);
                         }
+                        else
+                        {
+                            doc.Add(new Paragraph("No se registraron movimientos en otras formas de pago.", fNormal));
+                        }
 
-                        // --- TOTAL GENERAL ---
+
+                        // =========================================================
+                        // PAGINA 3: TOTAL GENERAL
+                        // =========================================================
+
                         doc.Add(Chunk.NEWLINE);
-                        double granTotal = (turno.Caja_Monto_total ?? (totalOcupacion + totalAbono)); // O la suma calculada
-                        doc.Add(new Paragraph($"Total Recaudado: {granTotal:C}", fTitulo) { Alignment = Element.ALIGN_RIGHT });
 
+                        // Cuadro grande para el Total
+                        PdfPTable tTotalGen = new PdfPTable(1);
+                        tTotalGen.WidthPercentage = 100;
 
+                        double granTotal = (turno.Caja_Monto_total ?? (totalOcupacion + totalAbono));
+
+                        PdfPCell cellTotal = new PdfPCell(new Phrase($"Total Recaudado: {granTotal:C}", fTitulo));
+                        cellTotal.HorizontalAlignment = Element.ALIGN_CENTER;
+                        cellTotal.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        cellTotal.Padding = 20f;
+                        cellTotal.BackgroundColor = BaseColor.LIGHT_GRAY;
+
+                        tTotalGen.AddCell(cellTotal);
+                        doc.Add(tTotalGen);
+
+                        // --- FIN DEL DOCUMENTO ---
                         doc.Close();
+
+                        // --- DESCARGA ---
                         Response.Clear();
                         Response.ContentType = "application/pdf";
-                        
-                        // 1. Preparamos las fechas en un formato válido para nombres de archivo
                         string formatoArchivo = "yyyy-MM-dd_HH-mm";
                         string fInicio = turno.Turno_FechaHora_Inicio.ToString(formatoArchivo);
-                        string fFin = turno.Turno_FechaHora_fin.HasValue
-                                      ? turno.Turno_FechaHora_fin.Value.ToString(formatoArchivo)
-                                      : "En_curso";
-
-                        // 2. Construimos el nombre 
+                        string fFin = turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString(formatoArchivo) : "En_curso";
                         string nombreArchivo = $"TurnoPlayero_{turno.Playero.Usuarios.Usu_nom}_{turno.Playero.Usuarios.Usu_ap}_{fInicio}_{fFin}.pdf";
-
-                        // 3. Enviamos el header
                         Response.AddHeader("content-disposition", $"attachment;filename={nombreArchivo}");
                         Response.BinaryWrite(ms.ToArray());
-                        
                         Response.End();
                     }
                 }

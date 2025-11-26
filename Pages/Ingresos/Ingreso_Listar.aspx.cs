@@ -51,6 +51,7 @@ namespace Proyecto_Estacionamiento
                     }
 
                     CargarMetodosDePagoEnDropDown(); // llena ddlMetodoDePago
+
                     gvIngresos.Columns[0].Visible = false;
                     gvIngresos.Columns[4].Visible = false;
                     gvIngresos.Columns[5].Visible = false;
@@ -850,5 +851,7 @@ namespace Proyecto_Estacionamiento
                     throw new Exception($"Tipo de tarifa desconocido: {tarifa}");
             }
         }
+
+
     }
 }

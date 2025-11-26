@@ -9,6 +9,10 @@
 
     <br />
 
+    <asp:Button ID="ButtonVolver" runat="server" Text="Volver"
+        OnClick="btnVolver"
+        CssClass="btn btn-primary" />
+
     <asp:Button ID="btnIncidencia" runat="server" Text="Registrar Incidencia" OnClick="btnIncidencia_Click" CssClass="btn btn-success" />
 
     <br />

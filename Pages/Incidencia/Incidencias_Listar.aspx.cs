@@ -38,6 +38,7 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                 else
                 {
                     gvIncidencias.Columns[0].Visible = false;
+                    ButtonVolver.Visible = false;
                 }
 
                 CargarIncidencias();
@@ -115,6 +116,11 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                 gvIncidencias.DataKeyNames = new string[] { "Playero_legajo", "Inci_fecha_Hora" };
                 gvIncidencias.DataBind();
             }
+        }
+
+        protected void btnVolver(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/Reporte/Reportes_Listar.aspx");
         }
 
         protected void btnIncidencia_Click(object sender, EventArgs e)
