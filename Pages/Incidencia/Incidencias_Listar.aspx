@@ -18,6 +18,47 @@
     <br />
     <br />
 
+    <div class="right-align-filters">
+        <div class="filtro-grupo">
+
+            <asp:Label ID="lblEstacionamiento" runat="server" Text="Estacionamiento:" Visible="false" />
+            <asp:DropDownList ID="ddlEstacionamiento" runat="server" CssClass="form-control" Visible="false"
+                AutoPostBack="true" OnSelectedIndexChanged="ddlEstacionamiento_SelectedIndexChanged">
+            </asp:DropDownList>
+
+            <asp:CustomValidator ID="cvEstacionamiento" runat="server"
+                OnServerValidate="CvEstacionamiento_ServerValidate"
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="Incidencia" />
+
+            <asp:Label ID="lblDesde" runat="server" Text="Desde:" />
+            <asp:TextBox ID="txtDesde" runat="server" CssClass="form-control filtro-fecha" />
+            <ajaxToolkit:CalendarExtender ID="calDesde" runat="server" TargetControlID="txtDesde" Format="dd/MM/yyyy" />
+
+            <asp:CustomValidator ID="cvDesde" runat="server"
+                OnServerValidate="CvDesde_ServerValidate"
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="Incidencia" />
+
+            <asp:Label ID="lblHasta" runat="server" Text="Hasta:" />
+            <asp:TextBox ID="txtHasta" runat="server" CssClass="form-control filtro-fecha" />
+            <ajaxToolkit:CalendarExtender ID="calHasta" runat="server" TargetControlID="txtHasta" Format="dd/MM/yyyy" />
+
+            <asp:CustomValidator ID="cvHasta" runat="server"
+                OnServerValidate="CvHasta_ServerValidate"
+                Display="Dynamic" ForeColor="Red"
+                ValidationGroup="Incidencia" />
+
+            <asp:Button ID="btnFiltrarIncidencia"
+                runat="server"
+                Text="Buscar"
+                OnClick="btnFiltrarIncidencia_Click"
+                CssClass="btn btn-primary" />
+        </div>
+    </div>
+
+    <br />
+
     <div class="grid-wrapper">
         <asp:GridView ID="gvIncidencias" runat="server"
             AutoGenerateColumns="False"
