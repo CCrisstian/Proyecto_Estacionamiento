@@ -106,6 +106,9 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         var fNormal = FontFactory.GetFont(FontFactory.HELVETICA, 10);
                         var fBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
 
+                        var colorVerdeHeader = new BaseColor(50, 160, 65); // #32a041
+                        var fHeaderBlanco = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE); // Fuente Blanca
+
                         // --- FUNCIÓN LOCAL PARA REPETIR EL ENCABEZADO ---
                         Action AgregarEncabezado = () =>
                         {
@@ -163,8 +166,13 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // Tabla Ocupación
                         doc.Add(new Paragraph("Detalle de Cobros por: Ocupación", fSubtitulo));
                         PdfPTable tOcup = new PdfPTable(5) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
+
+                        // Cabeceras con Estilo Verde
                         string[] hOcup = { "Ingreso", "Egreso", "Plaza", "Cobro", "Monto" };
-                        foreach (var h in hOcup) tOcup.AddCell(new PdfPCell(new Phrase(h, fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY });
+                        foreach (var h in hOcup)
+                        {
+                            tOcup.AddCell(new PdfPCell(new Phrase(h, fHeaderBlanco)) { BackgroundColor = colorVerdeHeader });
+                        }
 
                         foreach (var item in listaOcupacion)
                         {
@@ -190,8 +198,13 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
                         doc.Add(new Paragraph("Detalle de Cobros por: Abono", fSubtitulo));
                         PdfPTable tAbono = new PdfPTable(4) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
+                        
+                        // Cabeceras con Estilo Verde
                         string[] hAbono = { "Fecha", "Plaza", "Cobro", "Monto" };
-                        foreach (var h in hAbono) tAbono.AddCell(new PdfPCell(new Phrase(h, fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY });
+                        foreach (var h in hAbono)
+                        {
+                            tAbono.AddCell(new PdfPCell(new Phrase(h, fHeaderBlanco)) { BackgroundColor = colorVerdeHeader });
+                        }
 
                         foreach (var item in listaAbonos)
                         {
@@ -245,9 +258,11 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         if (todosLosPagos.Any())
                         {
                             PdfPTable tOtros = new PdfPTable(2) { WidthPercentage = 50, HorizontalAlignment = Element.ALIGN_LEFT, SpacingBefore = 10f, SpacingAfter = 10f };
-                            tOtros.AddCell(new PdfPCell(new Phrase("Forma de Pago", fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY });
-                            tOtros.AddCell(new PdfPCell(new Phrase("Total", fBold)) { BackgroundColor = BaseColor.LIGHT_GRAY, HorizontalAlignment = Element.ALIGN_RIGHT });
-
+                            
+                            // Cabeceras Manuales con Estilo Verde
+                            tOtros.AddCell(new PdfPCell(new Phrase("Forma de Pago", fHeaderBlanco)) { BackgroundColor = colorVerdeHeader });
+                            tOtros.AddCell(new PdfPCell(new Phrase("Total", fHeaderBlanco)) { BackgroundColor = colorVerdeHeader, HorizontalAlignment = Element.ALIGN_RIGHT });
+                            
                             foreach (var p in todosLosPagos)
                             {
                                 tOtros.AddCell(new PdfPCell(new Phrase(p.Metodo, fNormal)));

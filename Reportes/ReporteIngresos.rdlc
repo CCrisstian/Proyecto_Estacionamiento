@@ -204,7 +204,7 @@
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!Plaza.Value</Value>
+                      <Value>=CInt(Fields!Plaza.Value)</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
@@ -244,6 +244,11 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>DtOcupacion</DataSetName>
+            <SortExpressions>
+              <SortExpression>
+                <Value>=Fields!Plaza.Value</Value>
+              </SortExpression>
+            </SortExpressions>
             <Top>4.00486cm</Top>
             <Left>0.52918cm</Left>
             <Height>1.2cm</Height>
@@ -2111,7 +2116,7 @@
                       </Group>
                       <SortExpressions>
                         <SortExpression>
-                          <Value>=Fields!Plaza.Value</Value>
+                          <Value>=CInt(Fields!Plaza.Value)</Value>
                         </SortExpression>
                       </SortExpressions>
                       <TablixHeader>
@@ -2160,6 +2165,11 @@
                     </FilterValues>
                   </Filter>
                 </Filters>
+                <SortExpressions>
+                  <SortExpression>
+                    <Value>=Fields!Plaza.Value</Value>
+                  </SortExpression>
+                </SortExpressions>
                 <Top>1.11153cm</Top>
                 <Left>0.00011cm</Left>
                 <Height>1.2cm</Height>
@@ -2374,7 +2384,7 @@
                       </Group>
                       <SortExpressions>
                         <SortExpression>
-                          <Value>=Fields!Plaza.Value</Value>
+                          <Value>=CInt(Fields!Plaza.Value)</Value>
                         </SortExpression>
                       </SortExpressions>
                       <TablixHeader>
@@ -2423,6 +2433,11 @@
                     </FilterValues>
                   </Filter>
                 </Filters>
+                <SortExpressions>
+                  <SortExpression>
+                    <Value>=Fields!Plaza.Value</Value>
+                  </SortExpression>
+                </SortExpressions>
                 <Top>0.98806cm</Top>
                 <Height>1.2cm</Height>
                 <Width>5.74083cm</Width>
