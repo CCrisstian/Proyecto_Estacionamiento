@@ -59,6 +59,8 @@
           <Property Name="Est_Disponibilidad" Type="bit" Nullable="false" />
           <Property Name="Est_Latitud" Type="float" />
           <Property Name="Est_Longitud" Type="float" />
+          <Property Name="Est_Puntaje_Acumulado" Type="float" Nullable="false" />
+          <Property Name="Est_Cantidad_Votos" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Incidencias">
           <Key>
@@ -775,6 +777,8 @@
           <NavigationProperty Name="Plaza" Relationship="Self.FK_Plaza_Estacionamiento" FromRole="Estacionamiento" ToRole="Plaza" />
           <NavigationProperty Name="Tarifa" Relationship="Self.FK_Tarifa_Estacionamiento" FromRole="Estacionamiento" ToRole="Tarifa" />
           <NavigationProperty Name="Pago_Ocupacion" Relationship="ProyectoEstacionamientoModel.FK_Pago_Ocupacion_Estacionamiento" FromRole="Estacionamiento" ToRole="Pago_Ocupacion" />
+          <Property Name="Est_Puntaje_Acumulado" Type="Double" Nullable="false" />
+          <Property Name="Est_Cantidad_Votos" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Metodos_De_Pago">
           <Key>
@@ -1502,6 +1506,8 @@
           <EntitySetMapping Name="Estacionamiento">
             <EntityTypeMapping TypeName="ProyectoEstacionamientoModel.Estacionamiento">
               <MappingFragment StoreEntitySet="Estacionamiento">
+                <ScalarProperty Name="Est_Cantidad_Votos" ColumnName="Est_Cantidad_Votos" />
+                <ScalarProperty Name="Est_Puntaje_Acumulado" ColumnName="Est_Puntaje_Acumulado" />
                 <ScalarProperty Name="Est_id" ColumnName="Est_id" />
                 <ScalarProperty Name="Dueño_Legajo" ColumnName="Dueño_Legajo" />
                 <ScalarProperty Name="Est_nombre" ColumnName="Est_nombre" />

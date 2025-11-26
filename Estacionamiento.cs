@@ -39,6 +39,8 @@ namespace Proyecto_Estacionamiento
         public bool Est_Disponibilidad { get; set; }
         public Nullable<double> Est_Latitud { get; set; }
         public Nullable<double> Est_Longitud { get; set; }
+        public double Est_Puntaje_Acumulado { get; set; }
+        public int Est_Cantidad_Votos { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Acepta_Metodo_De_Pago> Acepta_Metodo_De_Pago { get; set; }
