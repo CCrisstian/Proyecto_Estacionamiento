@@ -239,6 +239,7 @@ namespace Proyecto_Estacionamiento.Pages.Ingresos
                 dt.Columns.Add("DiaSemana", typeof(string));
                 dt.Columns.Add("Hora", typeof(int));
                 dt.Columns.Add("Tipo", typeof(string));
+                dt.Columns.Add("DiaNumero", typeof(int));
 
                 // Cultura española para los nombres de los días
                 var culturaEs = new CultureInfo("es-ES");
@@ -256,12 +257,17 @@ namespace Proyecto_Estacionamiento.Pages.Ingresos
                     string nombreDia = culturaEs.DateTimeFormat.GetDayName(item.Ocu_fecha_Hora_Inicio.DayOfWeek);
                     nombreDia = char.ToUpper(nombreDia[0]) + nombreDia.Substring(1);
 
+                    // Calcular número de día (Lunes=1 ... Domingo=7)
+                    int numeroDia = (int)item.Ocu_fecha_Hora_Inicio.DayOfWeek;
+                    if (numeroDia == 0) numeroDia = 7; // Si es Domingo (0), lo pasamos al final (7)
+
                     dt.Rows.Add(
                         item.Plaza.Plaza_Nombre,
                         item.Ocu_fecha_Hora_Inicio,
                         nombreDia,
                         item.Ocu_fecha_Hora_Inicio.Hour,
-                        esAbono ? "Abonado" : "Normal"
+                        esAbono ? "Abonado" : "Normal",
+                        numeroDia
                     );
                 }
 

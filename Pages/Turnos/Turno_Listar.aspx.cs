@@ -37,7 +37,8 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                             }
                         }
                     }
-                }else
+                }
+                else
                 {
                     GridViewTurnos.Columns[0].Visible = false;
                 }
@@ -211,6 +212,7 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
         public class TurnoDTO
         {
             public int Turno_id { get; set; }
+            public string Estacionamiento { get; set; }
             public string Playero { get; set; }
             public string Inicio { get; set; }
             public string Fin { get; set; }
@@ -239,7 +241,10 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                IQueryable<Turno> query = db.Turno;
+                IQueryable<Turno> query = db.Turno
+                    .Include("Playero")
+                    .Include("Playero.Usuarios")
+                    .Include("Playero.Estacionamiento");
 
                 // ---------------------------------------------------------
                 // 1. FILTRO DE SEGURIDAD / CONTEXTO (Base lógica existente)
@@ -319,6 +324,7 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 var turnosDTO = turnosBase.Select(t => new TurnoDTO
                 {
                     Turno_id = t.Turno_id,
+                    Estacionamiento = t.Playero?.Estacionamiento?.Est_nombre ?? "N/A",
                     Playero = t.Playero != null && t.Playero.Usuarios != null
                               ? $"{t.Playero.Usuarios.Usu_ap}, {t.Playero.Usuarios.Usu_nom}"
                               : "Desconocido", // Null check por seguridad
@@ -336,12 +342,14 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 GridViewTurnos.DataSource = turnosDTO;
                 GridViewTurnos.DataBind();
 
-                // Opcional: Mostrar mensaje si no hay resultados
-                if (turnosDTO.Count == 0)
+                // Ocultar la columna "Estacionamiento" si el dueño YA seleccionó uno específico
+                if (tipoUsuario == "Dueño" && Session["Dueño_EstId"] != null)
                 {
-                    // lblMensaje.Text = "No se encontraron turnos con los filtros seleccionados.";
-                    // lblMensaje.Visible = true;
+                    // Asumiendo que es la primera columna (índice 0)
+                    if (GridViewTurnos.Columns.Count > 0)
+                        GridViewTurnos.Columns[0].Visible = false;
                 }
+
             }
         }
 
@@ -354,16 +362,22 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     .Where(p => p.Turno_id == turnoId)
                     .Select(p => new
                     {
-                        DatosOcupacion = db.Ocupacion.FirstOrDefault(o => o.Pago_id == p.Pago_id),
+                        Ocup = db.Ocupacion.FirstOrDefault(o => o.Pago_id == p.Pago_id),
                         Metodo = p.Metodos_De_Pago.Metodo_pago_descripcion,
                         Monto = p.Pago_Importe
                     })
                     .ToList()
                     .Select(x => new
                     {
-                        Ingreso = x.DatosOcupacion?.Ocu_fecha_Hora_Inicio.ToString("HH:mm") ?? "-",
-                        Egreso = x.DatosOcupacion?.Ocu_fecha_Hora_Fin?.ToString("HH:mm") ?? "-",
-                        Plaza = x.DatosOcupacion?.Plaza.Plaza_Nombre ?? "-",
+                        Ingreso = x.Ocup?.Ocu_fecha_Hora_Inicio.ToString("HH:mm") ?? "-",
+                        Egreso = x.Ocup?.Ocu_fecha_Hora_Fin?.ToString("HH:mm") ?? "-",
+                        Plaza = x.Ocup?.Plaza.Plaza_Nombre ?? "-",
+
+                        Patente = x.Ocup?.Vehiculo.Vehiculo_Patente ?? "-",
+                        TipoVehiculo = x.Ocup?.Vehiculo.Categoria_Vehiculo.Categoria_descripcion ?? "-",
+
+                        Tarifa = x.Ocup?.Tarifa?.Tipos_Tarifa?.Tipos_tarifa_descripcion ?? "-",
+
                         FormaPago = x.Metodo,
                         MontoStr = x.Monto.ToString("C")
                     })
@@ -376,6 +390,9 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     {
                         FechaPago = p.Fecha_Pago,
                         Plaza = p.Abono.Plaza.Plaza_Nombre,
+                        TitularNombre = p.Abono.Titular_Abono.TAB_Nombre,
+                        TitularApellido = p.Abono.Titular_Abono.TAB_Apellido,
+                        Tarifa = p.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
                         Metodo = p.Acepta_Metodo_De_Pago.Metodos_De_Pago.Metodo_pago_descripcion,
                         Monto = p.PA_Monto
                     })
@@ -384,10 +401,13 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     {
                         Fecha = x.FechaPago.ToString("dd/MM HH:mm"),
                         Plaza = x.Plaza,
+                        Titular = $"{x.TitularNombre} {x.TitularApellido}".Trim(),
+                        Tarifa = x.Tarifa,
                         FormaPago = x.Metodo,
                         MontoStr = x.Monto.ToString("C")
                     })
                     .ToList();
+
 
                 // 3. Construir el String HTML
                 var sb = new System.Text.StringBuilder();
@@ -398,11 +418,21 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 if (pagosOcupacion.Any())
                 {
                     sb.Append("<table class='table table-sm table-striped' style='width:100%; border:1px solid #ddd;'>");
-                    sb.Append("<thead style='background-color:#f2f2f2;'><tr><th>Ingreso</th><th>Egreso</th><th>Plaza</th><th>Pago</th><th style='text-align:right;'>Monto</th></tr></thead>");
+                    sb.Append("<thead style='background-color:#f2f2f2;'><tr><th>Ingreso</th><th>Egreso</th><th>Plaza</th><th>Patente</th><th>Vehiculo</th><th>Tarifa</th><th>Cobro</th><th style='text-align:right;'>Monto</th></tr></thead>");
                     sb.Append("<tbody>");
+
                     foreach (var item in pagosOcupacion)
                     {
-                        sb.Append($"<tr><td>{item.Ingreso}</td><td>{item.Egreso}</td><td>{item.Plaza}</td><td>{item.FormaPago}</td><td style='text-align:right;'>{item.MontoStr}</td></tr>");
+                        sb.Append($"<tr>" +
+                            $"<td>{item.Ingreso}</td>" +
+                            $"<td>{item.Egreso}</td>" +
+                            $"<td>{item.Plaza}</td>" +
+                            $"<td>{item.Patente}</td>" +
+                            $"<td>{item.TipoVehiculo}</td>" +
+                            $"<td>{item.Tarifa}</td>" +
+                            $"<td>{item.FormaPago}</td>" +
+                            $"<td style='text-align:right;'>{item.MontoStr}</td>" +
+                        $"</tr>");
                     }
                     sb.Append("</tbody></table>");
                 }
@@ -417,11 +447,19 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                 if (pagosAbonos.Any())
                 {
                     sb.Append("<table class='table table-sm table-striped' style='width:100%; border:1px solid #ddd;'>");
-                    sb.Append("<thead style='background-color:#f2f2f2;'><tr><th>Fecha</th><th>Plaza</th><th>Pago</th><th style='text-align:right;'>Monto</th></tr></thead>");
+                    sb.Append("<thead style='background-color:#f2f2f2;'><tr><th>Fecha</th><th>Plaza</th><th>Titular</th><th>Tarifa</th><th>Cobro</th><th style='text-align:right;'>Monto</th></tr></thead>");
                     sb.Append("<tbody>");
                     foreach (var item in pagosAbonos)
                     {
-                        sb.Append($"<tr><td>{item.Fecha}</td><td>{item.Plaza}</td><td>{item.FormaPago}</td><td style='text-align:right;'>{item.MontoStr}</td></tr>");
+                        sb.Append($@"
+                            <tr>
+                                <td>{item.Fecha}</td>
+                                <td>{item.Plaza}</td>
+                                <td>{item.Titular}</td>
+                                <td>{item.Tarifa}</td>
+                                <td>{item.FormaPago}</td>
+                                <td style='text-align:right;'>{item.MontoStr}</td>
+                            </tr>");
                     }
                     sb.Append("</tbody></table>");
                 }

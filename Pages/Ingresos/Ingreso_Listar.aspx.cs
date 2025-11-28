@@ -363,8 +363,8 @@ namespace Proyecto_Estacionamiento
                         Tarifa_Por_Hora_Fallback = tarifaFallback
                     };
                 })
-        .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
-        .ToList();
+                .OrderByDescending(o => o.Ocu_fecha_Hora_Inicio)
+                .ToList();
 
                 Session["DatosIngresos"] = ingresos;
                 gvIngresos.DataSource = ingresos;
@@ -764,7 +764,7 @@ namespace Proyecto_Estacionamiento
                                 Est_id = ocupacion.Est_id,
                                 Metodo_Pago_id = metodoPagoId,
                                 Pago_Importe = Convert.ToDouble(montoFinal),
-                                Pago_Fecha = fin.Date,
+                                Pago_Fecha = fin,
                                 Turno_id = turnoId // <-- Asignacion del TURNO
                             };
                             db.Pago_Ocupacion.Add(pago);
@@ -804,7 +804,7 @@ namespace Proyecto_Estacionamiento
                             inicio.Minute,         // @p5
                             inicio.Second,         // @p6
                             (double)montoFinal,    // @p7
-                            fin.Date,              // @p8
+                            fin,              // @p8
                             (object)pagoId ?? DBNull.Value, // @p9 (Usa el ID o DBNull si no hubo pago)
                             (object)pagoId ?? DBNull.Value  // @p10 (Usa el ID o DBNull si no hubo pago)
                         );

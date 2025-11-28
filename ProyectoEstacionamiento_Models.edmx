@@ -101,7 +101,7 @@
           <Property Name="Est_id" Type="int" Nullable="false" />
           <Property Name="Metodo_Pago_id" Type="int" Nullable="false" />
           <Property Name="Pago_Importe" Type="float" Nullable="false" />
-          <Property Name="Pago_Fecha" Type="date" />
+          <Property Name="Pago_Fecha" Type="datetime" />
           <Property Name="Turno_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Pagos_Abonados">
@@ -1287,7 +1287,7 @@
           <Property Name="Est_id" Type="Int32" Nullable="false" />
           <Property Name="Metodo_Pago_id" Type="Int32" Nullable="false" />
           <Property Name="Pago_Importe" Type="Double" Nullable="false" />
-          <Property Name="Pago_Fecha" Type="DateTime" Precision="0" />
+          <Property Name="Pago_Fecha" Type="DateTime" Precision="3" />
           <Property Name="Turno_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Estacionamiento" Relationship="ProyectoEstacionamientoModel.FK_Pago_Ocupacion_Estacionamiento" FromRole="Pago_Ocupacion" ToRole="Estacionamiento" />
           <NavigationProperty Name="Metodos_De_Pago" Relationship="ProyectoEstacionamientoModel.FK_Pago_Ocupacion_Metodos_De_Pago" FromRole="Pago_Ocupacion" ToRole="Metodos_De_Pago" />

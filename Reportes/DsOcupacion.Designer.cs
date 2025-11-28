@@ -289,6 +289,8 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             private global::System.Data.DataColumn columnTipo;
             
+            private global::System.Data.DataColumn columnDiaNumero;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public DtOcupacionDataTable() {
@@ -364,6 +366,14 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn DiaNumeroColumn {
+                get {
+                    return this.columnDiaNumero;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -399,14 +409,15 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public DtOcupacionRow AddDtOcupacionRow(string Plaza, System.DateTime FechaHora, string DiaSemana, int Hora, string Tipo) {
+            public DtOcupacionRow AddDtOcupacionRow(string Plaza, System.DateTime FechaHora, string DiaSemana, int Hora, string Tipo, int DiaNumero) {
                 DtOcupacionRow rowDtOcupacionRow = ((DtOcupacionRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Plaza,
                         FechaHora,
                         DiaSemana,
                         Hora,
-                        Tipo};
+                        Tipo,
+                        DiaNumero};
                 rowDtOcupacionRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDtOcupacionRow);
                 return rowDtOcupacionRow;
@@ -434,6 +445,7 @@ namespace Proyecto_Estacionamiento.Reportes {
                 this.columnDiaSemana = base.Columns["DiaSemana"];
                 this.columnHora = base.Columns["Hora"];
                 this.columnTipo = base.Columns["Tipo"];
+                this.columnDiaNumero = base.Columns["DiaNumero"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -449,6 +461,8 @@ namespace Proyecto_Estacionamiento.Reportes {
                 base.Columns.Add(this.columnHora);
                 this.columnTipo = new global::System.Data.DataColumn("Tipo", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTipo);
+                this.columnDiaNumero = new global::System.Data.DataColumn("DiaNumero", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDiaNumero);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -671,6 +685,22 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public int DiaNumero {
+                get {
+                    try {
+                        return ((int)(this[this.tableDtOcupacion.DiaNumeroColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'DiaNumero\' de la tabla \'DtOcupacion\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDtOcupacion.DiaNumeroColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsPlazaNull() {
                 return this.IsNull(this.tableDtOcupacion.PlazaColumn);
             }
@@ -727,6 +757,18 @@ namespace Proyecto_Estacionamiento.Reportes {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetTipoNull() {
                 this[this.tableDtOcupacion.TipoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsDiaNumeroNull() {
+                return this.IsNull(this.tableDtOcupacion.DiaNumeroColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetDiaNumeroNull() {
+                this[this.tableDtOcupacion.DiaNumeroColumn] = global::System.Convert.DBNull;
             }
         }
         

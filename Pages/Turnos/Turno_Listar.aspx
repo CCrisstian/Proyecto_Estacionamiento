@@ -80,6 +80,7 @@
             CssClass="grid" Width="100%" CellPadding="4" ForeColor="#333333" GridLines="None">
 
             <Columns>
+                <asp:BoundField DataField="Estacionamiento" HeaderText="Estacionamiento" />
                 <asp:BoundField DataField="Playero" HeaderText="Playero" />
                 <asp:BoundField DataField="Inicio" HeaderText="Inicio de Turno" />
 
@@ -112,7 +113,6 @@
 
             </Columns>
         </asp:GridView>
-
     </div>
 
     <%-- SweetAlert2 para mensajes de confirmación --%>
@@ -125,7 +125,7 @@
             Swal.fire({
                 title: 'Detalle de Movimientos',
                 html: htmlDetalle, // Inyectamos el HTML generado en C#
-                width: '800px',    // Hacemos el modal más ancho para las tablas
+                width: '950px',    // Hacemos el modal más ancho para las tablas
                 showCloseButton: true,
                 showConfirmButton: false, // Solo botón de cierre X
                 focusConfirm: false

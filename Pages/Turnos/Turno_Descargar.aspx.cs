@@ -39,17 +39,18 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                     var rawOcupacion = db.Pago_Ocupacion
                         .Where(p => p.Turno_id == turnoId)
                         .Select(p => new {
-                            Ingreso = p.Ocupacion.FirstOrDefault().Ocu_fecha_Hora_Inicio,
-                            Egreso = p.Ocupacion.FirstOrDefault().Ocu_fecha_Hora_Fin,
-                            Plaza = p.Ocupacion.FirstOrDefault().Plaza.Plaza_Nombre,
+                            Ocup = p.Ocupacion.FirstOrDefault(),
                             Metodo = p.Metodos_De_Pago.Metodo_pago_descripcion,
                             Monto = p.Pago_Importe
-                        }).ToList(); // Traer a memoria para formatear
+                        }).ToList();
 
                     var listaOcupacion = rawOcupacion.Select(x => new {
-                        Ingreso = x.Ingreso.ToString("HH:mm"),
-                        Egreso = x.Egreso?.ToString("HH:mm") ?? "-",
-                        Plaza = x.Plaza ?? "-",
+                        Ingreso = x.Ocup?.Ocu_fecha_Hora_Inicio,
+                        Egreso = x.Ocup?.Ocu_fecha_Hora_Fin,
+                        Plaza = x.Ocup?.Plaza?.Plaza_Nombre ?? "-",
+                        Patente = x.Ocup?.Vehiculo_Patente ?? "-",
+                        TipoVehiculo = x.Ocup?.Vehiculo?.Categoria_Vehiculo?.Categoria_descripcion ?? "-",
+                        Tarifa = x.Ocup?.Tarifa?.Tipos_Tarifa?.Tipos_tarifa_descripcion ?? "-",
                         FormaPago = x.Metodo,
                         MontoVal = x.Monto,
                         MontoStr = x.Monto.ToString("C")
@@ -61,14 +62,19 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         .Select(p => new {
                             FechaPago = p.Fecha_Pago,
                             Plaza = p.Abono.Plaza.Plaza_Nombre,
+                            Tarifa = p.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion,
                             Metodo = p.Acepta_Metodo_De_Pago.Metodos_De_Pago.Metodo_pago_descripcion,
-                            Monto = p.PA_Monto
+                            Monto = p.PA_Monto,
+                            Nombre = p.Abono.Titular_Abono.TAB_Nombre,
+                            Apellido = p.Abono.Titular_Abono.TAB_Apellido
                         }).ToList();
 
                     var listaAbonos = rawAbonos.Select(x => new {
                         Fecha = x.FechaPago.ToString("dd/MM HH:mm"),
                         Plaza = x.Plaza,
                         FormaPago = x.Metodo,
+                        Titular = $"{x.Nombre} {x.Apellido}",
+                        Tarifa = x.Tarifa,
                         MontoVal = x.Monto,
                         MontoStr = x.Monto.ToString("C")
                     }).ToList();
@@ -159,29 +165,42 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // Parámetros
                         AgregarLinea("Estacionamiento", turno.Playero.Estacionamiento.Est_nombre);
                         AgregarLinea("Playero", $"{turno.Playero.Usuarios.Usu_nom} {turno.Playero.Usuarios.Usu_ap}");
-                        AgregarLinea("Inicio", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
-                        AgregarLinea("Fin", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
+                        AgregarLinea("Inicio del Turno", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
+                        AgregarLinea("Fin del Turno", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
+                        AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
                         doc.Add(Chunk.NEWLINE);
+
 
                         // Tabla Ocupación
                         doc.Add(new Paragraph("Detalle de Cobros por: Ocupación", fSubtitulo));
-                        PdfPTable tOcup = new PdfPTable(5) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
+                        PdfPTable tOcup = new PdfPTable(8) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
 
                         // Cabeceras con Estilo Verde
-                        string[] hOcup = { "Ingreso", "Egreso", "Plaza", "Cobro", "Monto" };
+                        string[] hOcup = { "Ingreso", "Egreso", "Plaza", "Patente", "Vehículo", "Tarifa", "Cobro", "Monto" };
                         foreach (var h in hOcup)
                         {
-                            tOcup.AddCell(new PdfPCell(new Phrase(h, fHeaderBlanco)) { BackgroundColor = colorVerdeHeader });
+                            tOcup.AddCell(new PdfPCell(new Phrase(h, fHeaderBlanco))
+                            {
+                                BackgroundColor = colorVerdeHeader,
+                                PaddingTop = 6f,     // Aumenta espacio arriba
+                                PaddingBottom = 6f,  // Aumenta espacio abajo
+                                HorizontalAlignment = Element.ALIGN_CENTER,
+                                VerticalAlignment = Element.ALIGN_MIDDLE
+                            });
                         }
 
                         foreach (var item in listaOcupacion)
                         {
-                            tOcup.AddCell(new PdfPCell(new Phrase(item.Ingreso, fNormal)));
-                            tOcup.AddCell(new PdfPCell(new Phrase(item.Egreso, fNormal)));
-                            tOcup.AddCell(new PdfPCell(new Phrase(item.Plaza, fNormal)));
-                            tOcup.AddCell(new PdfPCell(new Phrase(item.FormaPago, fNormal)));
+                            tOcup.AddCell(new PdfPCell(new Phrase(item.Ingreso?.ToString("HH:mm") ?? "-", fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tOcup.AddCell(new PdfPCell(new Phrase(item.Egreso?.ToString("HH:mm") ?? "-", fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tOcup.AddCell(new PdfPCell(new Phrase(item.Plaza, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tOcup.AddCell(new PdfPCell(new Phrase(item.Patente, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tOcup.AddCell(new PdfPCell(new Phrase(item.TipoVehiculo, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tOcup.AddCell(new PdfPCell(new Phrase(item.Tarifa, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tOcup.AddCell(new PdfPCell(new Phrase(item.FormaPago, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
                             tOcup.AddCell(new PdfPCell(new Phrase(item.MontoStr, fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
                         }
+
                         doc.Add(tOcup);
 
                         // Totales Ocupación
@@ -196,21 +215,38 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // =========================================================
                         AgregarEncabezado(); // Repite Header
 
+                        // Parámetros
+                        AgregarLinea("Estacionamiento", turno.Playero.Estacionamiento.Est_nombre);
+                        AgregarLinea("Playero", $"{turno.Playero.Usuarios.Usu_nom} {turno.Playero.Usuarios.Usu_ap}");
+                        AgregarLinea("Inicio del Turno", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
+                        AgregarLinea("Fin del Turno", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
+                        AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+                        doc.Add(Chunk.NEWLINE);
+
                         doc.Add(new Paragraph("Detalle de Cobros por: Abono", fSubtitulo));
-                        PdfPTable tAbono = new PdfPTable(4) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
-                        
+                        PdfPTable tAbono = new PdfPTable(6) { WidthPercentage = 100, SpacingBefore = 10f, SpacingAfter = 10f };
+
                         // Cabeceras con Estilo Verde
-                        string[] hAbono = { "Fecha", "Plaza", "Cobro", "Monto" };
+                        string[] hAbono = { "Fecha", "Plaza", "Titular", "Tarifa", "Cobro", "Monto" };
                         foreach (var h in hAbono)
                         {
-                            tAbono.AddCell(new PdfPCell(new Phrase(h, fHeaderBlanco)) { BackgroundColor = colorVerdeHeader });
+                            tAbono.AddCell(new PdfPCell(new Phrase(h, fHeaderBlanco))
+                            {
+                                BackgroundColor = colorVerdeHeader,
+                                PaddingTop = 6f,     // Aumenta espacio arriba
+                                PaddingBottom = 6f,  // Aumenta espacio abajo
+                                HorizontalAlignment = Element.ALIGN_CENTER,
+                                VerticalAlignment = Element.ALIGN_MIDDLE
+                            });
                         }
 
                         foreach (var item in listaAbonos)
                         {
-                            tAbono.AddCell(new PdfPCell(new Phrase(item.Fecha, fNormal)));
-                            tAbono.AddCell(new PdfPCell(new Phrase(item.Plaza, fNormal)));
-                            tAbono.AddCell(new PdfPCell(new Phrase(item.FormaPago, fNormal)));
+                            tAbono.AddCell(new PdfPCell(new Phrase(item.Fecha, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER});
+                            tAbono.AddCell(new PdfPCell(new Phrase(item.Plaza, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tAbono.AddCell(new PdfPCell(new Phrase(item.Titular, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tAbono.AddCell(new PdfPCell(new Phrase(item.Tarifa, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
+                            tAbono.AddCell(new PdfPCell(new Phrase(item.FormaPago, fNormal)) { HorizontalAlignment = Element.ALIGN_CENTER });
                             tAbono.AddCell(new PdfPCell(new Phrase(item.MontoStr, fNormal)) { HorizontalAlignment = Element.ALIGN_RIGHT });
                         }
                         doc.Add(tAbono);
@@ -227,6 +263,14 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // PAGINA 3: CAJA EFECTIVO
                         // =========================================================
                         AgregarEncabezado(); // Repite Header
+
+                        // Parámetros
+                        AgregarLinea("Estacionamiento", turno.Playero.Estacionamiento.Est_nombre);
+                        AgregarLinea("Playero", $"{turno.Playero.Usuarios.Usu_nom} {turno.Playero.Usuarios.Usu_ap}");
+                        AgregarLinea("Inicio del Turno", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
+                        AgregarLinea("Fin del Turno", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
+                        AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+                        doc.Add(Chunk.NEWLINE);
 
                         doc.Add(new Paragraph("Detalle de Caja: Efectivo", fSubtitulo));
                         PdfPTable tCaja = new PdfPTable(2) { WidthPercentage = 60, HorizontalAlignment = Element.ALIGN_LEFT, SpacingBefore = 10f };
@@ -251,7 +295,6 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // PAGINA 3: OTRAS FORMAS DE PAGO
                         // =========================================================
 
-
                         doc.Add(new Paragraph("Detalle de Caja: Otras formas de Pago", fSubtitulo));
 
                         // Validamos si hay datos para no mostrar tabla vacía, pero mantenemos la página
@@ -260,9 +303,9 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                             PdfPTable tOtros = new PdfPTable(2) { WidthPercentage = 50, HorizontalAlignment = Element.ALIGN_LEFT, SpacingBefore = 10f, SpacingAfter = 10f };
                             
                             // Cabeceras Manuales con Estilo Verde
-                            tOtros.AddCell(new PdfPCell(new Phrase("Forma de Pago", fHeaderBlanco)) { BackgroundColor = colorVerdeHeader });
-                            tOtros.AddCell(new PdfPCell(new Phrase("Total", fHeaderBlanco)) { BackgroundColor = colorVerdeHeader, HorizontalAlignment = Element.ALIGN_RIGHT });
-                            
+                            tOtros.AddCell(new PdfPCell(new Phrase("Forma de Pago", fHeaderBlanco)) { BackgroundColor = colorVerdeHeader, PaddingTop = 6f, PaddingBottom = 6f, HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE });
+                            tOtros.AddCell(new PdfPCell(new Phrase("Total", fHeaderBlanco)) { BackgroundColor = colorVerdeHeader, PaddingTop = 6f, PaddingBottom = 6f, HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE });
+
                             foreach (var p in todosLosPagos)
                             {
                                 tOtros.AddCell(new PdfPCell(new Phrase(p.Metodo, fNormal)));
