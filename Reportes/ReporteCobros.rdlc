@@ -823,7 +823,7 @@
             </ChartLegends>
             <ChartTitles>
               <ChartTitle Name="Default">
-                <Caption>Cantidad de Cobros por Forma de Pago</Caption>
+                <Caption>Formas de Pago por Cantidad de Dinero</Caption>
                 <Style>
                   <BackgroundGradientType>None</BackgroundGradientType>
                   <FontSize>9pt</FontSize>
@@ -1500,7 +1500,7 @@
                 </ChartLegends>
                 <ChartTitles>
                   <ChartTitle Name="Default">
-                    <Caption>Cantidad de Cobros por Forma de Pago (Abono)</Caption>
+                    <Caption>Formas de Pago por Cantidad de Dinero (Abono)</Caption>
                     <Style>
                       <BackgroundGradientType>None</BackgroundGradientType>
                       <FontSize>9pt</FontSize>
@@ -1539,7 +1539,7 @@
                   </Filter>
                 </Filters>
                 <Top>6.94046cm</Top>
-                <Left>0.04731cm</Left>
+                <Left>0.05928cm</Left>
                 <Height>5cm</Height>
                 <Width>14cm</Width>
                 <ZIndex>2</ZIndex>
@@ -2316,7 +2316,7 @@
                 </ChartLegends>
                 <ChartTitles>
                   <ChartTitle Name="Default">
-                    <Caption>Cantidad de Cobros por Forma de Pago (Ocupación)</Caption>
+                    <Caption>Formas de Pago por Cantidad de Dinero (Ocupación)</Caption>
                     <Style>
                       <BackgroundGradientType>None</BackgroundGradientType>
                       <FontSize>9pt</FontSize>
