@@ -186,6 +186,7 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
             args.IsValid = true;
         }
 
+
         protected void btnGenerarReporte_Click(object sender, EventArgs e)
         {
             // 1. VALIDACIONES
@@ -194,7 +195,6 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
 
             // 2. OBTENER PARÁMETROS
             DateTime desde = DateTime.Parse(txtDesde.Text);
-            // Ajustamos 'hasta' al final del día para incluir todos los cobros de esa fecha
             DateTime hasta = DateTime.Parse(txtHasta.Text).AddDays(1).AddSeconds(-1);
 
             int estacionamientoId = 0;
@@ -207,30 +207,39 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
 
             using (var db = new ProyectoEstacionamientoEntities())
             {
-                // Obtener nombre del estacionamiento para el título
+                // Obtener nombre del estacionamiento
                 var est = db.Estacionamiento.Find(estacionamientoId);
                 nombreEstacionamiento = est != null ? est.Est_nombre : "Desconocido";
 
-                // 3. CONSULTA 1: COBROS NORMALES (Pago_Ocupacion)
+                // 3. CONSULTA 1: COBROS NORMALES (Pago_Ocupacion -> Ocupacion -> Tarifa)
+                // Nota: Asumimos que la relación en EF se llama "Ocupacion" (singular o plural)
                 var cobrosNormales = db.Pago_Ocupacion
                     .Where(p => p.Est_id == estacionamientoId &&
                                 p.Pago_Fecha >= desde &&
                                 p.Pago_Fecha <= hasta)
+                    .ToList() // Traemos a memoria primero para evitar problemas complejos de SQL con nulos
                     .Select(p => new
                     {
-                        Fecha = p.Pago_Fecha, // Es 'date' en SQL
+                        Fecha = p.Pago_Fecha ?? DateTime.MinValue,
                         TipoCobro = p.Metodos_De_Pago.Metodo_pago_descripcion,
-                        Monto = p.Pago_Importe,
-                        Categoria = "Normal"
-                    })
-                    .ToList() // Traemos a memoria
-                    .Select(x => new // Proyección a tipos compatibles
-                    {
-                        // Convertimos Date a DateTime
-                        Fecha = x.Fecha.HasValue ? (DateTime)x.Fecha : DateTime.MinValue,
-                        x.TipoCobro,
-                        Monto = (decimal)x.Monto,
-                        x.Categoria
+                        Monto = (decimal)p.Pago_Importe,
+                        Categoria = "Normal", // Antes "Normal"
+
+                        // --- NUEVOS CAMPOS ---
+                        // Navegamos a Ocupacion. Como es una lista en EF, tomamos el primero (FirstOrDefault)
+                        Patente = p.Ocupacion.FirstOrDefault() != null
+                                  ? p.Ocupacion.FirstOrDefault().Vehiculo_Patente
+                                  : "-",
+
+                        // Obtenemos la descripción del tipo de vehículo desde la tarifa usada
+                        Vehiculo = (p.Ocupacion.FirstOrDefault() != null && p.Ocupacion.FirstOrDefault().Tarifa != null && p.Ocupacion.FirstOrDefault().Tarifa.Categoria_Vehiculo != null)
+                                   ? p.Ocupacion.FirstOrDefault().Tarifa.Categoria_Vehiculo.Categoria_descripcion // Asumiendo nombre columna
+                                   : "Varios",
+
+                        // Descripción de la tarifa (ej: "Hora Auto", "Estadía Camioneta")
+                        Tarifa = (p.Ocupacion.FirstOrDefault() != null && p.Ocupacion.FirstOrDefault().Tarifa != null && p.Ocupacion.FirstOrDefault().Tarifa.Tipos_Tarifa != null)
+                                 ? p.Ocupacion.FirstOrDefault().Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
+                                 : "General"
                     });
 
                 // 4. CONSULTA 2: COBROS ABONOS (Pagos_Abonados)
@@ -238,21 +247,25 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
                     .Where(p => p.Est_id == estacionamientoId &&
                                 p.Fecha_Pago >= desde &&
                                 p.Fecha_Pago <= hasta)
+                    .ToList()
                     .Select(p => new
                     {
-                        Fecha = p.Fecha_Pago, // Es 'datetime' en SQL
-                        // Navegamos por la relación correcta para obtener la descripción
+                        Fecha = p.Fecha_Pago,
                         TipoCobro = p.Acepta_Metodo_De_Pago.Metodos_De_Pago.Metodo_pago_descripcion,
-                        Monto = p.PA_Monto,
-                        Categoria = "Abono"
-                    })
-                    .ToList()
-                    .Select(x => new
-                    {
-                        x.Fecha,
-                        x.TipoCobro,
-                        Monto = (decimal)x.Monto,
-                        x.Categoria
+                        Monto = (decimal)p.PA_Monto,
+                        Categoria = "Abono",
+
+                        // --- NUEVOS CAMPOS PARA ABONOS ---
+                        // En abonos no suele haber patente por transacción, ponemos el ID o nombre del abonado
+                        Patente = p.Abono != null && p.Abono.Titular_Abono != null
+                                  ? p.Abono.Titular_Abono.TAB_Nombre + " " + p.Abono.Titular_Abono.TAB_Apellido
+                                  : "Abonado",
+
+                        Vehiculo = "Mensual", // O lo que corresponda a abonos
+
+                        Tarifa = (p.Tarifa != null && p.Tarifa.Tipos_Tarifa != null)
+                                 ? p.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
+                                 : "Tarifa Abono"
                     });
 
                 // 5. UNIFICAR LISTAS
@@ -260,8 +273,6 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
 
                 if (!listaTotal.Any())
                 {
-                    // Mostrar mensaje de error usando tu helper o un label
-                    // mostrarAlerta("Sin datos", "No se encontraron cobros en el rango seleccionado.", "info");
                     lblMensaje.Text = "No se encontraron cobros.";
                     lblMensaje.Visible = true;
                     rvCobros.Visible = false;
@@ -269,35 +280,44 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
                 }
                 lblMensaje.Visible = false;
 
-                // 6. LLENAR EL DATASET (DataTable)
+                // 6. LLENAR EL DATASET (Actualizar columnas)
                 DataTable dt = new DataTable();
-                dt.Columns.Add("Fecha", typeof(DateTime));
+                dt.Columns.Add("Fecha", typeof(DateTime));     // El usuario pidió DateTime
                 dt.Columns.Add("TipoCobro", typeof(string));
                 dt.Columns.Add("Monto", typeof(decimal));
                 dt.Columns.Add("Categoria", typeof(string));
 
+                // --- COLUMNAS AGREGADAS ---
+                dt.Columns.Add("Patente", typeof(string));
+                dt.Columns.Add("Vehiculo", typeof(string));
+                dt.Columns.Add("Tarifa", typeof(string));
+
                 foreach (var item in listaTotal)
                 {
-                    dt.Rows.Add(item.Fecha, item.TipoCobro, item.Monto, item.Categoria);
+                    dt.Rows.Add(
+                        item.Fecha,
+                        item.TipoCobro,
+                        item.Monto,
+                        item.Categoria,
+                        item.Patente,
+                        item.Vehiculo,
+                        item.Tarifa
+                    );
                 }
 
                 // 7. CONFIGURAR REPORTVIEWER
                 rvCobros.LocalReport.ReportPath = Server.MapPath("~/Reportes/ReporteCobros.rdlc");
                 rvCobros.LocalReport.DataSources.Clear();
-
-                // "DtCobros" debe coincidir con el nombre del DataSet DENTRO del .rdlc
                 rvCobros.LocalReport.DataSources.Add(new ReportDataSource("DtCobros", dt));
 
-                // Parámetros visuales
                 ReportParameter[] parametros = new ReportParameter[]
                 {
-                    new ReportParameter("FechaDesde", desde.ToString("dd/MM/yyyy")),
-                    new ReportParameter("FechaHasta", hasta.ToString("dd/MM/yyyy")),
-                    new ReportParameter("NombreEstacionamiento", nombreEstacionamiento)
+            new ReportParameter("FechaDesde", desde.ToString("dd/MM/yyyy")),
+            new ReportParameter("FechaHasta", hasta.ToString("dd/MM/yyyy")),
+            new ReportParameter("NombreEstacionamiento", nombreEstacionamiento)
                 };
                 rvCobros.LocalReport.SetParameters(parametros);
 
-                // Nombre de descarga 
                 string fechaArchivo = DateTime.Now.ToString("yyyy-MM-dd");
                 rvCobros.LocalReport.DisplayName = $"Reporte_Cobros_{nombreEstacionamiento}_{fechaArchivo}";
 
