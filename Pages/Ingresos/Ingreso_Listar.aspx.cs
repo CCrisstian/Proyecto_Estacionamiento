@@ -263,13 +263,21 @@ namespace Proyecto_Estacionamiento
                     estIdsQuery = db.Estacionamiento.Where(e => e.Est_id == estIdPlayero).Select(e => e.Est_id);
                 }
 
-                // 2. Pre-cargar tarifas por hora
+                // 2. Pre-cargar tarifas por hora, solo las mas recientes
                 var tarifasPorHora = db.Tarifa
-                            .Where(t => t.Tipos_Tarifa_Id == idTarifaPorHora && t.Categoria_id != null && t.Est_id.HasValue && estIdsQuery.Contains(t.Est_id.Value))
-                            .ToDictionary(
-                                t => Tuple.Create(t.Est_id.Value, t.Categoria_id.Value),
-                                t => (double)t.Tarifa_Monto
-                            );
+                    .Where(t =>
+                        t.Tipos_Tarifa_Id == idTarifaPorHora &&
+                        t.Categoria_id != null &&
+                        t.Est_id.HasValue &&
+                        estIdsQuery.Contains(t.Est_id.Value))
+                    .GroupBy(t => new { t.Est_id, t.Categoria_id, t.Tipos_Tarifa_Id })
+                    .Select(g => g.OrderByDescending(x => x.Tarifa_Desde).FirstOrDefault())
+                    .ToDictionary(
+                        t => Tuple.Create(t.Est_id.Value, t.Categoria_id.Value, t.Tipos_Tarifa_Id.Value),
+                        t => (double)t.Tarifa_Monto
+                    );
+
+
 
                 IQueryable<Ocupacion> query = db.Ocupacion
                     .Include("Vehiculo.Vehiculo_Abonado.Abono")
@@ -322,12 +330,12 @@ namespace Proyecto_Estacionamiento
                             }
                         }
 
-                        var fallbackKey = Tuple.Create(o.Est_id, o.Vehiculo.Categoria_id);
+                        var fallbackKey = Tuple.Create(o.Est_id, o.Vehiculo.Categoria_id, idTarifaPorHora);
                         if (tarifasPorHora.ContainsKey(fallbackKey))
                             tarifaFallback = (double)tarifasPorHora[fallbackKey];
-                    
 
-                    if (o.Pago_Ocupacion != null)
+
+                        if (o.Pago_Ocupacion != null)
                         {
                             // CASO: Abono Vencido que generó un Pago
                             tarifaDisplay = "Abonado (Vencido) - Por hora";
@@ -504,7 +512,7 @@ namespace Proyecto_Estacionamiento
                             tarifaFallback = (double)tarifasPorHora[fallbackKey];
 
 
-                    if (o.Pago_Ocupacion != null)
+                        if (o.Pago_Ocupacion != null)
                         {
                             // Abono Vencido que generó un Pago
                             tarifaDisplay = "Abonado (Vencido) - Por hora";
