@@ -114,8 +114,9 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
 
                     // Usamos la función para agregar las líneas
                     AgregarLinea("Estacionamiento", incidencia.Playero.Estacionamiento.Est_nombre);
-                    AgregarLinea("Fecha y Hora", $"{incidencia.Inci_fecha_Hora:dd/MM/yyyy HH:mm}");
                     AgregarLinea("Playero", $"{incidencia.Playero.Usuarios.Usu_ap}, {incidencia.Playero.Usuarios.Usu_nom}");
+                    AgregarLinea("Fecha y Hora de la Incidencia", $"{incidencia.Inci_fecha_Hora:dd/MM/yyyy HH:mm}");
+                    AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
 
                     document.Add(Chunk.NEWLINE);
                     

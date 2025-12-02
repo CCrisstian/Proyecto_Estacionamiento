@@ -293,6 +293,10 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             private global::System.Data.DataColumn columnTarifa;
             
+            private global::System.Data.DataColumn columnPlayero;
+            
+            private global::System.Data.DataColumn columnTitular;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public DtCobrosDataTable() {
@@ -384,6 +388,22 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn PlayeroColumn {
+                get {
+                    return this.columnPlayero;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn TitularColumn {
+                get {
+                    return this.columnTitular;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -419,7 +439,7 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public DtCobrosRow AddDtCobrosRow(System.DateTime Fecha, string TipoCobro, decimal Monto, string Categoria, string Patente, string Vehiculo, string Tarifa) {
+            public DtCobrosRow AddDtCobrosRow(System.DateTime Fecha, string TipoCobro, decimal Monto, string Categoria, string Patente, string Vehiculo, string Tarifa, string Playero, string Titular) {
                 DtCobrosRow rowDtCobrosRow = ((DtCobrosRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Fecha,
@@ -428,7 +448,9 @@ namespace Proyecto_Estacionamiento.Reportes {
                         Categoria,
                         Patente,
                         Vehiculo,
-                        Tarifa};
+                        Tarifa,
+                        Playero,
+                        Titular};
                 rowDtCobrosRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDtCobrosRow);
                 return rowDtCobrosRow;
@@ -458,6 +480,8 @@ namespace Proyecto_Estacionamiento.Reportes {
                 this.columnPatente = base.Columns["Patente"];
                 this.columnVehiculo = base.Columns["Vehiculo"];
                 this.columnTarifa = base.Columns["Tarifa"];
+                this.columnPlayero = base.Columns["Playero"];
+                this.columnTitular = base.Columns["Titular"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -477,6 +501,10 @@ namespace Proyecto_Estacionamiento.Reportes {
                 base.Columns.Add(this.columnVehiculo);
                 this.columnTarifa = new global::System.Data.DataColumn("Tarifa", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTarifa);
+                this.columnPlayero = new global::System.Data.DataColumn("Playero", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPlayero);
+                this.columnTitular = new global::System.Data.DataColumn("Titular", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTitular);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -731,6 +759,38 @@ namespace Proyecto_Estacionamiento.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string Playero {
+                get {
+                    try {
+                        return ((string)(this[this.tableDtCobros.PlayeroColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Playero\' de la tabla \'DtCobros\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDtCobros.PlayeroColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public string Titular {
+                get {
+                    try {
+                        return ((string)(this[this.tableDtCobros.TitularColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Titular\' de la tabla \'DtCobros\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDtCobros.TitularColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsFechaNull() {
                 return this.IsNull(this.tableDtCobros.FechaColumn);
             }
@@ -811,6 +871,30 @@ namespace Proyecto_Estacionamiento.Reportes {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetTarifaNull() {
                 this[this.tableDtCobros.TarifaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsPlayeroNull() {
+                return this.IsNull(this.tableDtCobros.PlayeroColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetPlayeroNull() {
+                this[this.tableDtCobros.PlayeroColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsTitularNull() {
+                return this.IsNull(this.tableDtCobros.TitularColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetTitularNull() {
+                this[this.tableDtCobros.TitularColumn] = global::System.Convert.DBNull;
             }
         }
         

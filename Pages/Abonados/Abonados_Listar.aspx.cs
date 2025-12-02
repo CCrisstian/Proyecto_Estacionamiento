@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Math;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -110,6 +111,7 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                             NumeroIdentificacion = a.Titular_Abono.Numero_Identificacion,
 
                             // Datos Modal
+                            Telefono = a.Titular_Abono.TAB_Telefono,
                             FechaDesde = a.Fecha_Desde,
                             FechaVto = a.Fecha_Vto,
                             PatentesList = a.Vehiculo_Abonado.Select(va => va.Vehiculo_Patente),
@@ -125,6 +127,7 @@ namespace Proyecto_Estacionamiento.Pages.Abonados
                             dto.TipoIdentificacion,
                             dto.NumeroIdentificacion,
                             dto.TipoAbono,
+                            TelefonoStr = dto.Telefono,
                             PatentesStr = string.Join(", ", dto.PatentesList),
                             FechaDesdeStr = dto.FechaDesde.ToString("dd/MM/yyyy HH:mm"),
                             FechaVtoStr = dto.FechaVto.ToString("dd/MM/yyyy HH:mm"),

@@ -13,7 +13,7 @@
           <Property Name="Plaza_id" Type="int" Nullable="false" />
           <Property Name="Numero_Identificacion" Type="bigint" Nullable="false" />
           <Property Name="Fecha_Desde" Type="datetime" Nullable="false" />
-          <Property Name="Tipo_Identificacion" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Tipo_Identificacion" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="Fecha_Vto" Type="datetime" Nullable="false" />
           <Property Name="Id_Abono" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
@@ -165,7 +165,7 @@
           <Property Name="TAB_Nombre" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="TAB_Apellido" Type="varchar" MaxLength="50" />
           <Property Name="TAB_Telefono" Type="bigint" Nullable="false" />
-          <Property Name="Tipo_Identificacion" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Tipo_Identificacion" Type="varchar" MaxLength="30" Nullable="false" />
         </EntityType>
         <EntityType Name="Turno">
           <Key>
@@ -713,7 +713,7 @@
           <Property Name="Plaza_id" Type="Int32" Nullable="false" />
           <Property Name="Numero_Identificacion" Type="Int64" Nullable="false" />
           <Property Name="Fecha_Desde" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Tipo_Identificacion" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Tipo_Identificacion" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Fecha_Vto" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Id_Abono" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Plaza" Relationship="Self.FK_Abono_Plaza" FromRole="Abono" ToRole="Plaza" />
@@ -1262,7 +1262,7 @@
           <Property Name="TAB_Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TAB_Apellido" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TAB_Telefono" Type="Int64" Nullable="false" />
-          <Property Name="Tipo_Identificacion" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="Tipo_Identificacion" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Abono" Relationship="ProyectoEstacionamientoModel.FK_Abono_Titular_Abono" FromRole="Titular_Abono" ToRole="Abono" />
         </EntityType>
         <Association Name="FK_Abono_Titular_Abono">

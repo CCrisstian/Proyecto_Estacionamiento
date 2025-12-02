@@ -59,6 +59,7 @@
                         <a href="#"
                             class="btn btn-info btn-sm"
                             onclick="mostrarDetallesAbono(this); return false;"
+                            data-telefono='<%# Eval("TelefonoStr") %>'
                             data-patentes='<%# Eval("PatentesStr") %>'
                             data-desde='<%# Eval("FechaDesdeStr") %>'
                             data-hasta='<%# Eval("FechaVtoStr") %>'
@@ -78,6 +79,7 @@
         function mostrarDetallesAbono(elementoBoton) {
 
             // 1. Leemos los datos desde el dataset
+            var telefono = elementoBoton.dataset.telefono;
             var patentes = elementoBoton.dataset.patentes;
             var desde = elementoBoton.dataset.desde;
             var hasta = elementoBoton.dataset.hasta;
@@ -111,6 +113,7 @@
                 <hr/>
                 <p><b>Tipo de Abono:</b> ${tipoAbono}</p>
                 <hr/>
+                <p><strong>Teléfono:</strong> ${telefono}</p> <hr style="margin: 5px 0;">
                 <h4>Vigencia del Abono</h4>
                 <p><b>Desde:</b> ${desde}</p>
                 <p><b>Hasta:</b> ${hasta}</p>

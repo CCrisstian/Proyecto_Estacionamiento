@@ -211,35 +211,36 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
                 var est = db.Estacionamiento.Find(estacionamientoId);
                 nombreEstacionamiento = est != null ? est.Est_nombre : "Desconocido";
 
-                // 3. CONSULTA 1: COBROS NORMALES (Pago_Ocupacion -> Ocupacion -> Tarifa)
-                // Nota: Asumimos que la relación en EF se llama "Ocupacion" (singular o plural)
+                // 3. CONSULTA 1: COBROS NORMALES (Pago_Ocupacion)
                 var cobrosNormales = db.Pago_Ocupacion
                     .Where(p => p.Est_id == estacionamientoId &&
                                 p.Pago_Fecha >= desde &&
                                 p.Pago_Fecha <= hasta)
-                    .ToList() // Traemos a memoria primero para evitar problemas complejos de SQL con nulos
+                    .ToList()
                     .Select(p => new
                     {
                         Fecha = p.Pago_Fecha ?? DateTime.MinValue,
                         TipoCobro = p.Metodos_De_Pago.Metodo_pago_descripcion,
                         Monto = (decimal)p.Pago_Importe,
-                        Categoria = "Normal", // Antes "Normal"
+                        Categoria = "Normal",
 
-                        // --- NUEVOS CAMPOS ---
-                        // Navegamos a Ocupacion. Como es una lista en EF, tomamos el primero (FirstOrDefault)
                         Patente = p.Ocupacion.FirstOrDefault() != null
-                                  ? p.Ocupacion.FirstOrDefault().Vehiculo_Patente
-                                  : "-",
+                                      ? p.Ocupacion.FirstOrDefault().Vehiculo_Patente
+                                      : "-",
 
-                        // Obtenemos la descripción del tipo de vehículo desde la tarifa usada
                         Vehiculo = (p.Ocupacion.FirstOrDefault() != null && p.Ocupacion.FirstOrDefault().Tarifa != null && p.Ocupacion.FirstOrDefault().Tarifa.Categoria_Vehiculo != null)
-                                   ? p.Ocupacion.FirstOrDefault().Tarifa.Categoria_Vehiculo.Categoria_descripcion // Asumiendo nombre columna
+                                   ? p.Ocupacion.FirstOrDefault().Tarifa.Categoria_Vehiculo.Categoria_descripcion
                                    : "Varios",
 
-                        // Descripción de la tarifa (ej: "Hora Auto", "Estadía Camioneta")
                         Tarifa = (p.Ocupacion.FirstOrDefault() != null && p.Ocupacion.FirstOrDefault().Tarifa != null && p.Ocupacion.FirstOrDefault().Tarifa.Tipos_Tarifa != null)
                                  ? p.Ocupacion.FirstOrDefault().Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
-                                 : "General"
+                                 : "General",
+
+                        Playero = (p.Turno != null && p.Turno.Playero != null && p.Turno.Playero.Usuarios != null)
+                                  ? p.Turno.Playero.Usuarios.Usu_nom + " " + p.Turno.Playero.Usuarios.Usu_ap
+                                  : "Playero No Asignado",
+
+                        Titular = ""
                     });
 
                 // 4. CONSULTA 2: COBROS ABONOS (Pagos_Abonados)
@@ -248,24 +249,70 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
                                 p.Fecha_Pago >= desde &&
                                 p.Fecha_Pago <= hasta)
                     .ToList()
-                    .Select(p => new
+                    .Select(p =>
                     {
-                        Fecha = p.Fecha_Pago,
-                        TipoCobro = p.Acepta_Metodo_De_Pago.Metodos_De_Pago.Metodo_pago_descripcion,
-                        Monto = (decimal)p.PA_Monto,
-                        Categoria = "Abono",
+                        // Obtenemos el Abono y su lista de Vehiculos_Abonados
+                        var abono = p.Abono;
+                        string patentesConcatenadas = "N/A";
+                        string tipoVehiculo = "Mensual"; // Valor por defecto
+                        string titularNombre = "";
 
-                        // --- NUEVOS CAMPOS PARA ABONOS ---
-                        // En abonos no suele haber patente por transacción, ponemos el ID o nombre del abonado
-                        Patente = p.Abono != null && p.Abono.Titular_Abono != null
-                                  ? p.Abono.Titular_Abono.TAB_Nombre + " " + p.Abono.Titular_Abono.TAB_Apellido
-                                  : "Abonado",
+                        if (abono != null && abono.Vehiculo_Abonado != null)
+                        {
+                            // 1. CONCATENACIÓN DE PATENTES
+                            patentesConcatenadas = string.Join(", ",
+                                abono.Vehiculo_Abonado
+                                     .Select(va => va.Vehiculo_Patente)
+                                     .ToList());
 
-                        Vehiculo = "Mensual", // O lo que corresponda a abonos
+                            // Si no hay patentes, mostramos el nombre del abonado
+                            if (string.IsNullOrEmpty(patentesConcatenadas))
+                            {
+                                patentesConcatenadas = p.Abono.Titular_Abono != null
+                                            ? p.Abono.Titular_Abono.TAB_Nombre + " " + p.Abono.Titular_Abono.TAB_Apellido
+                                            : "Abonado sin Patente";
+                            }
 
-                        Tarifa = (p.Tarifa != null && p.Tarifa.Tipos_Tarifa != null)
-                                 ? p.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
-                                 : "Tarifa Abono"
+                            // 2. OBTENER CATEGORÍA DEL VEHÍCULO
+                            // Intentamos obtener la categoría del primer vehículo del abono.
+                            var primerVehiculoAbonado = abono.Vehiculo_Abonado.FirstOrDefault();
+
+                            if (primerVehiculoAbonado != null && primerVehiculoAbonado.Vehiculo != null && primerVehiculoAbonado.Vehiculo.Categoria_Vehiculo != null)
+                            {
+                                tipoVehiculo = primerVehiculoAbonado.Vehiculo.Categoria_Vehiculo.Categoria_descripcion;
+                            }
+
+                            titularNombre = abono.Titular_Abono.TAB_Nombre + " " + abono.Titular_Abono.TAB_Apellido;
+                        }
+                        else if (abono != null && abono.Titular_Abono != null)
+                        {
+                            // Si no hay vehículos asociados, mostramos el nombre del titular en el campo Patente
+                            patentesConcatenadas = p.Abono.Titular_Abono.TAB_Nombre + " " + p.Abono.Titular_Abono.TAB_Apellido;
+
+                            titularNombre = "Titular Desconocido";
+                        }
+
+                        return new
+                        {
+                            Fecha = p.Fecha_Pago,
+                            TipoCobro = p.Acepta_Metodo_De_Pago.Metodos_De_Pago.Metodo_pago_descripcion,
+                            Monto = (decimal)p.PA_Monto,
+                            Categoria = "Abono",
+
+                            Patente = patentesConcatenadas,
+
+                            Vehiculo = tipoVehiculo,
+
+                            Tarifa = (p.Tarifa != null && p.Tarifa.Tipos_Tarifa != null)
+                                         ? p.Tarifa.Tipos_Tarifa.Tipos_tarifa_descripcion
+                                         : "Tarifa Abono",
+
+                            Playero = (p.Turno != null && p.Turno.Playero != null && p.Turno.Playero.Usuarios != null)
+                                      ? p.Turno.Playero.Usuarios.Usu_nom + " " + p.Turno.Playero.Usuarios.Usu_ap
+                                      : "Playero No Asignado",
+
+                            Titular = titularNombre
+                        };
                     });
 
                 // 5. UNIFICAR LISTAS
@@ -282,15 +329,17 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
 
                 // 6. LLENAR EL DATASET (Actualizar columnas)
                 DataTable dt = new DataTable();
-                dt.Columns.Add("Fecha", typeof(DateTime));     // El usuario pidió DateTime
+                dt.Columns.Add("Fecha", typeof(DateTime));
                 dt.Columns.Add("TipoCobro", typeof(string));
                 dt.Columns.Add("Monto", typeof(decimal));
                 dt.Columns.Add("Categoria", typeof(string));
 
-                // --- COLUMNAS AGREGADAS ---
                 dt.Columns.Add("Patente", typeof(string));
                 dt.Columns.Add("Vehiculo", typeof(string));
                 dt.Columns.Add("Tarifa", typeof(string));
+
+                dt.Columns.Add("Playero", typeof(string));
+                dt.Columns.Add("Titular", typeof(string));
 
                 foreach (var item in listaTotal)
                 {
@@ -301,7 +350,9 @@ namespace Proyecto_Estacionamiento.Pages.Reporte
                         item.Categoria,
                         item.Patente,
                         item.Vehiculo,
-                        item.Tarifa
+                        item.Tarifa,
+                        item.Playero,
+                        item.Titular
                     );
                 }
 
