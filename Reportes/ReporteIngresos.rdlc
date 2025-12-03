@@ -1188,7 +1188,7 @@
                       </Group>
                       <SortExpressions>
                         <SortExpression>
-                          <Value>=Fields!DiaSemana.Value</Value>
+                          <Value>=Fields!DiaNumero.Value</Value>
                         </SortExpression>
                       </SortExpressions>
                       <Label>=Fields!DiaSemana.Value</Label>
@@ -2144,7 +2144,7 @@
                       </Group>
                       <SortExpressions>
                         <SortExpression>
-                          <Value>=Fields!DiaSemana.Value</Value>
+                          <Value>=Fields!DiaNumero.Value</Value>
                         </SortExpression>
                       </SortExpressions>
                       <Label>=Fields!DiaSemana.Value</Label>

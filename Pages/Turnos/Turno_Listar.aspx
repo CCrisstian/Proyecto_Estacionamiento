@@ -125,7 +125,7 @@
             Swal.fire({
                 title: 'Detalle de Movimientos',
                 html: htmlDetalle, // Inyectamos el HTML generado en C#
-                width: '950px',    // Hacemos el modal más ancho para las tablas
+                width: '980px',    // Hacemos el modal más ancho para las tablas
                 showCloseButton: true,
                 showConfirmButton: false, // Solo botón de cierre X
                 focusConfirm: false
