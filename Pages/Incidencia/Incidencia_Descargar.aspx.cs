@@ -72,6 +72,9 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                     var fontBodyBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
                     var fontInfo = FontFactory.GetFont(FontFactory.HELVETICA_OBLIQUE, 10);
 
+                    var fHeaderBlanco = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE); // Fuente Blanca
+
+
                     // --- ENCABEZADO ---
                     PdfPTable headerTable = new PdfPTable(2);
                     headerTable.WidthPercentage = 100;
@@ -91,16 +94,38 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                     cellLogo.Padding = 10f;
                     headerTable.AddCell(cellLogo);
 
-                    // 2. Celda del TÍTULO
-                    PdfPCell cellTitulo = new PdfPCell(new Phrase("Reporte de Incidencia", fTituloBlanco));
-                    cellTitulo.Border = PdfPCell.NO_BORDER;
-                    cellTitulo.BackgroundColor = new BaseColor(50, 160, 65); // Verde
-                    cellTitulo.HorizontalAlignment = Element.ALIGN_CENTER;
-                    cellTitulo.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    cellTitulo.Padding = 20f; // Espacio vertical
-                    headerTable.AddCell(cellTitulo);
-                    headerTable.SpacingAfter = 20f;
 
+                    // -----------------------------------------------------------------
+                    // 2. SEGUNDA CELDA: CONTENEDOR (FECHA + TÍTULO JUNTOS)
+                    // -----------------------------------------------------------------
+                    PdfPCell cellContenido = new PdfPCell();
+                    cellContenido.Border = PdfPCell.NO_BORDER;
+                    cellContenido.BackgroundColor = new BaseColor(50, 160, 65); // Mismo Fondo Verde
+                    cellContenido.VerticalAlignment = Element.ALIGN_MIDDLE;
+
+                    // A. Agregamos la Fecha como un Párrafo dentro de esta celda
+                    var pFecha = new Paragraph($"Fecha - Hora de impresión: {DateTime.Now.ToString("dd/MM/yyyy HH:mm")}", fHeaderBlanco);
+                    
+                    // Asegúrate que fHeaderBlanco sea pequeña (ej. tamaño 9 o 10)
+                    pFecha.Alignment = Element.ALIGN_RIGHT;
+                    pFecha.SpacingAfter = 5f; // Un poco de espacio antes del título
+                    cellContenido.AddElement(pFecha);
+
+                    // B. Agregamos el Título como otro Párrafo dentro de la misma celda
+                    var pTitulo = new Paragraph("Reporte de Cierre de Turno", fTituloBlanco);
+                    pTitulo.Alignment = Element.ALIGN_CENTER;
+                    cellContenido.AddElement(pTitulo);
+
+                    // C. (Opcional) Ajustar padding para que no quede pegado a los bordes
+                    cellContenido.PaddingRight = 10f;
+                    cellContenido.PaddingBottom = 15f;
+
+                    headerTable.AddCell(cellContenido); // Agregamos la celda 2
+
+                    // -----------------------------------------------------------------
+                    // FINALIZAR
+                    // -----------------------------------------------------------------
+                    headerTable.SpacingAfter = 20f;
                     document.Add(headerTable);
 
                     void AgregarLinea(string etiqueta, string valor)
@@ -116,7 +141,6 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                     AgregarLinea("Estacionamiento", incidencia.Playero.Estacionamiento.Est_nombre);
                     AgregarLinea("Playero", $"{incidencia.Playero.Usuarios.Usu_ap}, {incidencia.Playero.Usuarios.Usu_nom}");
                     AgregarLinea("Fecha y Hora de la Incidencia", $"{incidencia.Inci_fecha_Hora:dd/MM/yyyy HH:mm}");
-                    AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
 
                     document.Add(Chunk.NEWLINE);
                     

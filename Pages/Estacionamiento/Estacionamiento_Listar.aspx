@@ -23,7 +23,7 @@
                 <asp:BoundField DataField="Est_provincia" HeaderText="Provincia" />
                 <asp:BoundField DataField="Est_localidad" HeaderText="Localidad" />
                 <asp:BoundField DataField="Est_direccion" HeaderText="Dirección" />
-                <asp:BoundField DataField="Est_puntaje" HeaderText="Puntaje" />
+                <asp:BoundField DataField="Est_puntaje" HeaderText="Puntaje ⭐" />
                 <asp:TemplateField HeaderText="Disponible">
                     <ItemTemplate>
                         <%# Convert.ToBoolean(Eval("Est_Disponibilidad")) 

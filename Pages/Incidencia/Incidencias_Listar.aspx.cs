@@ -201,6 +201,8 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
         {
             public int Playero_legajo { get; set; }
             public DateTime Inci_fecha_Hora { get; set; }
+            public string Estacionamiento { get; set; }
+
             public string PlayeroNombre { get; set; }
             public string FechaHoraStr { get; set; }
             public string Inci_Motivo { get; set; }
@@ -299,6 +301,7 @@ namespace Proyecto_Estacionamiento.Pages.Incidencia
                 {
                     Playero_legajo = i.Playero_legajo,
                     Inci_fecha_Hora = i.Inci_fecha_Hora,
+                    Estacionamiento = i.Playero?.Estacionamiento?.Est_nombre ?? "N/A",
                     PlayeroNombre = (i.Playero != null && i.Playero.Usuarios != null)
                                     ? $"{i.Playero.Usuarios.Usu_nom}, {i.Playero.Usuarios.Usu_ap}"
                                     : "Desconocido",

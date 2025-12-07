@@ -116,6 +116,7 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         var fTitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 16);
                         var fSubtitulo = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
                         var fNormal = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+                        var fNormalBlanco = FontFactory.GetFont(FontFactory.HELVETICA, 10, BaseColor.WHITE);
                         var fBold = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
 
                         var colorVerdeHeader = new BaseColor(50, 160, 65); // #32a041
@@ -124,33 +125,58 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         // --- FUNCIÓN LOCAL PARA REPETIR EL ENCABEZADO ---
                         Action AgregarEncabezado = () =>
                         {
+                            // Definir la tabla de 2 columnas (Logo izquierda, Contenido derecha)
                             PdfPTable headerTable = new PdfPTable(2);
                             headerTable.WidthPercentage = 100;
-                            headerTable.SetWidths(new float[] { 1f, 4f });
+                            // Ajustar anchos: Logo pequeño (15%), Resto grande (85%)
+                            headerTable.SetWidths(new float[] { 1.5f, 8.5f });
 
-                            // 1. Logo
+                            // -----------------------------------------------------------------
+                            // 1. PRIMERA CELDA: LOGO
+                            // -----------------------------------------------------------------
                             string imagePath = Server.MapPath("~/Images/LogoACE_SinFondo.PNG");
                             iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
                             logo.ScaleToFit(60f, 60f);
 
                             PdfPCell cellLogo = new PdfPCell(logo);
                             cellLogo.Border = PdfPCell.NO_BORDER;
-                            cellLogo.BackgroundColor = new BaseColor(50, 160, 65);
+                            cellLogo.BackgroundColor = new BaseColor(50, 160, 65); // Fondo Verde
                             cellLogo.HorizontalAlignment = Element.ALIGN_CENTER;
                             cellLogo.VerticalAlignment = Element.ALIGN_MIDDLE;
                             cellLogo.Padding = 10f;
-                            headerTable.AddCell(cellLogo);
 
-                            // 2. Título
-                            PdfPCell cellTitulo = new PdfPCell(new Phrase("Reporte de Cierre de Turno", fTituloBlanco));
-                            cellTitulo.Border = PdfPCell.NO_BORDER;
-                            cellTitulo.BackgroundColor = new BaseColor(50, 160, 65);
-                            cellTitulo.HorizontalAlignment = Element.ALIGN_CENTER;
-                            cellTitulo.VerticalAlignment = Element.ALIGN_MIDDLE;
-                            cellTitulo.Padding = 20f;
-                            headerTable.AddCell(cellTitulo);
+                            headerTable.AddCell(cellLogo); // Agregamos la celda 1
+
+                            // -----------------------------------------------------------------
+                            // 2. SEGUNDA CELDA: CONTENEDOR (FECHA + TÍTULO JUNTOS)
+                            // -----------------------------------------------------------------
+                            PdfPCell cellContenido = new PdfPCell();
+                            cellContenido.Border = PdfPCell.NO_BORDER;
+                            cellContenido.BackgroundColor = new BaseColor(50, 160, 65); // Mismo Fondo Verde
+                            cellContenido.VerticalAlignment = Element.ALIGN_MIDDLE;
+
+                            // A. Agregamos la Fecha como un Párrafo dentro de esta celda
+                            var pFecha = new Paragraph($"Fecha - Hora de impresión: {DateTime.Now.ToString("dd/MM/yyyy HH:mm")}", fHeaderBlanco);
+                            // Asegúrate que fHeaderBlanco sea pequeña (ej. tamaño 9 o 10)
+                            pFecha.Alignment = Element.ALIGN_RIGHT;
+                            pFecha.SpacingAfter = 5f; // Un poco de espacio antes del título
+                            cellContenido.AddElement(pFecha);
+
+                            // B. Agregamos el Título como otro Párrafo dentro de la misma celda
+                            var pTitulo = new Paragraph("Reporte de Cierre de Turno", fTituloBlanco);
+                            pTitulo.Alignment = Element.ALIGN_CENTER;
+                            cellContenido.AddElement(pTitulo);
+
+                            // C. (Opcional) Ajustar padding para que no quede pegado a los bordes
+                            cellContenido.PaddingRight = 10f;
+                            cellContenido.PaddingBottom = 15f;
+
+                            headerTable.AddCell(cellContenido); // Agregamos la celda 2
+
+                            // -----------------------------------------------------------------
+                            // FINALIZAR
+                            // -----------------------------------------------------------------
                             headerTable.SpacingAfter = 20f;
-
                             doc.Add(headerTable);
                         };
 
@@ -173,7 +199,6 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         AgregarLinea("Playero", $"{turno.Playero.Usuarios.Usu_nom} {turno.Playero.Usuarios.Usu_ap}");
                         AgregarLinea("Inicio del Turno", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
                         AgregarLinea("Fin del Turno", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
-                        AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
                         doc.Add(Chunk.NEWLINE);
 
 
@@ -194,6 +219,9 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                                 VerticalAlignment = Element.ALIGN_MIDDLE
                             });
                         }
+
+                        tOcup.HeaderRows = 1;
+                        // Esto hará que la fila verde se repita automáticamente en cada página nueva.
 
                         foreach (var item in listaOcupacion)
                         {
@@ -226,7 +254,6 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         AgregarLinea("Playero", $"{turno.Playero.Usuarios.Usu_nom} {turno.Playero.Usuarios.Usu_ap}");
                         AgregarLinea("Inicio del Turno", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
                         AgregarLinea("Fin del Turno", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
-                        AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
                         doc.Add(Chunk.NEWLINE);
 
                         doc.Add(new Paragraph("Detalle de Cobros por: Abono", fSubtitulo));
@@ -276,7 +303,6 @@ namespace Proyecto_Estacionamiento.Pages.Turnos
                         AgregarLinea("Playero", $"{turno.Playero.Usuarios.Usu_nom} {turno.Playero.Usuarios.Usu_ap}");
                         AgregarLinea("Inicio del Turno", turno.Turno_FechaHora_Inicio.ToString("dd/MM/yyyy HH:mm"));
                         AgregarLinea("Fin del Turno", turno.Turno_FechaHora_fin.HasValue ? turno.Turno_FechaHora_fin.Value.ToString("dd/MM/yyyy HH:mm") : "En curso");
-                        AgregarLinea("Fecha y Hora de la impresión", DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
                         doc.Add(Chunk.NEWLINE);
 
                         doc.Add(new Paragraph("Detalle de Caja: Efectivo", fSubtitulo));

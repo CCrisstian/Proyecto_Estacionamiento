@@ -70,6 +70,8 @@
 
             <Columns>
 
+                <asp:BoundField DataField="Estacionamiento" HeaderText="Estacionamiento" SortExpression="Estacionamiento" />
+
                 <asp:BoundField DataField="PlayeroNombre" HeaderText="Playero" SortExpression="PlayeroNombre" />
 
                 <asp:BoundField DataField="FechaHoraStr" HeaderText="Fecha y Hora" SortExpression="Inci_fecha_Hora" />

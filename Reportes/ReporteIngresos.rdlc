@@ -320,7 +320,8 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <KeepWithGroup>Before</KeepWithGroup>
+                  <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
@@ -330,8 +331,8 @@
                 <Value>=Fields!Plaza.Value</Value>
               </SortExpression>
             </SortExpressions>
-            <Top>4.71043cm</Top>
-            <Left>0.52968cm</Left>
+            <Top>3.75822cm</Top>
+            <Left>0.52918cm</Left>
             <Height>1.8cm</Height>
             <Width>3.5cm</Width>
             <Style>
@@ -361,8 +362,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox14</rd:DefaultName>
-            <Top>3.5989cm</Top>
-            <Left>0.58941cm</Left>
+            <Top>2.64669cm</Top>
+            <Left>0.58891cm</Left>
             <Height>0.67056cm</Height>
             <Width>4.12842cm</Width>
             <ZIndex>1</ZIndex>
@@ -391,7 +392,6 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>NombreEstacionamiento</rd:DefaultName>
-            <Top>0.4936cm</Top>
             <Left>3.7524cm</Left>
             <Height>0.6cm</Height>
             <Width>4.45792cm</Width>
@@ -423,7 +423,6 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox5</rd:DefaultName>
-            <Top>0.4936cm</Top>
             <Left>0.52923cm</Left>
             <Height>0.6cm</Height>
             <Width>3.22319cm</Width>
@@ -455,7 +454,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox6</rd:DefaultName>
-            <Top>1.12888cm</Top>
+            <Top>0.63528cm</Top>
             <Left>0.52921cm</Left>
             <Height>0.6cm</Height>
             <Width>1.58278cm</Width>
@@ -487,7 +486,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox7</rd:DefaultName>
-            <Top>1.76416cm</Top>
+            <Top>1.27056cm</Top>
             <Left>0.52921cm</Left>
             <Height>0.6cm</Height>
             <Width>1.31819cm</Width>
@@ -517,7 +516,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>FechaDesde</rd:DefaultName>
-            <Top>1.12888cm</Top>
+            <Top>0.63528cm</Top>
             <Left>2.11199cm</Left>
             <Height>0.6cm</Height>
             <Width>2.97625cm</Width>
@@ -547,51 +546,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>FechaHasta</rd:DefaultName>
-            <Top>1.76416cm</Top>
+            <Top>1.27056cm</Top>
             <Left>1.88268cm</Left>
             <Height>0.6cm</Height>
             <Width>3.00426cm</Width>
             <ZIndex>7</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox8">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Fecha - Hora de impresión</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                  <TextRun>
-                    <Value>: </Value>
-                    <Style />
-                  </TextRun>
-                  <TextRun>
-                    <Value>=Format(Globals!ExecutionTime, "dd/MM/yyyy HH:mm")</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>2.36416cm</Top>
-            <Left>0.52912cm</Left>
-            <Height>0.6cm</Height>
-            <Width>10.13301cm</Width>
-            <ZIndex>8</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -870,7 +829,8 @@
                           </Textbox>
                         </CellContents>
                       </TablixHeader>
-                      <KeepWithGroup>Before</KeepWithGroup>
+                      <KeepWithGroup>After</KeepWithGroup>
+                      <RepeatOnNewPage>true</RepeatOnNewPage>
                     </TablixMember>
                   </TablixMembers>
                 </TablixRowHierarchy>
@@ -889,8 +849,7 @@
                     <Value>=Fields!Plaza.Value</Value>
                   </SortExpression>
                 </SortExpressions>
-                <Top>4.30704cm</Top>
-                <Left>0.00011cm</Left>
+                <Top>3.46037cm</Top>
                 <Height>1.8cm</Height>
                 <Width>3.5cm</Width>
                 <Style>
@@ -920,8 +879,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox14</rd:DefaultName>
-                <Top>3.42482cm</Top>
-                <Left>0.0604cm</Left>
+                <Top>2.57815cm</Top>
+                <Left>0.06029cm</Left>
                 <Height>0.70583cm</Height>
                 <Width>4.49883cm</Width>
                 <ZIndex>1</ZIndex>
@@ -950,8 +909,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>NombreEstacionamiento</rd:DefaultName>
-                <Top>0.33514cm</Top>
-                <Left>3.22328cm</Left>
+                <Left>3.28346cm</Left>
                 <Height>0.6cm</Height>
                 <Width>4.45792cm</Width>
                 <ZIndex>2</ZIndex>
@@ -982,8 +940,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox5</rd:DefaultName>
-                <Top>0.33514cm</Top>
-                <Left>0.00011cm</Left>
+                <Left>0.06029cm</Left>
                 <Height>0.6cm</Height>
                 <Width>3.22319cm</Width>
                 <ZIndex>3</ZIndex>
@@ -1014,8 +971,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox6</rd:DefaultName>
-                <Top>0.97042cm</Top>
-                <Left>0.00009cm</Left>
+                <Top>0.63528cm</Top>
+                <Left>0.06027cm</Left>
                 <Height>0.6cm</Height>
                 <Width>1.58278cm</Width>
                 <ZIndex>4</ZIndex>
@@ -1046,8 +1003,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox7</rd:DefaultName>
-                <Top>1.6057cm</Top>
-                <Left>0.00009cm</Left>
+                <Top>1.27056cm</Top>
+                <Left>0.06027cm</Left>
                 <Height>0.6cm</Height>
                 <Width>1.31819cm</Width>
                 <ZIndex>5</ZIndex>
@@ -1076,8 +1033,8 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>FechaDesde</rd:DefaultName>
-                <Top>0.97042cm</Top>
-                <Left>1.58287cm</Left>
+                <Top>0.63528cm</Top>
+                <Left>1.64305cm</Left>
                 <Height>0.6cm</Height>
                 <Width>2.97625cm</Width>
                 <ZIndex>6</ZIndex>
@@ -1106,50 +1063,11 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>FechaHasta</rd:DefaultName>
-                <Top>1.6057cm</Top>
-                <Left>1.35356cm</Left>
+                <Top>1.27056cm</Top>
+                <Left>1.41374cm</Left>
                 <Height>0.6cm</Height>
                 <Width>3.00426cm</Width>
                 <ZIndex>7</ZIndex>
-                <Style>
-                  <Border>
-                    <Style>None</Style>
-                  </Border>
-                  <PaddingLeft>2pt</PaddingLeft>
-                  <PaddingRight>2pt</PaddingRight>
-                  <PaddingTop>2pt</PaddingTop>
-                  <PaddingBottom>2pt</PaddingBottom>
-                </Style>
-              </Textbox>
-              <Textbox Name="Textbox12">
-                <CanGrow>true</CanGrow>
-                <KeepTogether>true</KeepTogether>
-                <Paragraphs>
-                  <Paragraph>
-                    <TextRuns>
-                      <TextRun>
-                        <Value>Fecha - Hora de impresión</Value>
-                        <Style>
-                          <FontWeight>Bold</FontWeight>
-                        </Style>
-                      </TextRun>
-                      <TextRun>
-                        <Value>: </Value>
-                        <Style />
-                      </TextRun>
-                      <TextRun>
-                        <Value>=Format(Globals!ExecutionTime, "dd/MM/yyyy HH:mm")</Value>
-                        <Style />
-                      </TextRun>
-                    </TextRuns>
-                    <Style />
-                  </Paragraph>
-                </Paragraphs>
-                <rd:DefaultName>Textbox8</rd:DefaultName>
-                <Top>2.2057cm</Top>
-                <Height>0.6cm</Height>
-                <Width>10.13301cm</Width>
-                <ZIndex>8</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -1164,11 +1082,11 @@
             <PageBreak>
               <BreakLocation>Start</BreakLocation>
             </PageBreak>
-            <Top>7.30418cm</Top>
-            <Left>0.46928cm</Left>
-            <Height>6.10704cm</Height>
-            <Width>10.19341cm</Width>
-            <ZIndex>9</ZIndex>
+            <Top>7.63932cm</Top>
+            <Left>0.4091cm</Left>
+            <Height>5.26037cm</Height>
+            <Width>10.25359cm</Width>
+            <ZIndex>8</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1529,7 +1447,7 @@
                     </FilterValues>
                   </Filter>
                 </Filters>
-                <Top>3.52778cm</Top>
+                <Top>2.98393cm</Top>
                 <Left>0.35282cm</Left>
                 <Height>6cm</Height>
                 <Width>14cm</Width>
@@ -1557,7 +1475,6 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>NombreEstacionamiento</rd:DefaultName>
-                <Top>0.54385cm</Top>
                 <Left>3.22328cm</Left>
                 <Height>0.6cm</Height>
                 <Width>4.45792cm</Width>
@@ -1589,7 +1506,6 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox5</rd:DefaultName>
-                <Top>0.54385cm</Top>
                 <Left>0.00011cm</Left>
                 <Height>0.6cm</Height>
                 <Width>3.22319cm</Width>
@@ -1621,7 +1537,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox6</rd:DefaultName>
-                <Top>1.17913cm</Top>
+                <Top>0.63528cm</Top>
                 <Left>0.00009cm</Left>
                 <Height>0.6cm</Height>
                 <Width>1.58278cm</Width>
@@ -1653,7 +1569,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox7</rd:DefaultName>
-                <Top>1.81441cm</Top>
+                <Top>1.27056cm</Top>
                 <Left>0.00009cm</Left>
                 <Height>0.6cm</Height>
                 <Width>1.31819cm</Width>
@@ -1683,7 +1599,7 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>FechaDesde</rd:DefaultName>
-                <Top>1.17913cm</Top>
+                <Top>0.63528cm</Top>
                 <Left>1.58287cm</Left>
                 <Height>0.6cm</Height>
                 <Width>2.97625cm</Width>
@@ -1713,50 +1629,11 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>FechaHasta</rd:DefaultName>
-                <Top>1.81441cm</Top>
+                <Top>1.27056cm</Top>
                 <Left>1.35356cm</Left>
                 <Height>0.6cm</Height>
                 <Width>3.00426cm</Width>
                 <ZIndex>6</ZIndex>
-                <Style>
-                  <Border>
-                    <Style>None</Style>
-                  </Border>
-                  <PaddingLeft>2pt</PaddingLeft>
-                  <PaddingRight>2pt</PaddingRight>
-                  <PaddingTop>2pt</PaddingTop>
-                  <PaddingBottom>2pt</PaddingBottom>
-                </Style>
-              </Textbox>
-              <Textbox Name="Textbox26">
-                <CanGrow>true</CanGrow>
-                <KeepTogether>true</KeepTogether>
-                <Paragraphs>
-                  <Paragraph>
-                    <TextRuns>
-                      <TextRun>
-                        <Value>Fecha - Hora de impresión</Value>
-                        <Style>
-                          <FontWeight>Bold</FontWeight>
-                        </Style>
-                      </TextRun>
-                      <TextRun>
-                        <Value>: </Value>
-                        <Style />
-                      </TextRun>
-                      <TextRun>
-                        <Value>=Format(Globals!ExecutionTime, "dd/MM/yyyy HH:mm")</Value>
-                        <Style />
-                      </TextRun>
-                    </TextRuns>
-                    <Style />
-                  </Paragraph>
-                </Paragraphs>
-                <rd:DefaultName>Textbox8</rd:DefaultName>
-                <Top>2.41441cm</Top>
-                <Height>0.6cm</Height>
-                <Width>10.13301cm</Width>
-                <ZIndex>7</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -2119,11 +1996,11 @@
                     </FilterValues>
                   </Filter>
                 </Filters>
-                <Top>10.15118cm</Top>
+                <Top>9.60733cm</Top>
                 <Left>0.35282cm</Left>
                 <Height>6cm</Height>
                 <Width>14cm</Width>
-                <ZIndex>8</ZIndex>
+                <ZIndex>7</ZIndex>
                 <Style>
                   <Border>
                     <Color>LightGrey</Color>
@@ -2485,11 +2362,11 @@
                     </FilterValues>
                   </Filter>
                 </Filters>
-                <Top>16.75486cm</Top>
+                <Top>16.21101cm</Top>
                 <Left>0.35282cm</Left>
                 <Height>6cm</Height>
                 <Width>14cm</Width>
-                <ZIndex>9</ZIndex>
+                <ZIndex>8</ZIndex>
                 <Style>
                   <Border>
                     <Color>LightGrey</Color>
@@ -2851,11 +2728,11 @@
                     </FilterValues>
                   </Filter>
                 </Filters>
-                <Top>23.34402cm</Top>
+                <Top>22.80017cm</Top>
                 <Left>0.35282cm</Left>
                 <Height>6cm</Height>
                 <Width>14cm</Width>
-                <ZIndex>10</ZIndex>
+                <ZIndex>9</ZIndex>
                 <Style>
                   <Border>
                     <Color>LightGrey</Color>
@@ -2870,11 +2747,11 @@
               <BreakLocation>Start</BreakLocation>
             </PageBreak>
             <KeepTogether>true</KeepTogether>
-            <Top>21.67595cm</Top>
+            <Top>22.2198cm</Top>
             <Left>0.46873cm</Left>
-            <Height>29.34402cm</Height>
+            <Height>28.80017cm</Height>
             <Width>15.57873cm</Width>
-            <ZIndex>10</ZIndex>
+            <ZIndex>9</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -3149,7 +3026,8 @@
                           </Textbox>
                         </CellContents>
                       </TablixHeader>
-                      <KeepWithGroup>Before</KeepWithGroup>
+                      <KeepWithGroup>After</KeepWithGroup>
+                      <RepeatOnNewPage>true</RepeatOnNewPage>
                     </TablixMember>
                   </TablixMembers>
                 </TablixRowHierarchy>
@@ -3168,8 +3046,8 @@
                     <Value>=Fields!Plaza.Value</Value>
                   </SortExpression>
                 </SortExpressions>
-                <Top>4.67668cm</Top>
-                <Left>0.00022cm</Left>
+                <Top>3.68771cm</Top>
+                <Left>0.00033cm</Left>
                 <Height>1.8cm</Height>
                 <Width>3.5cm</Width>
                 <Style>
@@ -3199,50 +3077,11 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox14</rd:DefaultName>
-                <Top>3.56515cm</Top>
-                <Left>0.00022cm</Left>
+                <Top>2.57618cm</Top>
+                <Left>0.00033cm</Left>
                 <Height>0.70583cm</Height>
                 <Width>4.49884cm</Width>
                 <ZIndex>1</ZIndex>
-                <Style>
-                  <Border>
-                    <Style>None</Style>
-                  </Border>
-                  <PaddingLeft>2pt</PaddingLeft>
-                  <PaddingRight>2pt</PaddingRight>
-                  <PaddingTop>2pt</PaddingTop>
-                  <PaddingBottom>2pt</PaddingBottom>
-                </Style>
-              </Textbox>
-              <Textbox Name="Textbox22">
-                <CanGrow>true</CanGrow>
-                <KeepTogether>true</KeepTogether>
-                <Paragraphs>
-                  <Paragraph>
-                    <TextRuns>
-                      <TextRun>
-                        <Value>Fecha - Hora de impresión</Value>
-                        <Style>
-                          <FontWeight>Bold</FontWeight>
-                        </Style>
-                      </TextRun>
-                      <TextRun>
-                        <Value>: </Value>
-                        <Style />
-                      </TextRun>
-                      <TextRun>
-                        <Value>=Format(Globals!ExecutionTime, "dd/MM/yyyy HH:mm")</Value>
-                        <Style />
-                      </TextRun>
-                    </TextRuns>
-                    <Style />
-                  </Paragraph>
-                </Paragraphs>
-                <rd:DefaultName>Textbox8</rd:DefaultName>
-                <Top>2.38328cm</Top>
-                <Height>0.6cm</Height>
-                <Width>10.13301cm</Width>
-                <ZIndex>2</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -3268,11 +3107,11 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>FechaHasta</rd:DefaultName>
-                <Top>1.78328cm</Top>
+                <Top>1.27056cm</Top>
                 <Left>1.35356cm</Left>
                 <Height>0.6cm</Height>
                 <Width>3.00426cm</Width>
-                <ZIndex>3</ZIndex>
+                <ZIndex>2</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -3300,11 +3139,11 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox7</rd:DefaultName>
-                <Top>1.78328cm</Top>
+                <Top>1.27056cm</Top>
                 <Left>0.00008cm</Left>
                 <Height>0.6cm</Height>
                 <Width>1.31819cm</Width>
-                <ZIndex>4</ZIndex>
+                <ZIndex>3</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -3332,11 +3171,11 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox6</rd:DefaultName>
-                <Top>1.148cm</Top>
+                <Top>0.63528cm</Top>
                 <Left>0.00008cm</Left>
                 <Height>0.6cm</Height>
                 <Width>1.58278cm</Width>
-                <ZIndex>5</ZIndex>
+                <ZIndex>4</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -3362,11 +3201,11 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>FechaDesde</rd:DefaultName>
-                <Top>1.148cm</Top>
+                <Top>0.63528cm</Top>
                 <Left>1.58286cm</Left>
                 <Height>0.6cm</Height>
                 <Width>2.97625cm</Width>
-                <ZIndex>6</ZIndex>
+                <ZIndex>5</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -3394,11 +3233,10 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>Textbox5</rd:DefaultName>
-                <Top>0.51272cm</Top>
                 <Left>0.0001cm</Left>
                 <Height>0.6cm</Height>
                 <Width>3.22319cm</Width>
-                <ZIndex>7</ZIndex>
+                <ZIndex>6</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -3424,11 +3262,10 @@
                   </Paragraph>
                 </Paragraphs>
                 <rd:DefaultName>NombreEstacionamiento</rd:DefaultName>
-                <Top>0.51272cm</Top>
                 <Left>3.22328cm</Left>
                 <Height>0.6cm</Height>
                 <Width>4.45792cm</Width>
-                <ZIndex>8</ZIndex>
+                <ZIndex>7</ZIndex>
                 <Style>
                   <Border>
                     <Style>None</Style>
@@ -3443,11 +3280,11 @@
             <PageBreak>
               <BreakLocation>Start</BreakLocation>
             </PageBreak>
-            <Top>14.38357cm</Top>
+            <Top>14.89629cm</Top>
             <Left>0.46906cm</Left>
-            <Height>6.47668cm</Height>
+            <Height>5.48771cm</Height>
             <Width>10.24126cm</Width>
-            <ZIndex>11</ZIndex>
+            <ZIndex>10</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -3455,13 +3292,13 @@
             </Style>
           </Rectangle>
         </ReportItems>
-        <Height>22.56577in</Height>
+        <Height>20.26021in</Height>
         <Style />
       </Body>
       <Width>19cm</Width>
       <Page>
         <PageHeader>
-          <Height>3cm</Height>
+          <Height>3.28222cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -3505,9 +3342,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox1</rd:DefaultName>
-                  <Top>0.71236cm</Top>
-                  <Left>2.70557cm</Left>
-                  <Height>1.25264cm</Height>
+                  <Top>0.88875cm</Top>
+                  <Left>2.67029cm</Left>
+                  <Height>1.27028cm</Height>
                   <Width>15.72798cm</Width>
                   <ZIndex>1</ZIndex>
                   <Style>
@@ -3515,6 +3352,51 @@
                       <Style>None</Style>
                     </Border>
                     <VerticalAlign>Middle</VerticalAlign>
+                    <PaddingLeft>2pt</PaddingLeft>
+                    <PaddingRight>2pt</PaddingRight>
+                    <PaddingTop>2pt</PaddingTop>
+                    <PaddingBottom>2pt</PaddingBottom>
+                  </Style>
+                </Textbox>
+                <Textbox Name="Textbox8">
+                  <CanGrow>true</CanGrow>
+                  <KeepTogether>true</KeepTogether>
+                  <Paragraphs>
+                    <Paragraph>
+                      <TextRuns>
+                        <TextRun>
+                          <Value>Fecha - Hora de impresión</Value>
+                          <Style>
+                            <FontWeight>Bold</FontWeight>
+                            <Color>#ffffff</Color>
+                          </Style>
+                        </TextRun>
+                        <TextRun>
+                          <Value>: </Value>
+                          <Style>
+                            <Color>#ffffff</Color>
+                          </Style>
+                        </TextRun>
+                        <TextRun>
+                          <Value>=Format(Globals!ExecutionTime, "dd/MM/yyyy HH:mm")</Value>
+                          <Style>
+                            <Color>#ffffff</Color>
+                          </Style>
+                        </TextRun>
+                      </TextRuns>
+                      <Style />
+                    </Paragraph>
+                  </Paragraphs>
+                  <rd:DefaultName>Textbox8</rd:DefaultName>
+                  <Top>0.11236cm</Top>
+                  <Left>10.08207cm</Left>
+                  <Height>0.6cm</Height>
+                  <Width>8.3162cm</Width>
+                  <ZIndex>2</ZIndex>
+                  <Style>
+                    <Border>
+                      <Style>None</Style>
+                    </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
                     <PaddingTop>2pt</PaddingTop>
@@ -3539,6 +3421,47 @@
             </Border>
           </Style>
         </PageHeader>
+        <PageFooter>
+          <Height>2.54cm</Height>
+          <PrintOnFirstPage>true</PrintOnFirstPage>
+          <PrintOnLastPage>true</PrintOnLastPage>
+          <ReportItems>
+            <Textbox Name="Textbox2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Página " &amp; Globals!PageNumber &amp; " de " &amp; Globals!TotalPages</Value>
+                      <Style />
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>1.94cm</Top>
+              <Left>14.54128cm</Left>
+              <Height>0.6cm</Height>
+              <Width>4.45792cm</Width>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+          </ReportItems>
+          <Style>
+            <Border>
+              <Style>None</Style>
+            </Border>
+          </Style>
+        </PageFooter>
         <PageHeight>29.7cm</PageHeight>
         <PageWidth>21cm</PageWidth>
         <LeftMargin>0.5cm</LeftMargin>
