@@ -1,5 +1,6 @@
 <div align="center">
-  <img src="LogoACE_SinFondo.png" alt="Logo ACE Estacionamiento" width="200">
+  <img width="250" height="250" alt="LogoACE_SinFondo" src="https://github.com/user-attachments/assets/7e6b74c2-c0ce-4778-90f2-5e98c1235df3" />
+
   <h1>Sistema de Gestión de Estacionamientos A.C.E.</h1>
   
   <p>
@@ -27,5 +28,5 @@ Desarrollado como proyecto para la materia **Seminario Integrador**, **UTN FRRe*
 Este proyecto está construido utilizando:
 
 * **Lenguaje:** .NET
-* **Interfaz:** Web Forms]
+* **Interfaz:** Web Forms
 * **Base de Datos/Persistencia:** Microsoft SQL Server (MSSQL)
